@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-GB" xml:lang="en-GB">
+<head>
+<meta charset="UTF-8"/>
+<title>Wanderer</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<h1>Unit testing</h1>
+
+<p>Unit testing is the first thing to sort out, even if writing actual tests
+isn't going to start yet. IDEs or unit testing frameworks such as JUnit can be
+used (and it is a good idea to look into them for ideas, at least).  But what is
+the simplest approach that works properly?</p>
+
+<p>For small classes, testing can be done in a <code>main</code> method in the
+class itself. Java's assertions could be used, but are complicated by the need
+for the <code>-ea</code> flag.  So it seems simpler to avoid assertions and
+define classes like this:</p>
+
+<pre>class X {
+    static void claim(boolean b) { if (!b) throw new Error("Bug"); }
+    public static void main(String[] args) {
+        claim(2+2 == 4);
+        System.out.println("Class X OK");
+    }
+}
+</pre>
+
+<p>The <code>claim</code> method is roughly equivalent to Java's
+<code>assert</code> keyword. This is all that is necessary for the current
+project.</p>
+
+<h3>Further information</h3>
+
+<p>The same  approach can be developed further.  For example, rather than
+call <code>claim(s.equals("x"))</code>, it might be preferable to use
+<code>claimEq(s, "x")</code>.  The <code>claimEq</code> method can be
+written:</p>
+
+<pre>static void claimEq(Object x, Object y) {
+    if (x == y) return;
+    if (x != null &amp;&amp; x.equals(y)) return;
+    throw new Error("Bug");
+}
+</pre>
+
+<p>Because of the boxing/unboxing feature of Java, this works for primitive
+types, e.g. integers and characters, as well as objects which have a suitable
+<code>equals</code> method. (However, as it stands, it doesn't work for
+arrays).</p>
+
+<p>The <code>main</code> method approach to unit testing can also be scaled up
+to large projects, e.g. by defining classes something like this:</p>
+
+<pre>class X implements Testable {
+    public String test(String in) { ... }
+    public static void main(String[] args) {
+        Test.run(args, new X());
+    }
+}
+</pre>
+
+<p>The <code>Testable</code> interface describes a <code>test</code> method
+which takes a test expressed as a string and returns a string result which can
+be checked against what is expected. The <code>test</code> method may be
+effectively static, creating any objects it needs, but is not <em>declared</em>
+<code>static</code>, so that it can be described by an interface.</p>
+
+<p>Shared test code is put into a general <code>Test</code> class, which doesn't
+depend directly on any of the project classes, only on the <code>Testable</code>
+interface, so that a class can be tested when other classes that it doesn't
+depend on are broken. The <code>run</code> method has the signature:</p>
+
+<pre>static run(String[] args, Testable sample) { ... }
+</pre>
+
+<p>The object passed as the second argument is just a sample object used by the
+<code>Test</code> class to access the <code>test</code> method. The battery of
+tests for a class is put into a text file, which is read and interpreted by the
+<code>Test</code> class.</p>
+
+</body>
+</html>

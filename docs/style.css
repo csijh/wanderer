@@ -1,0 +1,4 @@
+body { font-size: large; }
+a.indent, pre { margin-left: 40px; }
+blockquote { font-style: italic; }
+img { display: block; margin-left: auto; margin-right: auto; }

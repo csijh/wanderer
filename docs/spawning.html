@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-GB" xml:lang="en-GB">
+<head>
+<meta charset="UTF-8"/>
+<title>Wanderer</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<h1>Spawning</h1>
+
+<p>A level needs to be able to create new entity objects of different types,
+according to the character codes in textual level files.  This is tricky,
+because <code>Level</code> is a framework class which knows nothing about the
+entity classes.</p>
+
+<h3>Reflection</h3>
+
+<p>One possibility is to use Java's reflection facilities.  A level object is
+given the names of the classes that generate the different types of entity. Then
+reflection is used to create an entity object using a given class name, e.g.
+like this:</p>
+
+<pre>E e = (E) Class.forName(className).newInstance();
+</pre>
+
+<p>This will need a warning suppression.  A slight weakness of this approach is
+that it requires the entity classes to be public.  To get round that, if
+desired, the reflection code can be made a little more complex:</p>
+
+<pre>Class&lt;?> c = Class.forName(t.className());
+Constructor&lt;?> con = c.getDeclaredConstructor();
+con.setAccessible(true);
+E e = (E) con.newInstance();
+</pre>
+
+<p>However, this assumes that each type of entity is represented by a separate
+class.  It would be preferable, in a framework, to provide more flexibility.</p>
+
+<h3>Inheritance</h3>
+
+<p>A different way to solve the problem is for sample entity objects, one of
+each type, to be provided to the level object when it is created.</p>
+
+<pre>class Level&lt;E extends Cell&lt;E>> {
+    public Level(E[] samples) { ... }
+}
+</pre>
+
+<p>Each entity object must be capable of spawning new entities of the same type.
+This can be achieved by adding a <code>spawn</code> method to the
+<code>Cell</code> class, to be overridden:</p>
+
+<pre>abstract E spawn();
+</pre>
+
+<p>Now it is up to the author of the entity classes to decide how different
+types of entity are represented, and how entity objects are to be spawned.</p>
+
+<p>An entity may need to be able to spawn some other entity object (e.g. when it
+mutates).  That can be sorted out by putting the samples into the
+<code>State</code> class, which can then provide a spawning service to
+entities.</p>
+
+</body>
+</html>

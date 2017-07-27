@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-GB" xml:lang="en-GB">
+<head>
+<meta charset="UTF-8"/>
+<title>Wanderer</title>
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/highlight.js/9.9.0/styles/xcode.min.css"/>
+<script
+  src="https://cdn.jsdelivr.net/highlight.js/9.9.0/highlight.min.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/highlight.js/9.9.0/languages/java.min.js"></script>
+<script src="highlight.js"></script>
+</head>
+<body>
+
+<h1>Coordinates</h1>
+
+<p>Confusion often arises from inconsistencies in coordinate systems and their
+jargon. Even with plain 2D coordinates, there are (x,y) graphics coordinates
+measured from the top left, cartesian (x,-y) coordinates, and matrix (r,c) =
+(y,x) coordinates.</p>
+
+<p>Our grid for this game is going to be 2.5D, in the sense that multiple
+entities can be at the same 2D grid position, so there is an implicit third
+dimension.  If we think of a grid-based game as being viewed top-down, then we
+might thing of x as West/East, and y as North/South.  However, our game has
+gravity, albeit not very realistic, acting in the y direction.</p>
+
+<p>So the best choice for the current project seems to be use graphics
+coordinates, with x meaning Left/Right, y meaning Up/Down and an implicit z
+meaning Front/Back.  We will then need to make sure that all our variable names
+and comments agree with this convention.  Even then, there will be an exception
+for level files, which are most naturally stored in matrix (y,x) order.</p>
+
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-GB" xml:lang="en-GB">
+<head>
+<meta charset="UTF-8"/>
+<title>Wanderer</title>
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/highlight.js/9.9.0/styles/xcode.min.css"/>
+<script
+  src="https://cdn.jsdelivr.net/highlight.js/9.9.0/highlight.min.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/highlight.js/9.9.0/languages/java.min.js"></script>
+<script src="highlight.js"></script>
+</head>
+<body>
+
+<h1>Entities</h1>
+
+<p>The development has reached this point:</p>
+
+<img src="entity.png" alt="The Entity class depending on the Grid class" />
+
+<p>The next question is whether or not an entity should know its own coordinates
+in the grid.  The problem is that it involves duplicate data.  The (x,y)
+coordinates stored in the entity object, and the actual position of the object
+in the grid, need to be kept consistent with each other.  It is easy to imagine
+a lot of code like this:</p>
+
+<pre>grid.move(this, Right);
+x++;
+</pre>
+
+<p>The first line tells the grid to move the entity to a new cell, and the
+second updates the entity's coordinates to match.  The danger of inconsistency
+is very real, and increases enormously as the number of code fragments like the
+one above increases.  Any problems can be very tough to debug.</p>
+
+<p>One approach is for an entity <em>not</em> to know its own coordinates.  Only
+the grid knows, and can therefore carefully keep them consistent. Several
+variations on this theme are possible, but two problems inevitably arise.  The
+first is that the resulting system can't be described as simple or natural. The
+second is that, although <em>most</em> things that an entity wants to do can be
+done with directions, e.g. "move right" or "find the entity to the right" and so
+on, occasionally actual coordinates come into play, e.g a long-distance
+teleport, or a monster which chases the player.</p>
+
+<p>A good approach is to split the Entity class into two:</p>
+
+<img src="cell.png" alt="Entity extends a general Cell class" />
+
+<p>The <code>Cell</code> class becomes a base class for entity classes.  It
+provides general purpose methods which entity classes can use to get things
+done. The Cell class can be a framework class, with the Entity class and any
+classes that extend it providing the game-specific behaviour.  The
+<code>Cell</code> class might look like this:</p>
+
+<pre>class Cell {
+    private Grid&lt;Cell> grid;
+    private int x, y;
+    int x() { return x; }
+    int y() { return y; }
+...
+}
+</pre>
+
+<p>An object of the <code>Cell</code> class knows its own coordinates, but the
+class consists of a relatively small amount of stable code, so that consistency
+can be kept under control. The coordinates are private, and extending classes
+only have read access to them. That encapsulates the coordinate consistency
+problem inside the <code>Cell</code> class.</p>
+
+<p>The <code>Cell</code> class shown above has a weakness.  The grid field has
+class <code>Grid&lt;Cell></code>.  So, when an entity finds a neighbouring
+entity in the grid, it only knows that the neighbour has type <code>Cell</code>,
+not <code>Entity</code> (unless it cheats by using casting, for example).  While
+this isn't a disaster, it is worth making the framework class <code>Cell</code>
+a bit more sophisticated, to ease the implementation of game-specific custom
+classes, like this:</p>
+
+<pre>public class Cell&lt;E extends Cell&lt;E>>
+    private Grid&lt;E> grid;
+    private int x, y;
+    int x() { return x; }
+    int y() { return y; }
+...
+}
+</pre>
+
+<p>The <code>Cell</code> class is given a parameter <code>E</code>, which will
+later be filled in by the <code>Entity</code> class.  That allows the
+<code>grid</code> field to have class <code>Grid&lt;E></code> rather than just
+<code>Grid&lt;Cell></code>, and entities will be able to access other entities
+using variables of class <code>Entity</code>. The <code>E</code> parameter must
+be a class which extends <code>Cell</code>. In fact, it must extend
+<code>Cell&lt;E></code>, which leads to the strangely cyclic but correct class
+declaration <code>class Cell&lt;E extends Cell&lt;E>></code>.</p>
+
+<p>Implementing the <code>Cell</code> class is a bit tricky.  For example,
+suppose there is a method to move this entity to the coordinates of another
+entity:</p>
+
+<pre>void move(E to) {
+    ...
+    x = to.x;
+    y = to.y;
+}
+</pre>
+
+<p>This fails because <code>to.x</code> and <code>to.y</code> are not
+accessible.  The <code>to</code> variable has class <code>E</code> whereas the
+<code>x</code> and <code>y</code> fields are private to the <code>Cell</code>
+class.  However, any object of class <code>E</code> automatically has class
+<code>Cell&lt;E></code> because of the class declaration, so the problem can be
+fixed without casts or compiler warnings:</p>
+
+<pre>void move(E e) {
+    ...
+    Cell&lt;E> c = e;
+    x = c.x;
+    y = c.y;
+}
+</pre>
+
+<p>There is another problem.  Suppose there is a method:</p>
+
+<pre>void wake() {
+    grid.wake(x, y, this);
+}
+</pre>
+
+<p>This fails because the variable <code>this</code> has type
+<code>Cell&lt;E></code> instead of type <code>E</code>. All objects of type
+<code>Cell&lt;E></code> are actually going to be of type <code>E</code>, but the
+compiler doesn't know that.  A cast <code>(E)this</code> is needed, but it
+causes a warning.  However, a single tiny method can be defined with the warning
+suppressed:</p>
+
+<pre>@SuppressWarnings("unchecked")
+private E thisE() { return (E)this; }
+</pre>
+
+<p>As well as providing utility methods for entity classes to use, the Cell
+class defines lifecycle methods for entity classes to override, such as:</p>
+
+<pre>abstract void hatch();
+abstract void act();
+</pre>
+
+<p>Making them abstract forces entity classes to override them. The hatch method
+is called when a level is created, to give each entity a chance to initialize
+some aspect of the game's global state, e.g. to declare itself as active or set
+a counter. The act method is called when it is the entity's turn to take one
+step, e.g. move by one grid cell.</p>
+
+</body>
+</html>

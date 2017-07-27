@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-GB" xml:lang="en-GB">
+<head>
+<meta charset="UTF-8"/>
+<title>Wanderer</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<h1>Replay testing</h1>
+
+<p>For a project as complex as the wanderer reconstruction, testing is crucial.
+There is some lightweight unit testing in the framework classes, but there are
+no unit tests in the entity classes, so some serious testing is now needed to
+make sure that the game itself works properly.</p>
+
+<p>One problem with this is that the original version of the game doesn't
+provide a precise specification to test against.  The same problem would occur
+with a newly designed game, where a developer might have an intuitive notion of
+what should happen in various situations, but no precise specification of how
+each type of entity should behave.</p>
+
+<p>A good way round this is to implement replay testing.  A game level, real or
+simplified, is set up and played manually to check that everything happens as
+desired.  The user's commands and the resulting actions that appear on screen
+are recorded into a file.  Then, whenever desired, that game can be replayed.
+That is, the commands can be extracted from the file, offered to the system as
+if they came from the user, and the resulting actions on the screen checked
+against the ones recorded.  In other words, regression testing of manual play
+takes the place of testing against a specification.</p>
+
+<p>There is no proof that the wanderer reconstruction exactly matches the
+original game.  In fact it doesn't. There are known details where it would not
+be sensible to blindly copy the original game.  However, replay testing does
+provide proof that all of the original 60 levels are solvable in the
+reconstruction, in the same way that they might have been solved in the original
+game.  The later stages of development involved making sure that each of the 60
+levels in turn worked properly.  Each level was very likely to introduce a new
+type of entity, or new examples of interaction between entities. Replay testing
+was critical to ensure that previous levels still worked properly.</p>
+
+<p>It is desirable to have a graphical user interface in place to do the
+recording of the play.  In practice, in the reconstruction of the wanderer game,
+replay testing wasn't done until a working prototype of the user interface was
+available. However, it is essential that the replay testing itself should not
+involve graphics.  The general mechanism is therefore implemented in the
+<code>Level</code> class, and the game-specific testing is driven by a
+non-graphics <code>Test</code> class in the <code>wanderer</code> package.
+Typing <code>make Test</code> ensures that all the entity classes are compiled,
+and then runs the entire suite of replay tests.</p>
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-GB" xml:lang="en-GB">
+<head>
+<meta charset="UTF-8"/>
+<title>Wanderer</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<h1>Building</h1>
+
+<p>The next thing to sort out is how to build the project, i.e. how to run the
+compiler and the unit tests.  This is very frequent in agile development (only a
+few lines are written before re-compiling and re-testing). So it needs to be
+convenient. Also, during refactoring, it should be easy to compile and test
+classes one by one, even when classes that haven't been tackled yet are still
+broken. Some developers would want to use an IDE or sophisticated build tool for
+compilation.  But what is the simplest thing that works properly?</p>
+
+<p>A reasonably simple makefile will do. The Java source files can be put in a
+folder <code>src</code> and the compiled class files can be put in a folder
+<code>bin</code>. Then a makefile can be written like this:</p>
+
+<pre>Entity Grid Display Help:
+        javac -sourcepath src -d bin src/$@.java
+        java -cp bin $@
+
+clean:
+        rm -f bin/*.class
+</pre>
+
+<p>The first rule allows you to type in any single class name, e.g. <code>make
+Entity</code>. The class is compiled, along with any recently edited classes
+that it depends on, and the unit tests for the class are run.  There is no need
+to mention dependencies in the makefile, because the Java compiler checks file
+timestamps and recompiles other classes as necessary.  The entire program can be
+compiled and run by using <code>make</code> on its topmost driver class.</p>
+
+<p>The compiler gets confused occasionally, when obsolete class files are left
+lying around, so the <code>make clean</code> option is provided, to be used when
+a class is deleted or renamed. Occasionally, it can be useful to add an
+artificial extra dependency in the Java code by mentioning one class in another
+unnecessarily, to help the compiler do a complete job.</p>
+
+<p>The simple makefile shown above assumes that all the classes are in the
+default package.  As the number of classes in a project grows, it gets
+increasingly clumsy for them all to be lumped together rather than classified
+into separate package folders.  But the makefile approach can be extended fairly
+simply.  Suppose there are two packages, <code>model</code> and
+<code>view</code>.  Then the makefile could look like this:</p>
+
+<pre>Entity Grid:
+        javac -sourcepath src -d bin src/model/$@.java
+        java -cp bin model.$@
+
+Display Help:
+        javac -sourcepath src -d bin src/view/$@.java
+        java -cp bin view.$@
+
+clean:
+        rm -f bin/model/*.class
+        rm -f bin/view/*.class
+</pre>
+
+<p>A class can still be compiled using its short class name, e.g. <code>make
+Entity</code>.  The lists of classes in each package need to be maintained when
+a class is added, removed or renamed, but the effort involved is not great.</p>
+
+<!--  There is a slight disadvantage of using packages in Java,
+which is an increase in verbosity, because of package statements, import
+statements, and the frequent need for the <code>public</code> keyword.-->
+
+</body>
+</html>

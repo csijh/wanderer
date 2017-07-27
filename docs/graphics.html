@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-GB" xml:lang="en-GB">
+<head>
+<meta charset="UTF-8"/>
+<title>Wanderer</title>
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/highlight.js/9.9.0/styles/xcode.min.css"/>
+<script
+  src="https://cdn.jsdelivr.net/highlight.js/9.9.0/highlight.min.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/highlight.js/9.9.0/languages/java.min.js"></script>
+<script src="highlight.js"></script>
+</head>
+<body>
+
+<h1>Graphics</h1>
+
+<p>How should a program which needs a graphical user interface interact with the
+graphics library?  There are various design patterns which apply, but they boil
+down to three basic possibilities:</p>
+
+<img src="graphics.png" alt="a model and a view (a) depending on each other,
+(b) with the model depending on the view and (c) with the view depending on
+the model" />
+
+<p>The model is the collection of non-graphical classes representing the logic
+of the project, and the view is the collection of graphics-related classes.  The
+wanderer framework is divided into two packages <code>model</code> and
+<code>view</code> to match.</p>
+
+<p>Possibility (a) corresponds to design patterns such as <a
+href="https://en.wikipedia.org/wiki/Model-view-presenter">MVP</a> or <a
+href="https://en.wikipedia.org/wiki/Model-view-adapter">MVA</a>.  We can rule it
+out straight away for this project, because of the cyclic dependencies
+involved.</p>
+
+<p>Possibility (b) corresponds to design patterns such as <a
+href="https://en.wikipedia.org/wiki/Model-view-controller">MVC</a> or <a
+href="https://en.wikipedia.org/wiki/Model-view-viewmodel">MVVM</a>.  It is
+natural, because it correponds to the idea of creating data first, and then
+displaying it afterwards.  Perhaps the main disadvantage for application
+development is that everything depends on graphics, making it awkward to do unit
+testing.</p>
+
+<p>Possibility (c), despite not corresponding to any of the usual design
+patterns, is the most common because it is the way high-level application
+graphics libraries are typically designed to be used.  It has the minor
+disadvantage that it risks breaking encapsulation because the model classes have
+to provide some kind of access to their internal data.  This is the pattern used
+in the wanderer project.</p>
+
+<p>The <code>view</code> package provides some general user interface classes. A
+particular project need only provide a driver class which provides a top level
+window and gathers together the game-specific information needed by the model
+and view framework classes.</p>
+
+<h3>Further information</h3>
+
+<p>An interesting variation on approach (c), which can eliminate the
+encapsulation problem, is to arrange for some objects in the model to draw
+themselves.  That might mean, for example, passing in a graphics object to draw
+on.  For example, a viewable counter might be defined as:</p>
+
+<pre>import javafx.scene.control.*;
+
+/* A viewable counter. */
+class Counter {
+    private int n;
+    private Label label;
+
+    Counter(Label l) { label = l; update(); }
+
+    void count() { n++; update(); }
+
+    private void update() {
+        if (label != null) label.setText("" + n);
+    }
+
+    private static void claim(boolean b) {
+        if (!b) throw new Error("Bug");
+    }
+
+    public static void main(String[] args) {
+        Counter c = new Counter(null);
+        claim(c.n == 0);
+        c.count();
+        claim(c.n == 1);
+    }
+}
+</pre>
+
+<p>A class of this kind depends on the graphics library. Allowing the graphics
+object to be null means that, during unit testing, no graphics objects are
+created and no graphics methods are called.  As a result, the graphics system as
+a whole is not started up. The unit testing in <code>main</code>
+non-interactively tests the non-graphics behaviour of the class.</p>
+
+</body>
+</html>

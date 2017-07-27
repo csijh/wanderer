@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-GB" xml:lang="en-GB">
+<head>
+<meta charset="UTF-8"/>
+<title>Wanderer</title>
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/highlight.js/9.9.0/styles/xcode.min.css"/>
+<script
+  src="https://cdn.jsdelivr.net/highlight.js/9.9.0/highlight.min.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/highlight.js/9.9.0/languages/java.min.js"></script>
+<script src="highlight.js"></script>
+</head>
+<body>
+
+<h1>Delegation</h1>
+
+<p>Entities act mainly by delegating the work to the grid, state and queue
+objects. That allows convenience methods to be defined in the <code>Cell</code>
+class:</p>
+
+<pre>class Cell&lt;E> {
+    private Grid&lt;E> grid;
+    private State&lt;E> state;
+    private Queue&lt;E> queue;
+
+    void wake(E e) { grid.wake(...); ... }
+}
+</pre>
+
+<p>In fact, by making the grid, state and queue fields private, classes which
+extend <code>Cell</code> are forced to use the convenience methods, which is a
+good thing because it makes them immune from changes to the mechanics of
+delegation.</p>
+
+<p>But now we run into a problem.  How are the fields in the Cell class to be
+initialised?  The normal way would be through a constructor:</p>
+
+<pre>class Cell&lt;E> {
+    Cell(Grid&lt;E> g...) { ... }
+}
+</pre>
+
+<p>But that would mean each extending class would have to have a similar
+constructor:</p>
+
+<pre>class Entity extends Cell&lt;Entity> {
+    Entity(Grid&lt;Entity> g...) { super(g...); }
+}
+</pre>
+
+<p>That would be ugly because (a) we would like to keep custom entity classes
+ultra-simple by handling as many details as possible in framework classes and
+(b) custom entity classes would not be completely independent of the details of
+how delegation is done.</p>
+
+<p>A solution is to set the fields via a method rather than a
+constructor:</p>
+
+<pre>class Cell&lt;E> {
+    void init(Grid&lt;E> g...) { ... }
+}
+</pre>
+
+<p>Now extending classes can be kept simple.</p>
+
+</body>
+</html>

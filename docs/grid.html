@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-GB" xml:lang="en-GB">
+<head>
+<meta charset="UTF-8"/>
+<title>Wanderer</title>
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/highlight.js/9.9.0/styles/xcode.min.css"/>
+<script
+  src="https://cdn.jsdelivr.net/highlight.js/9.9.0/highlight.min.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/highlight.js/9.9.0/languages/java.min.js"></script>
+<script src="highlight.js"></script>
+</head>
+<body>
+
+<h1>Grid</h1>
+
+<p>We are working on a grid-based game, i.e. entities move round in discrete
+cells.  So the grid is a central concept.  Its most difficult issue is the
+dependence between the grid and its entities.  We seem to need two cyclically
+dependent classes:</p>
+
+<img src="grid.png" alt="Classes Grid and Entity, dependent on each other" />
+
+<p>The Grid class depends on the Entity class because the grid contains
+entities.  The Entity class depends on the Grid class because each entity needs
+to know where it is in the grid.</p>
+
+<p>One possibility is to accept the cyclic dependency. That leads to
+considerable awkwardnesses and complexities, not least because many more classes
+join the cyclic group over time.  Another possibility is for entities to be
+moved around by the grid, instead of moving themseves around. That is a direct
+violation of the object oriented principle that objects should be autonomous,
+looking after themselves.</p>
+
+<p>The best approach appears to be to make the grid generic.  It is a grid of
+anything, rather than a grid of entities.  To put it another way, the grid
+should make no assumptions about the Entity class and, in particular, make no
+method calls on entity objects.  There is no better way to express this than to
+use Java's generic class facilities:</p>
+
+<pre>class Grid&lt;E> {
+}
+</pre>
+
+<p>In a way, this is odd, because the parameter <code>E</code> is only ever
+going to be replaced by <code>Entity</code> and not any other class.
+Nevertheless, it is the best way to get the compiler to <strong>enforce</strong>
+a lack of dependence on the <code>Entity</code> class.  Defining your own
+generic classes can create various problems but, with care, it makes a lot of
+sense, especially for framework classes.</p>
+
+<p>To make the grid 2.5D, we can make each cell into a list of entities from
+front to back.  We are likely to want to access both the frontmost and backmost
+entities, so a double-ended queue using the <code>Deque</code> class seems
+easiest.  That means we want:</p>
+
+<pre>class Grid&lt;E> {
+    private Deque&lt;E>[][] cells;
+
+    ... cells = new Deque&lt;E>[w][h];
+}
+</pre>
+
+<p>Unfortunately, there are restrictions on Java's generics, which are a
+historic result of generics being bolted onto Java relatively late on. So the
+code above causes a warning message from the compiler.  It is not a good idea to
+ignore the warning, because it may be hiding other problems in the code. This
+is awkward to get round, but the best way seems to be this:</p>
+
+<pre>@SuppressWarnings("unchecked")
+private void newArray() { cells = new Deque[w][h]; }
+</pre>
+
+<p>The class <code>Deque</code> on its own is effectively
+<code>Deque&lt;Object></code>.  It is worth noting that this problem with
+<code>new Deque&lt;E>[w][h]</code> is not directly a result of making the grid
+class generic. If we didn't make the grid class generic, the same problem would
+arise with <code>new Deque&lt;Entity>[w][h]</code>. So this idiom for solving
+the problem is worth knowing about.  We have achieved this:</p>
+
+<img src="entity.png" alt="The Entity class depending on the Grid class" />
+
+<p>One other advantage of making the grid generic, as well as solving the
+dependency problem, is that it is now very clear that the grid class ought to be
+general, not depending on any details of our specific game (e.g. not having a
+particular fixed size). It is effectively just a two-dimensional array of lists
+of objects. So the <code>Grid</code> class can be regarded as a framework
+class (indicated by its green colour in the class diagram).</p>
+
+<p>How should a blank cell in the grid be represented? A lot of programmers
+would automatically use null. However, that is not very object oriented. Instead
+of having code which asks each object questions or tells it to act without
+knowing which kind of object it is, you have to write code which tests the
+object for being null first, before deciding what to do. It is much better to
+have explicit objects to represent blank cells - they are just objects with
+particularly simple behaviour.</p>
+
+<p>It might be worth noting that although using nulls is often a bad idea in
+object oriented languages, it is far less of a problem in other languages. That
+is because in other languages you can make a call <code>act(x)</code> and
+<code>act</code> can test for <code>x</code> being null, whereas in an OO
+language, you can't make the equivalent call <code>x.act()</code> without
+testing for null first in the calling code.  That leads to a non-<a
+href="https://en.wikipedia.org/wiki/Don%27t_repeat_yourself">DRY</a> repetition
+of null-testing everywhere <code>act</code> is called.</p>
+
+<h3>Further information</h3>
+
+<p>If the grid were purely 2D, we would have something like this:</p>
+
+<pre>class Grid&lt;E> {
+    private E[][] cells;
+
+    ... cells = new E[w][h];
+}
+</pre>
+
+<p>Once again, generic warnings strike and we need a workaround, like this:</p>
+
+<pre>@SuppressWarnings("unchecked")
+private void newArray() { cells = (E[][]) new Object[w][h]; }
+</pre>
+
+<p>Any developer can see that the cast from one type of array to another works
+because the array is empty, but the compiler can't.  The
+<code>SuppressWarnings</code> annotation tells the compiler that we know what we
+are doing.  The annotation should be used very sparingly, and only ever applied
+to a single statement or tiny method, so it is crystal clear what it applies to.
+It is possible to avoid the problem using, e.g. <code>Map&lt;Position,E></code>
+instead of an array, but that seems less natural than using an array. This
+suppression of warnings is an unnatural idiom, but it is Java's fault, not our
+fault for trying to do something too complex.</p>
+
+</body>
+</html>
