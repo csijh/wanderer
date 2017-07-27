@@ -1,0 +1,23 @@
+<h1>Physics</h1>
+
+<p>When the player moves, this may trigger arrows to fly, boulders to fall, and
+so on.  The behaviour of these various objects is relatively simple, but the
+order in which things happen is not so simple.  The original program uses
+recursion to deal with the way in which one event triggers another.  The result
+is a slight loss of realism (not that the game is all that realistic in the
+first place).</p>
+
+<p>For example, if you move near two objects, say an arrow and a boulder, and
+set them going, the entire flight of the arrow and everything it triggers,
+happens before the boulder moves.  In other words, the program is doing a
+depth-first search for things to do.  It is more normal to keep a list of
+things to do, and to use it as a queue to give a more concurrent, breadth-first
+physics.</p>
+
+<p>The reconstruction uses the list approach rather than recursion.  However,
+to reproduce the game as accurately as possible, it uses the list as a stack
+rather than as a queue.  This gives the same effect as recursion, but
+makes it easy to switch to a queue to investigate the difference.</p>
+
+<hr />
+<p style="margin-left:40px;"><a href="design.html">Back</a></p>
