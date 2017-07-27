@@ -1,22 +1,33 @@
-# Wanderer
 The Wanderer project provides three things:
 
-- a reconstruction of a 1980's game</li>
-- a framework for simple grid-based games</li>
-- a case study in object oriented design and development</li>
+- a reconstruction of a 1980's game
+- a framework for simple grid-based games
+- a case study in object oriented design and development
 
-To play the game, download
+## Wanderer: the game
+
+The Wanderer game was written by Steven Shipway in the 1980s.  This
+reconstruction was written by Ian Holyer in the 2010s.
+
+To play the reconstructed game, download
 [wanderer.jar](../wanderer.jar) and run
 it by double clicking or typing:
 ```
 java -jar wanderer.jar
 ```
 
-To use the framework, clone or download the whole project, read and use the
-model and view packages, and write a game-specific package, using the maze and
-wanderer packages as examples.  The main purpose of the framework is to provide
-a case study for teaching, so the framework is not polished and documented as a
-library would be.
+The original version (written in C) can be obtained from
+http://www.steveshipway.org/software/wanderer/f_wanderer.html
+
+## Wanderer: the framework
+
+The framework is also called Wanderer. To use the framework, clone or download
+the whole project, read and use the model and view packages, and write a
+game-specific package, using the maze and wanderer packages as examples.  The
+main purpose of the framework is to provide a case study for teaching, so the
+framework is not polished and documented as a library would be.
+
+## Wanderer: the case study
 
 To read about the case study, follow these links.
 
