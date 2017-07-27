@@ -31,4 +31,4 @@ depend:
 
 jar:
 	rm -f wanderer.jar
-	jar -cfe wanderer.jar game.Wanderer -C bin .
+	jar -cfe wanderer.jar wanderer.Wanderer -C bin .
