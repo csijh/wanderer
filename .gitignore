@@ -1,0 +1,5 @@
+*.class
+bin/maze
+bin/model
+bin/view
+bin/wanderer
