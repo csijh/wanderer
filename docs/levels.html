@@ -48,5 +48,23 @@ which depends on Grid, State and Queue" />
 framework classes, it needs to be generic, with a type parameter <code>E extends
 Cell&lt;E></code> representing the custom <code>Entity</code> class.</p>
 
+<p>Two aspects of the wanderer game are a little unusual.  First, instead of an
+entity such as an arrow moving autonomously, it moves by triggering the space in
+front of it.  This allows entities to act as stationary booby traps, only
+starting to move when the player or another entity move nearby.  The other
+unusual aspect is that the original program used recursion to deal with the way
+in which one event triggers another.</p>
+
+<p>For example, if you move near two objects, say an arrow and a boulder, and
+set them going, the entire flight of the arrow and everything it triggers,
+happens before the boulder moves.  In other words, the program is doing a
+depth-first search for things to do.  It is more normal to keep a queue of
+things to do, and to use it to give a more concurrent, breadth-first
+physics.</p>
+
+<p>The reconstruction uses a double ended queue, and allows entities to be added
+at either end.  By adding entities at the start instead of the end, the original
+game is reproduced as accurately as possible.</p>
+
 </body>
 </html>

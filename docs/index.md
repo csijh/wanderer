@@ -10,14 +10,14 @@ The Wanderer game was written by Steven Shipway in the 1980s.  This
 reconstruction was written by Ian Holyer in the 2010s.
 
 To play the reconstructed game, download
-[wanderer.jar](../wanderer.jar) and run
-it by double clicking or typing:
+[wanderer.jar](https://github.com/csijh/wanderer/raw/master/wanderer.jar)
+and run it by double clicking or typing:
 ```
 java -jar wanderer.jar
 ```
 
 The original version (written in C) can be obtained from
-http://www.steveshipway.org/software/wanderer/f_wanderer.html
+[http://www.steveshipway.org/software/wanderer/f_wanderer.html](http://www.steveshipway.org/software/wanderer/f_wanderer.html)
 
 ## Wanderer: the framework
 

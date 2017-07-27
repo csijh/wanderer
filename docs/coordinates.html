@@ -33,5 +33,14 @@ meaning Front/Back.  We will then need to make sure that all our variable names
 and comments agree with this convention.  Even then, there will be an exception
 for level files, which are most naturally stored in matrix (y,x) order.</p>
 
+<h3>Sentinels</h3>
+
+<p>Every time new coordinates are calculated by adding an offset, the resulting
+coordinates, in principle, have to be checked to see if they are within the
+grid.</p>
+
+<p>Sentinels can be used to avoid this. In this case, that means using inert
+wall entities to form a border round the outside of the grid.</p>
+
 </body>
 </html>
