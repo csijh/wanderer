@@ -6,7 +6,7 @@ The Wanderer project provides three things:
 - a case study in object oriented design and development
 
 To play the game, download
-[wanderer.jar](./wanderer.jar) and run
+[wanderer.jar](/wanderer.jar) and run
 it by double clicking or typing:
 ```
 java -jar wanderer.jar
