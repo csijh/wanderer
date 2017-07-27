@@ -21,8 +21,7 @@ class Player extends Entity {
     public void act() {
         if (timeout()) return;
         set(MESSAGE, "");
-        char cmd = command();
-        go = direction(cmd);
+        go = Direction.go(command());
         if (go == Here) return;
         Entity it = find(go);
         it.isMetBy(this);
@@ -116,18 +115,6 @@ class Player extends Entity {
         set(MESSAGE, "Killed by running out of time");
         die();
         return true;
-    }
-
-    // Convert a command into a direction.
-    private Direction direction(char cmd) {
-        switch (cmd) {
-            case '^': return Up;
-            case 'v': return Down;
-            case '<': return Left;
-            case '>': return Right;
-            case '.': return Here;
-            default: throw new Error("Bug");
-        }
     }
 
     public void die() {
