@@ -67,7 +67,7 @@ class Grid<E> {
     }
 
     // Pop the front entity from a cell.
-    E pop(int x, int y) {
+    private E pop(int x, int y) {
         changed = true;
         return cells[x][y].pollFirst();
     }
