@@ -9,7 +9,6 @@ is already moving.  This class provides the code for both arrow types. */
 
 class LeftArrow extends Entity {
     public char code() { return '<'; }
-    void isMetBy(Entity e) { e.meet(this); }
 
     private boolean moving;
     private Direction normal, deflect;
@@ -24,37 +23,32 @@ class LeftArrow extends Entity {
     public void act() {
         deflect = normal;
         Entity target = find(normal);
-        target.isMetBy(this);
+        meet(target);
     }
 
-    void meet(Space s) { move(); }
+    void meetSpace(Entity e) { move(); }
 
-    void meet(Monster m) { add(SCORE, 100); m.sleep(); m.stop(); move(); }
+    void meetMonster(Entity m) { add(SCORE, 100); m.sleep(); m.stop(); move(); }
 
-    void meet(Balloon b) { b.sleep(); move(); }
+    void meetBalloon(Entity b) { b.sleep(); move(); }
 
-    void meet(Player p) {
+    void meetPlayer(Entity p) {
         if (moving) {
             set(MESSAGE, "Killed by a speeding arrow");
-            p.die();
+            p.mutate(Dead);
+            end();
         }
         else moving = false;
     }
 
-    void meet(Boulder b) {
+    void meetBoulder(Entity b) {
         deflect = slideBoulder(normal);
         if (deflect == Here) moving = false;
         else move();
     }
 
-    void meet(Thing t) {
-        if (t.is(LeftDeflector)) {
-            deflect = deflect(normal, normal == Left ? Down : Up, true);
-        }
-        else if (t.is(RightDeflector)) {
-            deflect = deflect(normal, normal == Left ? Up : Down, true);
-        }
-        else { moving = false; return; }
+    void meetLeftDeflector(Entity e) {
+        deflect = deflect(normal, normal == Left ? Down : Up, true);
         if (deflect == Here) moving = false;
         else {
             Entity target = find(deflect);
@@ -63,7 +57,17 @@ class LeftArrow extends Entity {
         }
     }
 
-    void meet(Entity e) { moving = false; }
+    void meetRightDeflector(Entity e) {
+        deflect = deflect(normal, normal == Left ? Up : Down, true);
+        if (deflect == Here) moving = false;
+        else {
+            Entity target = find(deflect);
+            if (target.is(Balloon)) target.sleep();
+            move();
+        }
+    }
+
+    void meetEntity(Entity e) { moving = false; }
 
     // Find the direction deflected from the given natural one by a boulder
     private Direction slideBoulder(Direction d) {

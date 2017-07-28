@@ -8,7 +8,6 @@ boulder underneath.  It can kill the player or a monster by falling on it. */
 
 class Boulder extends Entity {
     public char code() { return 'O'; }
-    void isMetBy(Entity e) { e.meet(this); }
 
     private boolean moving;
 
@@ -20,29 +19,26 @@ class Boulder extends Entity {
     public void act() {
         Direction go = Here;
         Entity target = find(Down);
-        Entity left = find(Left);
-        Entity right = find(Right);
-        Entity downLeft = find(DownLeft);
-        Entity downRight = find(DownRight);
-        target.isMetBy(this);
+        meet(target);
     }
 
-    void meet(Space s) { go(Down); }
+    void meetSpace(Entity e) { go(Down); }
 
-    void meet(Monster m) {
+    void meetMonster(Entity m) {
         add(SCORE, 100);
         m.sleep();
         m.stop();
         go(Down);
     }
 
-    void meet(Player p) {
+    void meetPlayer(Entity p) {
         if (! moving) return;
         set(MESSAGE, "Killed by a falling boulder");
-        p.die();
+        p.mutate(Dead);
+        end();
     }
 
-    void meet(Boulder b) {
+    void meetBoulder(Entity b) {
         Entity left = find(Left), downLeft = find(DownLeft);
         Entity right = find(Right), downRight = find(DownRight);
         if (left.is(Space) && downLeft.is(Space)) go(DownLeft);
@@ -50,21 +46,19 @@ class Boulder extends Entity {
         else moving = false;
     }
 
-    void meet(Thing t) {
-        if (t.is(LeftDeflector)) {
-            Entity left = find(Left), downLeft = find(DownLeft);
-            if (left.is(Space) && downLeft.is(Space)) go(DownLeft);
-            else moving = false;
-        }
-        else if (t.is(RightDeflector)) {
-            Entity right = find(Right), downRight = find(DownRight);
-            if (right.is(Space) && downRight.is(Space)) go(DownRight);
-            else moving = false;
-        }
+    void meetLeftDeflector(Entity e) {
+        Entity left = find(Left), downLeft = find(DownLeft);
+        if (left.is(Space) && downLeft.is(Space)) go(DownLeft);
         else moving = false;
     }
 
-    void meet(Entity e) { moving = false; }
+    void meetRightDeflector(Entity e) {
+        Entity right = find(Right), downRight = find(DownRight);
+        if (right.is(Space) && downRight.is(Space)) go(DownRight);
+        else moving = false;
+    }
+
+    void meetEntity(Entity e) { moving = false; }
 
     private void go(Direction d) {
         moving = true;

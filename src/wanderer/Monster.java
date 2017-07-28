@@ -10,7 +10,6 @@ The monster can be killed by a boulder or an arrow. */
 
 class Monster extends Entity {
     public char code() { return 'M'; }
-    void isMetBy(Entity e) { e.meet(this); }
 
     // Make an agent, after the player, but before the baby monsters.
     public void hatch() {
@@ -36,20 +35,16 @@ class Monster extends Entity {
         else if (okH) go = h;
         if (go == Here) return;
         Entity target = find(go);
-        target.isMetBy(this);
-//        if (target.is(Player)) {
-//            set(MESSAGE, "Killed by a hungry monster");
-//            target.die();
-//        }
-//        move(go);
+        meet(target);
     }
 
-    void meet(Player p) {
+    void meetPlayer(Entity p) {
         set(MESSAGE, "Killed by a hungry monster");
-        p.die();
+        p.mutate(Dead);
+        end();
     }
 
-    void meet(Entity e) { move(e); }
+    void meetEntity(Entity e) { move(e); }
 
     // Find the orthogonal distance between two entities.
     int distance(Entity pe, Direction d, Entity pt) {

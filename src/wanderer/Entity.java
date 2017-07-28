@@ -7,25 +7,8 @@ import java.lang.reflect.*;
 This acts as a base class for the game-specific Wanderer entities. */
 
 abstract class Entity extends Cell<Entity> {
-    // Override in each entity class.  Equivalent of accept in visitor pattern.
-    // It is abstract to ensure that every entity class defines it.
-    abstract void isMetBy(Entity e);
-
-    // Override as required in each entity class.  Equivalent of visit in the
-    // visitor pattern.
-    void meet(Space e) { meet((Entity) e); }
-    void meet(Thing e) { meet((Entity) e); }
-    void meet(Boulder e) { meet((Entity) e); }
-    void meet(Balloon e) { meet((Entity) e); }
-    void meet(LeftArrow e) { meet((Entity) e); }
-    void meet(RightArrow e) { meet((Entity) e); }
-    void meet(Monster e) { meet((Entity) e); }
-    void meet(Baby e) { meet((Entity) e); }
-    void meet(Player e) { meet((Entity) e); }
-    void meet(Entity e) {}
-
-    // Define convenient synonyms codes to use as types.  Fortunately, Java can
-    // distinguish the constants from the class names by context.
+    // Define convenient synonyms for codes to use as types. Fortunately, Java
+    // can distinguish the constants from the class names by context.
     static final char
         Space = '.', Wall = '#', Rock = '=', Earth = ':', Star = '*',
         Cage = '+', Time = 'C', Landmine = '!', Arrival = 'A', Teleport = 'T',
@@ -33,7 +16,63 @@ abstract class Entity extends Cell<Entity> {
         Boulder = 'O', Balloon = '^', LeftArrow = '<', RightArrow = '>',
         Monster = 'M', Baby = 'S', Player = '@';
 
+    // Check if an entity is of a given type.
     boolean is(char t) { return code() == t; }
+
+    // Use this to switch on entity types, in imitation of the accept method in
+    // the visitor pattern, but with no cyclic dependencies, and without having
+    // to have a separate class for each entity type.
+    void meet(Entity e) {
+        switch (e.code()) {
+            case Space: meetSpace(e); break;
+            case Wall: meetWall(e); break;
+            case Rock: meetRock(e); break;
+            case Earth: meetEarth(e); break;
+            case Star: meetStar(e); break;
+            case Cage: meetCage(e); break;
+            case Time: meetTime(e); break;
+            case Landmine: meetLandmine(e); break;
+            case Arrival: meetArrival(e); break;
+            case Teleport: meetTeleport(e); break;
+            case Exit: meetExit(e); break;
+            case LeftDeflector: meetLeftDeflector(e); break;
+            case RightDeflector: meetRightDeflector(e); break;
+            case Dead: meetDead(e); break;
+            case Boulder: meetBoulder(e); break;
+            case Balloon: meetBalloon(e); break;
+            case LeftArrow: meetLeftArrow(e); break;
+            case RightArrow: meetRightArrow(e); break;
+            case Monster: meetMonster(e); break;
+            case Baby: meetBaby(e); break;
+            case Player: meetPlayer(e); break;
+            default: throw new Error("Unknown entity type");
+        }
+    }
+
+    // Override as required in each entity class.  Mimics the visit method in
+    // the visitor pattern.
+    void meetSpace(Entity e) { meetEntity(e); }
+    void meetWall(Entity e) { meetEntity(e); }
+    void meetRock(Entity e) { meetEntity(e); }
+    void meetEarth(Entity e) { meetEntity(e); }
+    void meetStar(Entity e) { meetEntity(e); }
+    void meetCage(Entity e) { meetEntity(e); }
+    void meetTime(Entity e) { meetEntity(e); }
+    void meetLandmine(Entity e) { meetEntity(e); }
+    void meetArrival(Entity e) { meetEntity(e); }
+    void meetTeleport(Entity e) { meetEntity(e); }
+    void meetExit(Entity e) { meetEntity(e); }
+    void meetLeftDeflector(Entity e) { meetEntity(e); }
+    void meetRightDeflector(Entity e) { meetEntity(e); }
+    void meetDead(Entity e) { meetEntity(e); }
+    void meetBoulder(Entity e) { meetEntity(e); }
+    void meetBalloon(Entity e) { meetEntity(e); }
+    void meetLeftArrow(Entity e) { meetEntity(e); }
+    void meetRightArrow(Entity e) { meetEntity(e); }
+    void meetMonster(Entity e) { meetEntity(e); }
+    void meetBaby(Entity e) { meetEntity(e); }
+    void meetPlayer(Entity e) { meetEntity(e); }
+    void meetEntity(Entity e) {}
 
     // Define here using reflection, to avoid having to override in each class.
     // (Overridden in the Thing class.)

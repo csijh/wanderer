@@ -32,7 +32,13 @@ used to decide what to do, e.g.:</p>
 <p>A simple example of this is in the maze package.  Two classes,
 <code>Item</code> (which is the equivalent of <code>Entity</code>) and
 <code>Maze</code> implements a maze game, a simple cut-down version of
-wanderer.</p>
+wanderer.  There are disadvantages of this approach in larger projects:</p>
+
+<ul>
+<li>switch statements proliferate in entity classes</li>
+<li>methods get bloated as switch cases expand</li>
+<li>the approach isn't very object oriented</li>
+</ul>
 
 <h3>Visitors</h3>
 
@@ -50,24 +56,15 @@ use switch statements like this:</p>
 }
 </pre>
 
-<p>This doesn't work because you can't switch on classes in Java.  Besides,
-switch statements are generally regarded as a weakness in this sort of
-situation.  That is partly because methods tend to become bloated as the cases
-swell, and partly because <a
-href="https://en.wikipedia.org/wiki/Dynamic_dispatch#Single_and_multiple_dispatch">dynamic
+<p>This doesn't work because you can't switch on classes in Java. <a
+href="https://en.wikipedia.org/wiki/Dynamic_dispatch#Single_and_multiple_dispatch">Dynamic
 dispatch</a> is the preferred way of deciding which class an object has within a
-family.  It is also because, in each of the cases, the variable
-<code>other</code> still only has class <code>Entity</code>, and might need to
-be cast to the required class.</p>
+family.  The <a href="https://en.wikipedia.org/wiki/Visitor_pattern">visitor
+pattern</a> is designed to handle situations like this.  In this case, only a
+fairly simple version of it is needed.</p>
 
-<p>The <a href="https://en.wikipedia.org/wiki/Visitor_pattern">visitor
-pattern</a> is designed to handle situations like this.  Often, descriptions of
-the visitor pattern are complicated by having two collections of classes, or
-applications involving tree nodes or similar.  In the current situation, there
-aren't any of these extra complications.</p>
-
-<p>Suppose two methods are set up, <code>meet</code> and <code>isMetBy</code>,
-which we can use like this:</p>
+<p>To implement a visitor system, two methods can be set up, <code>meet</code>
+and <code>isMetBy</code>, say, which can be used like this:</p>
 
 <pre>void act() {
     Entity other = find(...);
@@ -82,10 +79,10 @@ void meet(Entity e) { ... }
 </pre>
 
 <p>The <code>isMetBy</code> function acts like a switch, and the overloaded
-variants of the <code>meet</code> function forms the cases, with the
+variants of the <code>meet</code> function form the cases, with the
 <code>Entity</code> version acting as a default.  Comparing this with the usual
-notation in the visitor pattern, <code>isMetBy</code> is the equivalent of
-<code>accept</code>, and <code>meet</code> is the equivalent of
+notation in descriptions of the visitor pattern, <code>isMetBy</code> is the
+equivalent of <code>accept</code>, and <code>meet</code> is the equivalent of
 <code>visit</code>.</p>
 
 <p>Some extra code is required to set this up.  Each entity class needs to
@@ -113,99 +110,23 @@ void meet(Entity e) {}
 need to be overridden, and the ones that aren't end up calling the
 <code>Entity</code> variant.</p>
 
-<p>This visitor pattern approach is illustrated in the <code>wanderer</code>
-package, which implements the full wanderer game.  But this use of the visitor
-pattern does have some drawbacks.</p>
+<p>This use of the visitor pattern does have some drawbacks.</p>
 
 <ul>
-<li>setting up the visitor pattern involves adding boilerplate code</li>
-<li>each relevant method needs its own visitor pattern system</li>
+<li>boilerplate code is needed in each class</li>
+<li>other methods might need their own visitor pattern systems</li>
 <li>different types of entity can't easily share classes</li>
 <li>all the entity classes become cyclically dependent</li>
 </ul>
 
-<p>These are worth investigating in a bit more detail, one by one.</p>
+<h2>A Compromise</h2>
 
-<h4>Boilerplate code</h4>
-
-<p>The extra boilerplate code comes from the fact that Java doesn't support <a
-href="https://en.wikipedia.org/wiki/Double_dispatch">double dispatch</a>.  In
-this project, the overhead is not great. There are a few lines of code needed in
-<code>Entity</code>, but only one line of code needs to copied and pasted into
-each class which extends <code>Entity</code>.</p>
-
-<h4>Multiple methods</h4>
-
-<p>The work done above only supports a single <code>meet</code> method.  If
-there were another important two-entity method needed such as
-<code>talkTo</code>, an extra set of boilerplate code would need to be
-added.</p>
-
-<p>It is convenient for an object to have a type which can be used in relatively
-infrequent situations where it isn't worth setting up a separate visitor pattern
-system. The ideal would be to be able to make calls like:</p>
-
-<pre>... mutate(Space) ...
-... other.is(Space) ...
-</pre>
-
-<p>It would be awkward to implement methods like this if the type of an entity
-were its class, because little can be done with a class object without
-reflection.  It makes more sense for the type of an object to be a character
-code, an enumerated constant, or a sample entity. If character codes are used,
-for example, synonyms can be defined in the <code>Entity</code> class to be used
-as types:</p>
-
-<pre>static final char Space = ...
-</pre>
-
-<p>These type names can be the same as the corresponding class names. The Java
-compiler can distinguish the two uses of the same name by context.  Defining the
-names as static constants in <code>Entity</code> means that all the entity
-classes can access them without an import statement.</p>
-
-<h4>Sharing classes</h4>
-
-<p>In the <code>wanderer</code> package, more than half of the entity types are
-inert, with a negligible amount of specific code.  Arguably, these should share
-the same class.</p>
-
-<p>So, the wanderer package illustrates a hybrid system. Each type of entity is
-represented by a separate class, except that all the inert entity types are
-represented by a single <code>Thing</code> class.  A <code>Thing</code> entity
-holds a character code as a field to distinguish the different types.  Methods
-in the <code>Thing</code> class, and <code>meet(Thing t)</code> variants of the
-<code>meet</code> method in other classes, use the character code as a type to
-test or switch on.</p>
-
-<h4>Cyclic dependencies</h4>
-
-<p>Entity types are likely to have a natural implicit cyclic dependency, because
-of entities needing to know about each other, whether or not their classes have
-a technical cyclic dependency from a Java compilation point of view.</p>
-
-<p>That means, no matter what choice is made, it probably isn't practical to do
-unit testing on each entity class individually, especially since what most needs
-to be tested is the interaction between entities.  So, it makes sense to test
-the entity classes as a whole.</p>
-
-<p>That still leaves a minor awkwardness when recompiling entity classes during
-refactoring.  However, by judiciously commenting out code, dependencies on
-currently broken classes can be temporarily removed to help with this.  This is
-a fairly minor annoyance.</p>
-
-<p>Looking at it from another point of view, suppose that a developer wants to
-avoid the visitor pattern, do all decision making using types, and have no
-cyclic dependencies.  What is the best that can be done?  Switch statements
-could be written like this:</p>
+<p>A compromise is possible in which the code in each entity class looks like
+this:</p>
 
 <pre>void act() {
     Entity other = find(...);
-    switch(other.type()) {
-        case Space: meetSpace(); break;
-        case Star: meetStar(); break;
-        default: meetEntity(); break;
-    }
+    meet(other);
 }
 
 void meetSpace(Entity s) { ... }
@@ -215,30 +136,18 @@ void meetStar(Entity s) { ... }
 void meetEntity(Entity e) { ... }
 </pre>
 
-<p>Switch statements don't get too messy if each is a one-line method call.
-However, it is possible to do better still.</p>
+<p>The <code>meet</code> function is defined in the <code>Entity</code> class,
+using a switch on the type of its argument.  But there is only one switch shared
+by all the classes, instead of one switch per class.  The methods
+<code>meetSpace</code> etc. are given default implementations in the
+<code>Entity</code> class as before.  The code in each of the <code>meet</code>
+variants only knows that the <code>other</code> entity has class
+<code>Entity</code>, not its specific class, but that is a minor drawback.  It
+is worth it to be able to compile the entity classes one by one.</p>
 
-<p>Suppose the variants of the <code>meet</code> method are given default
-implementations in the <code>Entity</code> class, as with the visitor pattern.
-Then a single shared switch statement can be implemented in a method,
-<code>meetType</code> say, in the <code>Entity</code> class, and the code
-in other classes becomes:</p>
-
-<pre>void act() {
-    Entity other = find(...);
-    meetType(other);
-}
-
-void meetSpace(Entity s) { ... }
-
-void meetStar(Entity s) { ... }
-
-void meetEntity(Entity e) { ... }
-</pre>
-
-<p>This has almost all the good properties of the visitor pattern, and avoids
-cyclic dependencies. The only minor weakness is that other entities are always
-in variables of class <code>Entity</code> rather than their specific class.</p>
+<p>This compromise approach is illustrated in the <code>wanderer</code> package.
+Many different inert types of entity are handled by a simgle <code>Thing</code>
+class.</p>
 
 </body>
 </html>

@@ -32,7 +32,6 @@ in the original level 41). */
 
 class Baby extends Entity {
     public char code() { return 'S'; }
-    void isMetBy(Entity e) { e.meet(this); }
 
     private Direction go;
 
@@ -54,27 +53,25 @@ class Baby extends Entity {
         front();
         if (! follow()) return;
         Entity target = find(go);
-        target.isMetBy(this);
+        meet(target);
     }
 
-    void meet(Player p) {
+    void meetPlayer(Entity e) {
         sleep();
         stop();
         set(MESSAGE, "Killed by the little monsters");
-        p.die();
+        e.mutate(Dead);
+        end();
     }
 
-    void meet(Thing t) {
-        if (t.is(Cage)) {
-            sleep();
-            stop();
-            add(SCORE, 20);
-            t.mutate(Star);
-        }
-        else meet((Entity) t);
+    void meetCage(Entity e) {
+        sleep();
+        stop();
+        add(SCORE, 20);
+        e.mutate(Star);
     }
 
-    void meet(Entity e) {
+    void meetEntity(Entity e) {
         queue(true);
         advance(go);
         move(e);

@@ -9,30 +9,28 @@ an arrow. */
 
 class Balloon extends Entity {
     public char code() { return '^'; }
-    void isMetBy(Entity e) { e.meet(this); }
 
     public void hatch() { background(Space); }
 
-    public void act() { find(Up).isMetBy(this); }
+    public void act() { meet(find(Up)); }
 
-    void meet(Space s) { go(Up); }
+    void meetSpace(Entity e) { go(Up); }
 
-    void meet(Boulder b) {
+    void meetBoulder(Entity e) {
         Entity left = find(Left), upLeft = find(UpLeft);
         Entity right = find(Right), upRight = find(UpRight);
         if (left.is(Space) && upLeft.is(Space)) go(UpLeft);
         else if (right.is(Space) && upRight.is(Space)) go(UpRight);
     }
 
-    void meet(Thing t) {
-        if (t.is(RightDeflector)) {
-            Entity left = find(Left), upLeft = find(UpLeft);
-            if (left.is(Space) && upLeft.is(Space)) go(UpLeft);
-        }
-        else if (t.is(LeftDeflector)) {
-            Entity right = find(Right), upRight = find(UpRight);
-            if (right.is(Space) && upRight.is(Space)) go(UpRight);
-        }
+    void meetRightDeflector(Entity e) {
+        Entity left = find(Left), upLeft = find(UpLeft);
+        if (left.is(Space) && upLeft.is(Space)) go(UpLeft);
+    }
+
+    void meetLeftDeflector(Entity e) {
+        Entity right = find(Right), upRight = find(UpRight);
+        if (right.is(Space) && upRight.is(Space)) go(UpRight);
     }
 
     void go(Direction d) {

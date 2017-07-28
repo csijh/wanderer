@@ -20,7 +20,6 @@ class Thing extends Entity {
     private char code;
     Thing(char c) { code = c; }
     public char code() { return code; }
-    void isMetBy(Entity e) { e.meet(this); }
 
     // Override to deal with multiple types of Thing.
     public Entity spawn() { return new Thing(code); }

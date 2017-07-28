@@ -13,7 +13,6 @@ move to the position. */
 
 class Space extends Entity {
     public char code() { return '.'; }
-    void isMetBy(Entity e) { e.meet(this); }
 
     private Direction go;
 
@@ -23,13 +22,13 @@ class Space extends Entity {
             changed(false);
             Entity it = find(d.back());
             go = d;
-            it.isMetBy(this);
+            meet(it);
             if (changed()) return;
         }
     }
 
-    void meet(Boulder b) { if (go == Down) b.act(); }
-    void meet(LeftArrow b) { if (go == Left) b.act(); }
-    void meet(RightArrow b) { if (go == Right) b.act(); }
-    void meet(Balloon b) { if (go == Up) b.act(); }
+    void meetBoulder(Entity e) { if (go == Down) e.act(); }
+    void meetLeftArrow(Entity e) { if (go == Left) e.act(); }
+    void meetRightArrow(Entity e) { if (go == Right) e.act(); }
+    void meetBalloon(Entity e) { if (go == Up) e.act(); }
 }

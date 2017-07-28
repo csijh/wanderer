@@ -32,8 +32,7 @@ If classes are cyclically dependent, they can't easily be developed or tested
 independently of each other. Tools such as <a
 href="https://github.com/csijh/java-depend">depend</a> or <a
 href="http://www.dependency-analyzer.org/">CDA</a> can be useful to keep track
-of dependencies.  So, in this project care will be taken over cyclic
-dependencies.</p>
+of dependencies.  So, in this project, cyclic dependencies will be avoided.</p>
 
 <p>A project design is often cleaner and clearer if general issues which could
 potentially be reused in other projects are separated from issues which are
@@ -43,10 +42,11 @@ classes.</p>
 
 <p>Some effort has been made to move complexities into framework classes, where
 that allows custom classes to be kept simple. But, to avoid over-engineering,
-the framework classes are not fully developed, polished, or documented, as they
-should be if they were formed into a separate engine or library.   Other
-developers can use this framework, but they will have to read the comments and
-code and be prepared to adapt or upgrade the framework classes.</p>
+the framework classes are not fully developed, polished, or documented, and have
+no guarantee of stability, as they should if they were formed into a separate
+engine or library.   Other developers can use this framework, but they will have
+to read the comments and code and be prepared to adapt or upgrade the framework
+classes.</p>
 
 </body>
 </html>

@@ -7,7 +7,6 @@ The Player entity responds to user key presses. */
 
 class Player extends Entity {
     public char code() { return '@'; }
-    void isMetBy(Entity e) { e.meet(this); }
 
     private Direction go;
 
@@ -24,31 +23,34 @@ class Player extends Entity {
         go = Direction.go(command());
         if (go == Here) return;
         Entity it = find(go);
-        it.isMetBy(this);
+        meet(it);
     }
 
-    void meet(Space s) { move(); }
+    void meetSpace(Entity s) { move(); }
 
-    void meet(Baby b) { end("Killed by the little monsters"); }
+    void meetBaby(Entity b) { end("Killed by the little monsters"); }
 
-    void meet(Boulder b) { if (go == Left || go == Right) push(b); }
+    void meetBoulder(Entity b) { if (go == Left || go == Right) push(b); }
 
-    void meet(Balloon b) { if (go == Left || go == Right) push(b); }
+    void meetBalloon(Entity b) { if (go == Left || go == Right) push(b); }
 
-    void meet(LeftArrow a) { if (go == Up || go == Down) push(a); }
+    void meetLeftArrow(Entity a) { if (go == Up || go == Down) push(a); }
 
-    void meet(RightArrow a) { if (go == Up || go == Down) push(a); }
+    void meetRightArrow(Entity a) { if (go == Up || go == Down) push(a); }
 
-    void meet(Thing t) {
-        if (t.is(Earth)) { add(SCORE,1); t.sleep(); move(); }
-        if (t.is(Star)) { add(SCORE,10); subtract(STARS,1); t.sleep(); move(); }
-        if (t.is(Time)) { add(SCORE, 5); add(MOVES, 250); t.sleep(); move(); }
-        if (t.is(Landmine)) { end("Killed by an exploding landmine"); }
-        if (t.is(Teleport)) meetTeleport(t);
-        if (t.is(Exit)) meetExit(t);
+    void meetEarth(Entity e) { add(SCORE,1); e.sleep(); move(); }
+
+    void meetStar(Entity e) {
+        add(SCORE,10); subtract(STARS,1); e.sleep(); move();
     }
 
-    void meetTeleport(Thing t) {
+    void meetTime(Entity e) {
+        add(SCORE, 5); add(MOVES, 250); e.sleep(); move();
+    }
+
+    void meetLandmine(Entity e) { end("Killed by an exploding landmine"); }
+
+    void meetTeleport(Entity t) {
         add(SCORE, 20);
         t.sleep();
         Entity arrival = entity(ARRIVAL);
@@ -67,7 +69,7 @@ class Player extends Entity {
         move(arrival);
     }
 
-    void meetExit(Thing it) {
+    void meetExit(Entity it) {
         int s = count(STARS);
         if (s > 0) return;
         sleep();
