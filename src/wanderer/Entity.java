@@ -24,18 +24,16 @@ abstract class Entity extends Cell<Entity> {
     void meet(Player e) { meet((Entity) e); }
     void meet(Entity e) {}
 
-    // Define convenient synonyms for sample entities.  Fortunately,
-    // Java can distinguish the two uses of the same name by context.
-    static final Entity
-        Space = new Space(), Wall = new Thing('#'), Rock = new Thing('='),
-        Earth = new Thing(':'), Star = new Thing('*'), Cage = new Thing('+'),
-        Time = new Thing('C'), Landmine = new Thing('!'),
-        Arrival = new Thing('A'), Teleport = new Thing('T'),
-        Exit = new Thing('X'), LeftDeflector = new Thing('/'),
-        RightDeflector = new Thing('\\'), Dead = new Thing('?'),
-        Boulder = new Boulder(), Balloon = new Balloon(),
-        LeftArrow = new LeftArrow(), RightArrow = new RightArrow(),
-        Monster = new Monster(), Baby = new Baby(), Player = new Player();
+    // Define convenient synonyms codes to use as types.  Fortunately, Java can
+    // distinguish the constants from the class names by context.
+    static final char
+        Space = '.', Wall = '#', Rock = '=', Earth = ':', Star = '*',
+        Cage = '+', Time = 'C', Landmine = '!', Arrival = 'A', Teleport = 'T',
+        Exit = 'X', LeftDeflector = '/', RightDeflector = '\\', Dead = '?',
+        Boulder = 'O', Balloon = '^', LeftArrow = '<', RightArrow = '>',
+        Monster = 'M', Baby = 'S', Player = '@';
+
+    boolean is(char t) { return code() == t; }
 
     // Define here using reflection, to avoid having to override in each class.
     // (Overridden in the Thing class.)
@@ -56,12 +54,6 @@ abstract class Entity extends Cell<Entity> {
         }
         catch (Exception err) { throw new Error(err); }
     }
-
-    boolean is(Entity t) { return code() == t.code(); }
-
-    void background(Entity t) { background(t.code()); }
-
-    void mutate(Entity t) { mutate(t.code()); }
 
     // Most entities need a space behind them, including deflectors and earth,
     // to trigger movement in nearby entities. A cage later turns into a star,

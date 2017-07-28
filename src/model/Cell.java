@@ -47,8 +47,8 @@ public abstract class Cell<E extends Cell<E>> {
         PLAYER = Variable.PLAYER, SCORE = Variable.SCORE,
         SUCCESS = Variable.SUCCESS;
 
-    // Provide read-only access to the basic properties.  Entities change these
-    // only by calling core methods in this class which guarantee consistency.
+    // Provide read-only access to the coordinates.  Entities change these only
+    // by calling core methods in this class which guarantee consistency.
     public int x() { return x; }
     public int y() { return y; }
 

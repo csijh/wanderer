@@ -1,4 +1,5 @@
 package wanderer;
+import static wanderer.Entity.*;
 import model.*;
 import java.io.*;
 import java.util.*;
@@ -10,12 +11,15 @@ The Test class drives non-graphics level testing. */
 class Test {
 
     static Entity[] samples = {
-        Entity.Space, Entity.Wall, Entity.Rock, Entity.Earth, Entity.Star,
-        Entity.Cage, Entity.Time, Entity.Landmine, Entity.Arrival,
-        Entity.Teleport, Entity.Exit, Entity.Boulder, Entity.Balloon,
-        Entity.RightArrow, Entity.LeftArrow, Entity.LeftDeflector,
-        Entity.RightDeflector, Entity.Monster, Entity.Baby, Entity.Player,
-        Entity.Dead
+        new Space(), new Thing(Wall), new Thing(Rock),
+        new Thing(Earth), new Thing(Star), new Thing(Cage),
+        new Thing(Time), new Thing(Landmine),
+        new Thing(Arrival), new Thing(Teleport),
+        new Thing(Exit), new Thing(LeftDeflector),
+        new Thing(RightDeflector), new Thing(Dead),
+        new Boulder(), new Balloon(),
+        new LeftArrow(), new RightArrow(),
+        new Monster(), new Baby(), new Player()
     };
 
     static String[] testNames = {
