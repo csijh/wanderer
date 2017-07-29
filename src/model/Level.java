@@ -39,10 +39,10 @@ public class Level<E extends Cell<E>> {
 
     // Delegate methods to the grid and state objects, for view purposes.
     public E front(int x, int y) { return grid.front(x, y); }
-    public E player() { return state.entity(Variable.PLAYER); }
-    public String name() { return state.string(Variable.NAME); }
-    public int score() { return state.count(Variable.SCORE); }
-    public boolean success() { return state.count(Variable.SUCCESS) > 0; }
+    public E player() { return state.entity(Cell.PLAYER); }
+    public String name() { return state.string(Cell.NAME); }
+    public int score() { return state.count(Cell.SCORE); }
+    public boolean success() { return state.count(Cell.SUCCESS) > 0; }
     public String status() { return player().status(); }
 
     // Load up a level file. It starts with a line giving the width, height and
@@ -78,9 +78,9 @@ public class Level<E extends Cell<E>> {
         grid = new Grid<E>(width, height);
         state = new State<E>(types);
         queue = new Queue<E>();
-        state.set(Variable.NAME, name);
-        state.set(Variable.TITLE, title);
-        state.set(Variable.MOVES, limit);
+        state.set(Cell.NAME, name);
+        state.set(Cell.TITLE, title);
+        state.set(Cell.MOVES, limit);
         fill();
         hatch();
         copy();

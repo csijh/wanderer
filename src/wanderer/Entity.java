@@ -114,10 +114,8 @@ abstract class Entity extends Cell<Entity> {
 
     // Define extra state variables: the number of stars left to find, the
     // arrival point for the teleport, and a message to display on screen.
-    static final Variable
-        STARS = new Variable("STARS"),
-        ARRIVAL = new Variable("ARRIVAL"),
-        MESSAGE = new Variable("MESSAGE");
+    static final String
+        STARS = "STARS", ARRIVAL = "ARRIVAL", MESSAGE = "MESSAGE";
 
     // For each of the four major directions, there is a list of six places to
     // look to see if any entities should be triggered into action.  They are

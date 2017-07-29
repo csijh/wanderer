@@ -40,12 +40,10 @@ public abstract class Cell<E extends Cell<E>> {
     @SuppressWarnings("unchecked")
     private E thisE() { return (E) this; }
 
-    // Provide convenience synonyms for the standard variables, so they are
-    // available in every entity class without import.
-    public static final Variable
-        NAME = Variable.NAME, TITLE = Variable.TITLE, MOVES = Variable.MOVES,
-        PLAYER = Variable.PLAYER, SCORE = Variable.SCORE,
-        SUCCESS = Variable.SUCCESS;
+    // Provide convenience synonyms for the standard variable names.
+    public static final String
+        NAME = "NAME", TITLE = "TITLE", MOVES = "MOVES", PLAYER = "PLAYER",
+        SCORE = "SCORE", SUCCESS = "SUCCESS";
 
     // Provide read-only access to the coordinates.  Entities change these only
     // by calling core methods in this class which guarantee consistency.
@@ -69,14 +67,14 @@ public abstract class Cell<E extends Cell<E>> {
 
     // Core methods to access global variables via the state object.
 
-    public void set(Variable v, E e) { state.set(v, e); }
-    public void set(Variable v, String s) { state.set(v, s); }
-    public void set(Variable v, int n) { state.set(v, n); }
-    public E entity(Variable v) { return state.entity(v); }
-    public String string(Variable v) { return state.string(v); }
-    public int count(Variable v) { return state.count(v); }
-    public void add(Variable v, int n) { state.set(v, state.count(v) + n); }
-    public void subtract(Variable v, int n) { add(v, -n); }
+    public void set(String v, E e) { state.set(v, e); }
+    public void set(String v, String s) { state.set(v, s); }
+    public void set(String v, int n) { state.set(v, n); }
+    public E entity(String v) { return state.entity(v); }
+    public String string(String v) { return state.string(v); }
+    public int count(String v) { return state.count(v); }
+    public void add(String v, int n) { state.set(v, state.count(v) + n); }
+    public void subtract(String v, int n) { add(v, -n); }
     // Spawn an entity with given code, at the same position, but asleep.
     public E spawn(char code) {
         E e = state.sample(code).spawn();

@@ -13,31 +13,31 @@ This class is generic to avoid cyclic dependencies, and to allow for a
 game-specific Entity class. */
 
 class State<E> {
-    private Map<Variable,E> entities = new HashMap<>();
-    private Map<Variable,String> strings = new HashMap<>();
-    private Map<Variable,Integer> counters = new HashMap<>();
+    private Map<String,E> entities = new HashMap<>();
+    private Map<String,String> strings = new HashMap<>();
+    private Map<String,Integer> counters = new HashMap<>();
     private Map<Character,E> samples;
 
     State(Map<Character,E> s) { samples = s; }
 
     // Set a named entity, string or counter.
-    void set(Variable v, E e) { entities.put(v, e); }
-    void set(Variable v, int n) { counters.put(v, n); }
-    void set(Variable v, String s) { strings.put(v, s); }
+    void set(String v, E e) { entities.put(v, e); }
+    void set(String v, int n) { counters.put(v, n); }
+    void set(String v, String s) { strings.put(v, s); }
 
     // Get a named entity.
-    E entity(Variable v) {
+    E entity(String v) {
         return entities.get(v);
     }
 
     // Get a named string.
-    String string(Variable v) {
+    String string(String v) {
         String s = strings.get(v);
         return (s == null) ? "" : s;
     }
 
     // Get a named counter.
-    int count(Variable v) {
+    int count(String v) {
         Integer i = counters.get(v);
         return (i == null) ? 0 : i;
     }
@@ -54,13 +54,13 @@ class State<E> {
         Map<Character,Item> samples = new HashMap<>();
         samples.put('i', sample);
         State<Item> state = new State<>(samples);
-        state.set(Variable.PLAYER, p);
-        claim(state.entity(Variable.PLAYER) == p);
-        state.set(Variable.TITLE, "title");
-        claim(state.string(Variable.TITLE).equals("title"));
-        claim(state.count(Variable.SCORE) == 0);
-        state.set(Variable.SCORE, 2);
-        claim(state.count(Variable.SCORE) == 2);
+        state.set("PLAYER", p);
+        claim(state.entity("PLAYER") == p);
+        state.set("TITLE", "title");
+        claim(state.string("TITLE").equals("title"));
+        claim(state.count("SCORE") == 0);
+        state.set("SCORE", 2);
+        claim(state.count("SCORE") == 2);
         claim(state.sample('i') == sample);
         System.out.println("State class OK");
     }
