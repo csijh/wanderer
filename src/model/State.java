@@ -20,6 +20,13 @@ class State<E> {
 
     State(Map<Character,E> s) { samples = s; }
 
+    // Clear the state ready for a new level.
+    void reset() {
+        entities.clear();
+        strings.clear();
+        counters.clear();
+    }
+
     // Set a named entity, string or counter.
     void set(String v, E e) { entities.put(v, e); }
     void set(String v, int n) { counters.put(v, n); }

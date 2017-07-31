@@ -14,14 +14,14 @@ be called on a game-specific level object, to carry out comprehensive
 replay-based testing from recordings. */
 
 public class Level<E extends Cell<E>> {
+    final Grid<E> grid;
+    final State<E> state;
+    final Queue<E> queue;
     private int width, height, limit;
     private String name, title;
     private char cells[][];
     private StringBuilder changes;
     private PrintWriter out;
-    private Grid<E> grid;
-    private State<E> state;
-    private Queue<E> queue;
     private E[] samples;
     private Map<Character,E> types;
 
@@ -30,6 +30,9 @@ public class Level<E extends Cell<E>> {
         samples = es;
         types = new HashMap<>();
         for (E e : es) types.put(e.code(), e);
+        grid = new Grid<E>(width, height);
+        state = new State<>(types);
+        queue = new Queue<E>();
     }
 
     // Return the entity samples, and the size after loading.
@@ -75,9 +78,9 @@ public class Level<E extends Cell<E>> {
         }
         sc.close();
         changes = new StringBuilder();
-        grid = new Grid<E>(width, height);
-        state = new State<E>(types);
-        queue = new Queue<E>();
+        grid.reset(width, height);
+        state.reset();
+        queue.reset();
         state.set(Cell.NAME, name);
         state.set(Cell.TITLE, title);
         state.set(Cell.MOVES, limit);

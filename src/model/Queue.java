@@ -20,6 +20,12 @@ class Queue<E> {
     private Deque<E> actors = new ArrayDeque<E>();
     private Deque<E> agents = new ArrayDeque<E>();
 
+    // Clear the queue, ready for a new level.
+    void reset() {
+        actors.clear();
+        agents.clear();
+    }
+
     // Provide a user command to start a round.  Put the agents onto the queue
     // to give them each a chance to act.
     void command(char cmd) {

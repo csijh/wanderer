@@ -22,6 +22,11 @@ class Grid<E> {
     private Deque<E>[][] cells;
 
     Grid(int w, int h) {
+        reset(w, h);
+    }
+
+    // Clear the grid, ready for a new level, not necessarily the same size.
+    void reset(int w, int h) {
         width = w;
         height = h;
         changed = false;
