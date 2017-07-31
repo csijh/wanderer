@@ -101,15 +101,13 @@ public class Level<E extends Cell<E>> {
     // until one action causes a change. Return false if the effects of the
     // command have finished.
     public boolean step() {
-        boolean changed = false;
         grid.changed(false);
         E e = queue.pull();
-        while (! changed && e != null) {
+        while (! grid.changed() && e != null) {
             e.act();
-            changed = grid.changed();
-            if (! changed) e = queue.pull();
+            if (! grid.changed()) e = queue.pull();
         }
-        if (changed) recordChanges();
+        if (grid.changed()) recordChanges();
         if (e == null && out != null) out.println(changes.toString());
         return e != null;
     }
@@ -155,7 +153,7 @@ public class Level<E extends Cell<E>> {
     private void copy() {
         for (int x=0; x<width; x++) {
             for (int y=0; y<height; y++) {
-                Cell<E> e = grid.front(x,y);
+                E e = grid.front(x,y);
                 cells[x][y] = e.code();
             }
         }
