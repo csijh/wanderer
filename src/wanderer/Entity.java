@@ -16,9 +16,6 @@ abstract class Entity extends Cell<Entity> {
         Boulder = 'O', Balloon = '^', LeftArrow = '<', RightArrow = '>',
         Monster = 'M', Baby = 'S', Player = '@';
 
-    // Check if an entity is of a given type.
-    boolean is(char t) { return code() == t; }
-
     // Use this to switch on entity types, in imitation of the accept method in
     // the visitor pattern, but with no cyclic dependencies, and without having
     // to have a separate class for each entity type.
@@ -94,13 +91,10 @@ abstract class Entity extends Cell<Entity> {
         catch (Exception err) { throw new Error(err); }
     }
 
-    // Most entities need a space behind them, including deflectors and earth,
-    // to trigger movement in nearby entities. A cage later turns into a star,
-    // so it increases the number of stars. An arrival entity records the
-    // position of the teleport target.
+    // Initialise the game state at the start of a level.  Default: do nothing.
     public void hatch() { }
 
-    // The default is to do nothing.
+    // Take one step. Default: do nothing.
     public void act() { }
 
     // Define synonyms for the directions, so that child entity classes don't

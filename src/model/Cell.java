@@ -81,6 +81,8 @@ public abstract class Cell<E extends Cell<E>> {
         e.init(grid, state, queue, x, y);
         return e;
     }
+    // Check if an entity is of a given type.
+    public boolean is(char t) { return code() == t; }
 
     // Delegate core queue operations to the queue object.
 
