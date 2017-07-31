@@ -63,8 +63,6 @@ public abstract class Cell<E extends Cell<E>> implements Cloneable {
     public abstract char code();
     // Find the file path to the image for this type of entity.
     public abstract String image();
-    // Create an uninitialized entity of the same type as this one.
-//    public abstract E spawn();
     // Make any desired changes at the start of a level.
     public abstract void hatch();
     // Make one basic action during play.
