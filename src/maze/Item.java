@@ -13,7 +13,7 @@ surround a level. Star items are collected by the player to solve the level. */
 class Item extends Cell<Item> {
     private char type;
 
-    static Variable STARS = new Variable("STARS");
+    static String STARS = "STARS";
     static final char Player = '@', Space = '.', Wall = '#', Star = '*';
     static final Item[] samples = {
         new Item(Player), new Item(Space), new Item(Wall), new Item(Star)
@@ -22,8 +22,6 @@ class Item extends Cell<Item> {
     Item(char t) { type = t; }
 
     // Override the required Cell methods.
-
-    public Item spawn() { return new Item(type); }
 
     public char code() { return type; }
 

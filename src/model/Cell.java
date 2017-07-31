@@ -19,11 +19,18 @@ class which extends this one.  This eases the implementation of entity classes,
 e.g. one entity knows that another has class Entity rather than Cell, without
 casting, and can call game-specific methods on it. */
 
-public abstract class Cell<E extends Cell<E>> {
+public abstract class Cell<E extends Cell<E>> implements Cloneable {
     private Grid<E> grid;
     private State<E> state;
     private Queue<E> queue;
     private int x, y;
+
+    // Make sure the clone method can be called on all entity classes.
+    @SuppressWarnings("unchecked")
+    public E clone() {
+        try { return (E) super.clone(); }
+        catch (Exception e) { throw new Error(e); }
+    }
 
     // Initialise an entity using a method rather than a constructor,
     // so that extending classes don't have to provide a constructor.
@@ -50,14 +57,14 @@ public abstract class Cell<E extends Cell<E>> {
     public int x() { return x; }
     public int y() { return y; }
 
-    // Lifecycle methods, to be overridden by specific entity classes.
+    // Lifecycle methods to be provided by entity classes.
 
     // Find the character code used in level files for this type of entity.
     public abstract char code();
     // Find the file path to the image for this type of entity.
     public abstract String image();
     // Create an uninitialized entity of the same type as this one.
-    public abstract E spawn();
+//    public abstract E spawn();
     // Make any desired changes at the start of a level.
     public abstract void hatch();
     // Make one basic action during play.
@@ -77,7 +84,7 @@ public abstract class Cell<E extends Cell<E>> {
     public void subtract(String v, int n) { add(v, -n); }
     // Spawn an entity with given code, at the same position, but asleep.
     public E spawn(char code) {
-        E e = state.sample(code).spawn();
+        E e = state.sample(code).clone();
         e.init(grid, state, queue, x, y);
         return e;
     }

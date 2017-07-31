@@ -18,6 +18,11 @@ class State<E> {
     private Map<String,Integer> counters = new HashMap<>();
     private Map<Character,E> samples;
 
+    // Provide convenience synonyms for the standard variable names.
+    static final String
+        NAME = "NAME", TITLE = "TITLE", MOVES = "MOVES", PLAYER = "PLAYER",
+        SCORE = "SCORE", SUCCESS = "SUCCESS";
+
     State(Map<Character,E> s) { samples = s; }
 
     // Clear the state ready for a new level.

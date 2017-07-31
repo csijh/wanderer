@@ -33,6 +33,7 @@ public class Level<E extends Cell<E>> {
         grid = new Grid<E>(width, height);
         state = new State<>(types);
         queue = new Queue<E>();
+        for (E e : es) e.init(grid, state, queue, 0, 0);
     }
 
     // Return the entity samples, and the size after loading.
@@ -42,10 +43,10 @@ public class Level<E extends Cell<E>> {
 
     // Delegate methods to the grid and state objects, for view purposes.
     public E front(int x, int y) { return grid.front(x, y); }
-    public E player() { return state.entity(Cell.PLAYER); }
-    public String name() { return state.string(Cell.NAME); }
-    public int score() { return state.count(Cell.SCORE); }
-    public boolean success() { return state.count(Cell.SUCCESS) > 0; }
+    public E player() { return state.entity(State.PLAYER); }
+    public String name() { return state.string(State.NAME); }
+    public int score() { return state.count(State.SCORE); }
+    public boolean success() { return state.count(State.SUCCESS) > 0; }
     public String status() { return player().status(); }
 
     // Load up a level file. It starts with a line giving the width, height and
@@ -81,9 +82,9 @@ public class Level<E extends Cell<E>> {
         grid.reset(width, height);
         state.reset();
         queue.reset();
-        state.set(Cell.NAME, name);
-        state.set(Cell.TITLE, title);
-        state.set(Cell.MOVES, limit);
+        state.set(State.NAME, name);
+        state.set(State.TITLE, title);
+        state.set(State.MOVES, limit);
         fill();
         hatch();
         copy();
@@ -121,7 +122,7 @@ public class Level<E extends Cell<E>> {
     private E spawn(char c, int x, int y) {
         E type = types.get(c);
         if (type == null) throw new Error("Unknown code '" + c + "'");
-        E e = type.spawn();
+        E e = type.clone();
         e.init(grid, state, queue, x, y);
         return e;
     }

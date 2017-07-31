@@ -79,18 +79,6 @@ abstract class Entity extends Cell<Entity> {
         return "/images/" + name + ".png";
     }
 
-    // Define here using reflection, to avoid having to override in each class.
-    // (Overridden in the Thing class.)
-    public Entity spawn() {
-        try {
-            Class<? extends Entity> c = getClass();
-            Constructor<? extends Entity> con = c.getDeclaredConstructor();
-            con.setAccessible(true);
-            return (Entity) con.newInstance();
-        }
-        catch (Exception err) { throw new Error(err); }
-    }
-
     // Initialise the game state at the start of a level.  Default: do nothing.
     public void hatch() { }
 

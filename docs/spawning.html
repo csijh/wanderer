@@ -37,30 +37,24 @@ E e = (E) con.newInstance();
 <p>However, this assumes that each type of entity is represented by a separate
 class.  It would be preferable, in a framework, to provide more flexibility.</p>
 
-<h3>Inheritance</h3>
+<h3>Cloning</h3>
 
-<p>A different way to solve the problem is for sample entity objects, one of
-each type, to be provided to the level object when it is created.</p>
+<p>Generally, developers are advised to avoid Java's cloning features.  However,
+it does provide a way for framework classes to create objects of custom classes,
+without using reflection.  The <code>Cell</code> class can implement the
+<code>Cloneable</code> intrerface and provide a <code>clone</code> method:</p>
 
-<pre>class Level&lt;E extends Cell&lt;E>> {
-    public Level(E[] samples) { ... }
+<pre>@SuppressWarnings("unchecked")
+public E clone() {
+    try { return (E) super.clone(); }
+    catch (Exception e) { throw new Error(e); }
 }
 </pre>
 
-<p>Each entity object must be capable of spawning new entities of the same type.
-This can be achieved by adding a <code>spawn</code> method to the
-<code>Cell</code> class, to be overridden:</p>
-
-<pre>abstract E spawn();
-</pre>
-
-<p>Now it is up to the author of the entity classes to decide how different
-types of entity are represented, and how entity objects are to be spawned.</p>
-
-<p>An entity may need to be able to spawn some other entity object (e.g. when it
-mutates).  That can be sorted out by putting the samples into the
-<code>State</code> class, which can then provide a spawning service to
-entities.</p>
+<p>Now the <code>clone</code> method can be called on any entity class, without
+any specific supporting code being needed in any custom classes.  A collection
+of sample entities, one of each type, can be stored in the state, and used both
+by the level object and by individual entities, to spawn new entities.</p>
 
 </body>
 </html>
