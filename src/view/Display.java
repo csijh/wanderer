@@ -19,8 +19,8 @@ the player's position. It is assumed that the grid has a wall around the edge,
 and the viewport is aligned with the edge when the player is one cell away from
 it. The viewport is positioned proportionally between those limits. */
 
-public class Display extends BorderPane {
-    private Level<?> level;
+public class Display<E extends Cell<E>> extends BorderPane {
+    private Level<E> level;
     private Canvas canvas;
     private Text status;
     private int width, height;
@@ -30,7 +30,7 @@ public class Display extends BorderPane {
     private Map<Character,Image> images;
 
     // Create a blank display given sample entities, level, and max canvas size.
-    public Display(Level<?> l, int w, int h) {
+    public Display(Level<E> l, int w, int h) {
         level = l;
         maxWidth = w;
         maxHeight = h;
@@ -39,8 +39,8 @@ public class Display extends BorderPane {
         TextFlow statusBar = new TextFlow(status);
         statusBar.setPadding(new Insets(3,10,3,10));
         images = new HashMap<>();
-        Cell<?>[] samples = level.samples();
-        for (Cell<?> e : samples) {
+        E[] samples = level.samples();
+        for (E e : samples) {
             String path = e.image();
             Image img = new Image(path);
             if (img == null) throw new Error("Can't load " + path);

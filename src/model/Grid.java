@@ -77,13 +77,6 @@ class Grid<E> {
         return cells[x][y].pollFirst();
     }
 
-    // Move an entity from one cell to another.
-    void move(int x0, int y0, int x, int y, E e) {
-        changed = true;
-        sleep(x0, y0, e);
-        wake(x, y, e);
-    }
-
     // Remove an entity from its cell, so it is not in the grid.
     void sleep(int x, int y, E e) {
         changed = true;

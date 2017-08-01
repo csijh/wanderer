@@ -11,12 +11,13 @@ wanderer framework. Collect all the stars to win the level. (Note the help pages
 are wanderer's.) */
 
 public class Maze extends Application {
-    private Controller controller;
+    private Controller<Item> controller;
 
     public void start(Stage stage) {
         Level<Item> level = new Level<>(Item.samples);
+        for (Item x : Item.samples) x.init(level);
         String[] levels = { "/levels/maze.txt" };
-        controller = new Controller("Maze", stage, level, levels);
+        controller = new Controller<Item>("Maze", stage, level, levels);
         stage.setScene(controller);
         controller.setup(getParameters().getRaw());
         stage.show();

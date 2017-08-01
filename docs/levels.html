@@ -16,42 +16,68 @@
 
 <h1>Levels</h1>
 
-<p>Now we want to add a Level class.  It needs to be able to read in data for
-the level from a level file, and act as a driver class for all non-graphics
-aspects of the game.</p>
+<p>The development has reached this point:</p>
 
-<p>Which way round should the dependencies go?  Should <code>Cell</code> depend
-on <code>Level</code>, or vice versa? Either choice is possible, with some
-effort.  However, it seems better to have the <code>Level</code> class depend on
-the <code>Cell</code> class, so that a level can control entities:</p>
+<img src="entity.png" alt="The Entity class depending on the Grid class" />
 
-<img src="levels.png" alt="The Level class depends on Cell which
+<p>Now we want to add a Level class.  A level object reads in data from a level
+file, and acts as a driver for all the non-graphics aspects of the game.</p>
+
+<p>Which way round should the dependencies go?  Should <code>Entity</code>
+depend on <code>Level</code>, or vice versa? Either choice is possible, with
+some effort.  The choice made here is to have the <code>Entity</code> class
+depend on the <code>Level</code> class, and make the <code>Level</code> class a
+general framework class:</p>
+
+<img src="levels.png" alt="The Entity class depends on Level which
 depends on Grid" />
 
-<p>One of the things a level object needs to do is to keep track of global
-variables such as a score.  But to keep the <code>Level</code> class general, it
-should be the entities which change the global variables, according to their
-game-specific details.  To handle that, a generic class <code>State</code> can
-be separated off from the <code>Level</code> class, and entities can be given
-access to it.</p>
+<p>Besides looking after the grid, one of the things a level object needs to do
+is to keep track of global variables such as a score.  But to keep the
+<code>Level</code> class general, it should be the entities which change the
+global variables, according to their game-specific details.  A generic class
+<code>State</code> can be separated off from the <code>Level</code> class to
+handle state variables.</p>
 
 <p>Similarly, a level object needs to keep track of a queue of entities, to
 control what order they act in.  And again, to keep <code>Level</code> general,
-it should be entities which queue themselves up.  So a generic
-<code>Queue</code> class can be separated out and entities given access to
-it.  That leads us to a picture like this:</p>
+it should be entities which queue themselves up.  A generic <code>Queue</code>
+class can be separated out.  That leads us to a picture like this:</p>
 
-<img src="levels2.png" alt="The Level class depends on Entity,
+<img src="levels2.png" alt="The Entity class depends on Level,
 which depends on Grid, State and Queue" />
 
-<p>The <code>Level</code> class can now be a framework class.  As with the other
-framework classes, it needs to be generic, with a type parameter <code>E extends
-Cell&lt;E></code> representing the custom <code>Entity</code> class.</p>
+<p>Despite getting entities to do as much as possible, the level object still
+needs to be able to control entities.  To enable this, we can effectively split
+the <code>Entity</code> class in two.  Some lifecycle methods can be defined on
+entities, to capture what the level object knows about them.  For example,
+<code>hatch</code> can be called on each entity after a level has been loaded,
+to give it the chance to affect the initial state of the level.  And a method
+<code>act</code> can be called on an entity when it is time for it to take one
+step of some kind.  These methods can be defined in an interface:</p>
+
+<pre>interface Lifecycle {
+    void hatch();
+    void act();
+    ...
+}
+</pre>
+
+<p>Then the generic type parameter of the <code>Level</code> class can be
+declared to meet this interface:</p>
+
+<pre>class Level&lt;E extends Lifecycle> { ... }
+</pre>
+
+<p>And finally the <code>Entity</code> class can implement the interface:</p>
+
+<pre>class Entity implements Lifecycle { ... }
+</pre>
 
 <p>Two aspects of the wanderer game are a little unusual.  First, instead of an
 entity such as an arrow moving autonomously, it moves by triggering the space in
 front of it.  This allows entities to act as stationary booby traps, only
-starting to move when the player or another entity move nearby.  The other
+starting to move when the player or another entity moves nearby.  The other
 unusual aspect is that the original program used recursion to deal with the way
 in which one event triggers another.</p>
 

@@ -17,28 +17,27 @@
 <h1>Delegation</h1>
 
 <p>Entities act mainly by delegating the work to the grid, state and queue
-objects. That allows convenience methods to be defined in the <code>Cell</code>
-class:</p>
+components of the level object. That allows convenience methods to be defined in
+the <code>Cell</code> class:</p>
 
 <pre>class Cell&lt;E> {
-    private Grid&lt;E> grid;
-    private State&lt;E> state;
-    private Queue&lt;E> queue;
+    private Level&lt;E> level;
 
-    void wake(E e) { grid.wake(...); ... }
+    void wake(E e) { level.grid.wake(...); ... }
 }
 </pre>
 
-<p>In fact, by making the grid, state and queue fields private, classes which
-extend <code>Cell</code> are forced to use the convenience methods, which is a
-good thing because it makes them immune from changes to the mechanics of
-delegation.</p>
+<p>In fact, by making the level field private, classes which extend
+<code>Cell</code> are forced to use the convenience methods, which is a good
+thing because it makes them immune from the details of the level object and its
+components.</p>
 
-<p>But now we run into a problem.  How are the fields in the Cell class to be
-initialised?  The normal way would be through a constructor:</p>
+<p>But now we run into a problem.  How is the level field in the
+<code>Cell</code> class to be initialized?  The normal way would be through a
+constructor:</p>
 
 <pre>class Cell&lt;E> {
-    Cell(Grid&lt;E> g...) { ... }
+    Cell(Level&lt;E> l) { ... }
 }
 </pre>
 
@@ -46,20 +45,20 @@ initialised?  The normal way would be through a constructor:</p>
 constructor:</p>
 
 <pre>class Entity extends Cell&lt;Entity> {
-    Entity(Grid&lt;Entity> g...) { super(g...); }
+    Entity(Level&lt;Entity> l) { super(g...); }
 }
 </pre>
 
 <p>That would be ugly because (a) we would like to keep custom entity classes
 ultra-simple by handling as many details as possible in framework classes and
 (b) custom entity classes would not be completely independent of the details of
-how delegation is done.</p>
+how the <code>Cell</code> class works.</p>
 
-<p>A solution is to set the fields via a method rather than a
+<p>A solution is to set the field via a method rather than a
 constructor:</p>
 
 <pre>class Cell&lt;E> {
-    void init(Grid&lt;E> g...) { ... }
+    void init(Level&lt;E> l) { ... }
 }
 </pre>
 

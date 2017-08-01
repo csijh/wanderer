@@ -13,7 +13,7 @@ at the start of the level, and the stop method at the end.  The tests method can
 be called on a game-specific level object, to carry out comprehensive
 replay-based testing from recordings. */
 
-public class Level<E extends Cell<E>> {
+public class Level<E extends Lifecycle<E>> {
     final Grid<E> grid;
     final State<E> state;
     final Queue<E> queue;
@@ -25,15 +25,19 @@ public class Level<E extends Cell<E>> {
     private E[] samples;
     private Map<Character,E> types;
 
+    // Provide convenience synonyms for the standard variable names.
+    static final String
+        NAME = "NAME", TITLE = "TITLE", MOVES = "MOVES", PLAYER = "PLAYER",
+        SCORE = "SCORE", SUCCESS = "SUCCESS";
+
     // Create a level object, passing in a sample of each type of entity.
     public Level(E[] es) {
         samples = es;
         types = new HashMap<>();
         for (E e : es) types.put(e.code(), e);
-        grid = new Grid<E>(width, height);
-        state = new State<>(types);
+        grid = new Grid<E>(2, 2);
+        state = new State<>();
         queue = new Queue<E>();
-        for (E e : es) e.init(grid, state, queue, 0, 0);
     }
 
     // Return the entity samples, and the size after loading.
@@ -43,10 +47,10 @@ public class Level<E extends Cell<E>> {
 
     // Delegate methods to the grid and state objects, for view purposes.
     public E front(int x, int y) { return grid.front(x, y); }
-    public E player() { return state.entity(State.PLAYER); }
-    public String name() { return state.string(State.NAME); }
-    public int score() { return state.count(State.SCORE); }
-    public boolean success() { return state.count(State.SUCCESS) > 0; }
+    public E player() { return state.entity(PLAYER); }
+    public String name() { return state.string(NAME); }
+    public int score() { return state.count(SCORE); }
+    public boolean success() { return state.count(SUCCESS) > 0; }
     public String status() { return player().status(); }
 
     // Load up a level file. It starts with a line giving the width, height and
@@ -82,9 +86,9 @@ public class Level<E extends Cell<E>> {
         grid.reset(width, height);
         state.reset();
         queue.reset();
-        state.set(State.NAME, name);
-        state.set(State.TITLE, title);
-        state.set(State.MOVES, limit);
+        state.set(NAME, name);
+        state.set(TITLE, title);
+        state.set(MOVES, limit);
         fill();
         hatch();
         copy();
@@ -119,11 +123,10 @@ public class Level<E extends Cell<E>> {
     }
 
     // Spawn an entity.
-    private E spawn(char c, int x, int y) {
+    E spawn(char c) {
         E type = types.get(c);
         if (type == null) throw new Error("Unknown code '" + c + "'");
         E e = type.clone();
-        e.init(grid, state, queue, x, y);
         return e;
     }
 
@@ -132,8 +135,8 @@ public class Level<E extends Cell<E>> {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 char c = cells[x][y];
-                E e = spawn(c, x, y);
-                grid.wake(x, y, e);
+                E e = spawn(c);
+                e.wake(x, y);
             }
         }
     }

@@ -1,4 +1,4 @@
-Cell Direction Grid Level Queue State Variable:
+Cell Direction Grid Level Lifecycle Queue State Variable:
 	javac -sourcepath src -d bin src/model/$@.java
 	java -cp bin model.$@
 

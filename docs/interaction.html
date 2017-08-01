@@ -31,13 +31,13 @@ used to decide what to do, e.g.:</p>
 
 <p>A simple example of this is in the maze package.  Two classes,
 <code>Item</code> (which is the equivalent of <code>Entity</code>) and
-<code>Maze</code> implements a maze game, a simple cut-down version of
+<code>Maze</code> implement a maze game, which is a simple cut-down version of
 wanderer.  There are disadvantages of this approach in larger projects:</p>
 
 <ul>
-<li>switch statements proliferate in entity classes</li>
-<li>methods get bloated as switch cases expand</li>
-<li>the approach isn't very object oriented</li>
+<li>switch statements can proliferate in entity classes</li>
+<li>methods can get bloated as switch cases expand</li>
+<li>the approach doesn't feel very object oriented</li>
 </ul>
 
 <h2>Visitors</h2>
@@ -60,11 +60,11 @@ use switch statements like this:</p>
 href="https://en.wikipedia.org/wiki/Dynamic_dispatch#Single_and_multiple_dispatch">Dynamic
 dispatch</a> is the preferred way of deciding which class an object has within a
 family.  The <a href="https://en.wikipedia.org/wiki/Visitor_pattern">visitor
-pattern</a> is designed to handle situations like this.  In this case, only a
-fairly simple version of it is needed.</p>
-
-<p>To implement a visitor system, two methods can be set up, <code>meet</code>
-and <code>isMetBy</code>, say, which can be used like this:</p>
+pattern</a> is designed to be used when dynamic dispatch is desired on method
+arguments but, as with Java, the language doesn't support that.  In this case,
+only a fairly simple version of the visitor pattern is needed. Two methods can
+be set up, <code>meet</code> and <code>isMetBy</code>, say, which can be used
+like this:</p>
 
 <pre>void act() {
     Entity other = find(...);
@@ -93,9 +93,9 @@ include a one-line definition of <code>isMetBy</code>:</p>
 
 <p>Despite the definition being the same in every class, it has to be overridden
 in each class rather than being defined just once in the base
-<code>Entity</code> class, because it is important that the variable
-<code>this</code> should have the desired specific class, not just class
-<code>Entity</code>.</p>
+<code>Entity</code> class, because it is important that the compiler should know
+that the variable <code>this</code> has the desired specific class, not
+just class <code>Entity</code>.</p>
 
 <p>In addition, in the base <code>Entity</code> class, the <code>meet</code>
 method variants need to be given default implementations:</p>

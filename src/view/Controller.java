@@ -1,5 +1,6 @@
 package view;
 import model.*;
+import model.Cell;
 import java.io.*;
 import java.util.*;
 import javafx.application.*;
@@ -27,8 +28,8 @@ The -s argument specifies how many steps to replay from the file.
 After replaying a given number of steps, you can continue playing manually.
 You can replay and record at the same time. */
 
-public class Controller extends Scene {
-    private Level<?> level;
+public class Controller<E extends Cell<E>> extends Scene {
+    private Level<E> level;
     private Stage stage;
     private Display display;
     private Table table;
@@ -46,7 +47,7 @@ public class Controller extends Scene {
 
     // Create a controller from the name of the game, the main stage, a level
     // object, and the list of level files.
-    public Controller(String game, Stage s, Level<?> l, String[] ls) {
+    public Controller(String game, Stage s, Level<E> l, String[] ls) {
         super(new BorderPane());
         s.setTitle(game);
         stage = s;
@@ -54,7 +55,7 @@ public class Controller extends Scene {
         levels = ls;
         names = new String[levels.length];
         for (int i=0; i<levels.length; i++) names[i] = name(levels[i], false);
-        display = new Display(level, 42*24, 18*24);
+        display = new Display<E>(level, 42*24, 18*24);
         if (s != null) table = new Table(game, names);
         if (s != null) help = new Help(s, 700, 500);
         ticker = new Ticker(level, display, table);

@@ -12,14 +12,15 @@ class. */
 
 public class Wanderer extends Application {
     private Level<Entity> level;
-    private Controller controller;
+    private Controller<Entity> controller;
 
     // Make sure that compiling Wanderer causes Test to be compiled.
     private Test test;
 
     public void start(Stage stage) {
         level = new Level<>(Test.samples);
-        controller = new Controller("Wanderer", stage, level, levels());
+        for (Entity e : Test.samples) e.init(level);
+        controller = new Controller<>("Wanderer", stage, level, levels());
         stage.setScene(controller);
         controller.setup(getParameters().getRaw());
         stage.show();

@@ -33,7 +33,7 @@ fontsize=20
       <w>100</w>
       <h>40</h>
     </coordinates>
-    <panel_attributes>Cell
+    <panel_attributes>Level
 bg=#aaffaa</panel_attributes>
     <additional_attributes/>
   </element>
@@ -68,7 +68,7 @@ bg=#aaffaa</panel_attributes>
       <w>100</w>
       <h>40</h>
     </coordinates>
-    <panel_attributes>Level</panel_attributes>
+    <panel_attributes>Entity</panel_attributes>
     <additional_attributes/>
   </element>
   <element>

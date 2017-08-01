@@ -16,9 +16,10 @@
 
 <h1>Entities</h1>
 
-<p>The development has reached this point:</p>
+<p>The development has reached this point, leaving out some details:</p>
 
-<img src="entity.png" alt="The Entity class depending on the Grid class" />
+<img src="levels.png" alt="The Entity class depends on Level which
+depends on Grid" />
 
 <p>The next question is whether or not an entity should know its own coordinates
 in the grid.  The problem is that it involves duplicate data.  The (x,y)
@@ -41,8 +42,8 @@ variations on this theme are possible, but two problems inevitably arise.  The
 first is that the resulting system can't be described as simple or natural. The
 second is that, although <em>most</em> things that an entity wants to do can be
 done with directions, e.g. "move right" or "find the entity to the right" and so
-on, occasionally actual coordinates come into play, e.g a long-distance
-teleport, or a monster which chases the player.</p>
+on, occasionally actual coordinate come into play, e.g a long-distance teleport,
+or a monster which chases the player.</p>
 
 <p>A good approach is to split the Entity class into two:</p>
 
@@ -51,11 +52,12 @@ teleport, or a monster which chases the player.</p>
 <p>The <code>Cell</code> class becomes a base class for entity classes.  It
 provides general purpose methods which entity classes can use to get things
 done. The Cell class can be a framework class, with the Entity class and any
-classes that extend it providing the game-specific behaviour.  The
+classes that extend it providing the game-specific behaviour by defining
+lifecycle methods such as <code>hatch</code> and <code>act</code>.  The
 <code>Cell</code> class might look like this:</p>
 
 <pre>class Cell {
-    private Grid&lt;Cell> grid;
+    private Level&lt;Cell> level;
     private int x, y;
     int x() { return x; }
     int y() { return y; }
@@ -69,8 +71,8 @@ can be kept under control. The coordinates are private, and extending classes
 only have read access to them. That encapsulates the coordinate consistency
 problem inside the <code>Cell</code> class.</p>
 
-<p>The <code>Cell</code> class shown above has a weakness.  The grid field has
-class <code>Grid&lt;Cell></code>.  So, when an entity finds a neighbouring
+<p>The <code>Cell</code> class shown above has a weakness.  The level field has
+class <code>Level&lt;Cell></code>.  So, when an entity finds a neighbouring
 entity in the grid, it only knows that the neighbour has type <code>Cell</code>,
 not <code>Entity</code> (unless it cheats by using casting, for example).  While
 this isn't a disaster, it is worth making the framework class <code>Cell</code>
@@ -78,7 +80,7 @@ a bit more sophisticated, to ease the implementation of game-specific custom
 classes, like this:</p>
 
 <pre>public class Cell&lt;E extends Cell&lt;E>>
-    private Grid&lt;E> grid;
+    private Level&lt;E> level;
     private int x, y;
     int x() { return x; }
     int y() { return y; }
@@ -88,8 +90,8 @@ classes, like this:</p>
 
 <p>The <code>Cell</code> class is given a parameter <code>E</code>, which will
 later be filled in by the <code>Entity</code> class.  That allows the
-<code>grid</code> field to have class <code>Grid&lt;E></code> rather than just
-<code>Grid&lt;Cell></code>, and entities will be able to access other entities
+level field to have class <code>Level&lt;E></code> rather than just
+<code>Level&lt;Cell></code>, and entities will be able to access other entities
 using variables of class <code>Entity</code>. The <code>E</code> parameter must
 be a class which extends <code>Cell</code>. In fact, it must extend
 <code>Cell&lt;E></code>, which leads to the strangely cyclic but correct class
@@ -138,19 +140,6 @@ suppressed:</p>
 <pre>@SuppressWarnings("unchecked")
 private E thisE() { return (E)this; }
 </pre>
-
-<p>As well as providing utility methods for entity classes to use, the Cell
-class defines lifecycle methods for entity classes to override, such as:</p>
-
-<pre>abstract void hatch();
-abstract void act();
-</pre>
-
-<p>Making them abstract forces entity classes to override them. The hatch method
-is called when a level is created, to give each entity a chance to initialize
-some aspect of the game's global state, e.g. to declare itself as active or set
-a counter. The act method is called when it is the entity's turn to take one
-step, e.g. move by one grid cell.</p>
 
 </body>
 </html>

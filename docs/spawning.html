@@ -34,8 +34,9 @@ con.setAccessible(true);
 E e = (E) con.newInstance();
 </pre>
 
-<p>However, this assumes that each type of entity is represented by a separate
-class.  It would be preferable, in a framework, to provide more flexibility.</p>
+<p>However, this general approach assumes that each type of entity is
+represented by a separate class.  It would be preferable, in a framework, to
+provide more flexibility.</p>
 
 <h3>Cloning</h3>
 
@@ -51,10 +52,13 @@ public E clone() {
 }
 </pre>
 
-<p>Now the <code>clone</code> method can be called on any entity class, without
-any specific supporting code being needed in any custom classes.  A collection
-of sample entities, one of each type, can be stored in the state, and used both
-by the level object and by individual entities, to spawn new entities.</p>
+<p>This assumes that shallow cloning will always be appropriate, but fields of
+entity objects are likely to be primitive or immutable or references to shared
+objects, so this is very likely.  Now the <code>clone</code> method can be
+called on any entity class, without any specific supporting code being needed in
+any custom classes.  A collection of sample entities, one of each type, can be
+stored in the level object, and used both by the level object and by individual
+entities, to spawn new entities.</p>
 
 </body>
 </html>

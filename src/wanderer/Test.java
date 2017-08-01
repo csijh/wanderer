@@ -53,6 +53,7 @@ class Test {
     // Do comprehensive replay testing.
     public static void main(String[] args) {
         Level<Entity> level = new Level<>(samples);
+        for (Entity e : samples) e.init(level);
         int count = level.tests(tests(), levels());
         System.out.println("Test class OK: " + count + " tests succeeded");
     }
