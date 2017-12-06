@@ -1,0 +1,35 @@
+<h1>Coordinate arithmetic</h1>
+
+<p>Object oriented design seems to suggest that entities in the grid
+need to do coordinate calculations all the time to check neighbouring
+grid cells, to decide what to do or to move.  On the other hand,
+object oriented design also suggests that since coordinate
+calculations are likely to be widespread and repetitive, they should
+be isolated in a single place and implemented only once.  So should
+entities know their own coordinates, or not?</p>
+
+<p>Another problem with entities knowing where they are, e.g. by having x, y
+coordinates as fields, is that a duplicate data problem arises.  An entity has
+a position through being in the grid array, and it has a position through
+having coordinate fields - how do you know they agree?</p>
+
+<p>A good compromise is for the grid to be the only object which handles raw
+coordinates and coordinate arithmetic, and for entities to interact with the
+grid using directions (<tt>Up</tt>, <tt>Down</tt> etc). This centralizes
+coordinate calculations, helps to ensure consistency in a bullet-proof way, and
+yet gives entities their autonomy.</p>
+
+<p>Two different techniques are used in the reconstructions to achieve this. One
+is for entities not to hold coordinates. Instead, the grid object has a map
+which maps entities to their coordinates. As a result, only the grid has access
+to raw coordinates.</p>
+
+<p>Another approach (used in the C reconstruction) is for the grid module to
+define the entity structure, which includes coordinates, but to export it as an
+opaque type. The grid also provides a small number of general primitive
+operations which entities can use to interact with the grid. The code which
+defines the behaviour of different types of entity can only use the primitive
+operations, and not access the coordinates directly.</p>
+
+<hr />
+<p style="margin-left:40px;"><a href="design.html">Back</a></p>

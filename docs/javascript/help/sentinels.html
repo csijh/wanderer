@@ -1,0 +1,18 @@
+<h1>Sentinels</h1>
+
+<p>Every time new coordinates are calculated by adding an offset, the resulting
+coordinates, in principle, have to be checked to see if they are within the
+grid.</p>
+
+<p>In the reconstruction, sentinels are used, which in this case means
+putting a wall as a border round the outside of the level grid.  Doing
+this in the grid array in memory avoids the need for any out-of-bounds
+tests.</p>
+
+<p>The surrounding wall need not necessarily appear either in the level file or
+on screen, but it turned out to be convenient for it to be included in both.  A
+little translation program was used to convert the level files to add the
+border.</p>
+
+<hr />
+<p style="margin-left:40px;"><a href="design.html">Back</a></p>
