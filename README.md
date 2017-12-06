@@ -6,7 +6,7 @@ The Wanderer project provides three things:
 - a case study in object oriented design and development
 
 To play the game, either try the JavaScript version
-[online](https://github.com/csijh/wanderer/raw/master/javascript/index.html)
+[online](https://csijh.github.io/wanderer/javascript/index.html)
 or download the Java version
 [wanderer.jar](https://github.com/csijh/wanderer/raw/master/wanderer.jar)
 and run it by double clicking or typing:
