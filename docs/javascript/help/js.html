@@ -1,0 +1,42 @@
+<h1>The JavaScript Version</h1>
+
+<p>The JavaScript version allows the game to be played online, and acts as a
+demo of the HTML5 canvas element.</p>
+
+<p>The translation uses a few of the object oriented techniques of the original
+Java version, but without being too strict about it.</p>
+
+<p>Following <a href="http://www.crockford.com/javascript/private.html">Douglas
+Crockford's notes</a>, classes with private fields are implemented using this
+style:</p>
+
+<pre>
+function Constructor()
+{
+  var self = this;
+  var privateField1;
+  var privateField2;
+
+  this.publicMethod1 = method1;
+  this.publicMethod2 = method2;
+
+  function method1(...) { ... }
+  function method2(...) { ... }
+
+  function privateMethod3(...) { ... }
+  function privateMethod4(...) { ... }
+}
+</pre>
+
+<p>This is quite helpful in matching the structure of the original Java code,
+but has some disadvantages. One is that the keyword <code>this</code> can't be
+used properly, because of a 'bug' in JavaScript, hence the <code>self</code>
+field. Another is that conventional JavaScript debugging can't be used, because
+the private fields aren't visible to the debugger. A final one is that the
+scheme doesn't mix well with JavaScript's prototype-based inheritance mechanism.
+The final one is that the technique uses more memory - the private fields of an
+object are held in a separate closure object. Despite these potential
+disadvantages, this approach does help with robust development.</p>
+
+<hr />
+<p style="margin-left:40px;"><a href="design.html">Back</a></p>

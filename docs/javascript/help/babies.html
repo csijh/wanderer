@@ -1,0 +1,52 @@
+<h1>Baby Monsters</h1>
+
+<p>The baby monsters, which appear from level 10 onwards, behave strangely (and
+there are hints in the original code that they were originally thought of as
+"spirits").  They can travel over earth without consuming it, and can end up on
+top of boulders, arrows or balloons.  They can also end up on top of each
+other, and there can occasionally be three or more at the same place.</p>
+
+<p>So what about the design idea that there should be only one object
+in each grid cell?  Only one entity is visible in each cell, and only
+the visible entity can affect the behaviour of other entities.  Each
+cell could contain a pile of entities, with only the top one visible,
+but the actual mechanics of the game make the ordering of the entities
+in the pile irrelevant.  For example, when a baby monster goes off the
+grid, it is the non-baby-monster entity underneath that becomes
+visible, not one of the other baby monsters.  This makes it reasonable
+to stick to the convention of one entity per cell, and treat invisible
+entities as being temporarily off the grid.  It turns out to be
+sufficient for a visible baby monster which is on the grid to remember
+which (non-baby-monster) entity was underneath, and for an invisible
+baby monster off the grid just to remember where it was.</p>
+
+<p>The dynamic behaviour of the baby monsters is explained by the
+following details. First, the player moves (and perhaps the big
+monster), and all the ensuing triggered events happen. Moving entities
+(boulders, arrows, balloons) stop if they hit a baby monster. After
+that, each baby monster gets a turn to move. It uses a left wall
+following algorithm (i.e. it moves as if keeping its left appendage
+against the wall) and it can walk over earth. When it has moved, it
+becomes temporarily invisible, and triggers nearby entities (thus
+sometimes allowing a moving entity to seem as if it has passed
+straight through). While the triggered events happen, moving objects
+completely ignore invisible babies, but are stopped by visible
+ones. After that, the baby monster makes itself visible again (which
+may leave it on top of a moving object which happens to have stopped
+in the baby monster's grid cell).</p>
+
+<p>There is a further strangeness in the behaviour of baby monsters.
+If a baby monster is trapped in a single cell so that there is nowhere
+to go, it will move anyway, on top of one of the surrounding entities.
+This behaviour has been partly duplicated in the reconstruction,
+because it is essential to solving some of the later levels (level 50
+for example).  However, it causes problems elsewhere (e.g. level 41)
+because a baby monster may end up moving entirely off the playing area
+(and that can actually happen in the original game).  Rather than
+allowing this, which isn't essential to solving any levels, the
+reconstruction does not allow a baby monster to move on top of a wall
+entity.</p>
+
+<hr />
+<p style="margin-left:40px;"><a href="design.html">Back</a></p>
+

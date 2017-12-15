@@ -1,0 +1,2646 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Wanderer Online</title>
+<script src="wanderer.js" type="text/javascript"></script>
+<style>
+.level { display:none; }
+td { vertical-align:top; }
+</style>
+</head>
+<body>
+<h1>Wanderer</h1>
+
+<p id="canvas">Your browser doesn't appear to support HTML 5 Canvas.</p>
+<br />
+<button id="restart">Restart</button>
+<button id="next">Next Level</button>
+<select id="wandererLevel">
+<option value="1">Level 1</option>
+<option value="2">Level 2</option>
+<option value="3">Level 3</option>
+<option value="4">Level 4</option>
+<option value="5">Level 5</option>
+<option value="6">Level 6</option>
+<option value="7">Level 7</option>
+<option value="8">Level 8</option>
+<option value="9">Level 9</option>
+<option value="10">Level 10</option>
+<option value="11">Level 11</option>
+<option value="12">Level 12</option>
+<option value="13">Level 13</option>
+<option value="14">Level 14</option>
+<option value="15">Level 15</option>
+<option value="16">Level 16</option>
+<option value="17">Level 17</option>
+<option value="18">Level 18</option>
+<option value="19">Level 19</option>
+<option value="20">Level 20</option>
+<option value="21">Level 21</option>
+<option value="22">Level 22</option>
+<option value="23">Level 23</option>
+<option value="24">Level 24</option>
+<option value="25">Level 25</option>
+<option value="26">Level 26</option>
+<option value="27">Level 27</option>
+<option value="28">Level 28</option>
+<option value="29">Level 29</option>
+<option value="30">Level 30</option>
+<option value="31">Level 31</option>
+<option value="32">Level 32</option>
+<option value="33">Level 33</option>
+<option value="34">Level 34</option>
+<option value="35">Level 35</option>
+<option value="36">Level 36</option>
+<option value="37">Level 37</option>
+<option value="38">Level 38</option>
+<option value="39">Level 39</option>
+<option value="40">Level 40</option>
+<option value="41">Level 41</option>
+<option value="42">Level 42</option>
+<option value="43">Level 43</option>
+<option value="44">Level 44</option>
+<option value="45">Level 45</option>
+<option value="46">Level 46</option>
+<option value="47">Level 47</option>
+<option value="48">Level 48</option>
+<option value="49">Level 49</option>
+<option value="50">Level 50</option>
+<option value="51">Level 51</option>
+<option value="52">Level 52</option>
+<option value="53">Level 53</option>
+<option value="54">Level 54</option>
+<option value="55">Level 55</option>
+<option value="56">Level 56</option>
+<option value="57">Level 57</option>
+<option value="58">Level 58</option>
+<option value="59">Level 59</option>
+<option value="60">Level 60</option>
+</select>
+
+<select id="speed">
+<option value="1">1 FPS</option>
+<option value="10">10 FPS</option>
+<option value="20">20 FPS</option>
+<option selected="selected" value="30">30 FPS</option>
+<option value="40">40 FPS</option>
+<option value="50">50 FPS</option>
+<option value="100">100 FPS</option>
+<option value="1000">1000 FPS</option>
+</select>
+
+<a href="help/design.html">design notes</a>
+
+<p>Wanderer was written by Steven Shipway in the
+1980's. See <a href="credits.html">The original credits</a>.
+<br />
+This reconstruction was written by Ian Holyer in October 2011.
+The controls are:</p>
+
+<table style="margin-left:40px;">
+
+<tr><td><b>arrow keys</b>&#160;&#160;</td><td>
+to move (or h,j,k,l or w,a,s,d)
+&#160;&#160;&#160;&#160;</td>
+
+<td><b>space bar</b></td><td>
+to stand still
+</td></tr>
+
+</table>
+
+<p>To play the game, collect all the stars and then go through the exit.  The
+entities you will meet are:</p>
+
+<table style="margin-left:40px;">
+
+<tr style="display:none">
+<td><img id="dead" src="icons/dead.png"/></td><td>
+This is you when you lose. <!-- Makes icon available to script -->
+</td></tr>
+
+<tr><td><img id="player" src="icons/player.png"/></td><td>
+This is you.
+</td>
+
+<td><img id="exit" src="icons/exit.png"/></td><td>
+Exit - must collect all the stars first.
+</td></tr>
+
+<tr><td><img id="wall" src="icons/wall.png"/></td><td>
+Solid wall.
+</td>
+
+<td><img id="rock" src="icons/rock.png"/></td><td>
+Solid rock.
+</td></tr>
+
+<tr><td><img id="earth" src="icons/earth.png"/></td><td>
+Passable earth (score 1).
+</td>
+
+<td><img id="treasure" src="icons/treasure.png"/></td><td>
+Star.  Collect them all before exiting (score 10).
+</td></tr>
+
+<tr><td><img id="leftarrow" src="icons/leftarrow.png"/></td><td>
+Arrow, running left.
+</td>
+
+<td><img id="leftdeflector" src="icons/leftdeflector.png"/></td><td>
+Deflector.  Boulders etc. slide past.
+</td></tr>
+
+<tr><td><img id="rightarrow" src="icons/rightarrow.png"/></td><td>
+Arrow, running right.
+</td>
+
+<td><img id="rightdeflector" src="icons/rightdeflector.png"/></td><td>
+Deflector.
+</td></tr>
+
+<tr><td><img id="landmine" src="icons/landmine.png"/></td><td>
+Landmine. Instant annihilation
+</td>
+
+<td><img id="teleport" src="icons/teleport.png"/></td><td>
+Teleport (score 20).
+</td></tr>
+
+<tr><td><img id="boulder" src="icons/boulder.png"/></td><td>
+Boulder (falls down, other boulders and arrows slide round it).
+</td>
+
+<td><img id="monster" src="icons/monster.png"/></td><td>
+Monster (eats you up whole. Yum Yum yum..)
+(kill with a rock or arrow, score 100).
+</td></tr>
+
+<tr><td><img id="balloon" src="icons/balloon.png"/></td><td>
+Balloon - rises, and is popped by arrows. It does
+<i>not</i> kill you.
+</td>
+
+<td><img id="baby" src="icons/baby.png"/></td><td>
+Baby monster (kills you, but doesn't chase you).
+Capture it in a cage (score 20) to turn it into a star.
+</td></tr>
+
+<tr><td><img id="time" src="icons/time.png"/></td><td>
+Time capsule, giving 250 extra moves (score 5).
+</td>
+
+<td><img id="cage" src="icons/cage.png"/></td><td>
+Cage - traps baby monsters.
+</td></tr>
+
+<tr style='display:none'><td><img id="space" src="icons/space.png"/>
+</td><td>Space: this makes the icon available to JavaScript.
+</td></tr>
+
+</table>
+
+<pre class="level" id="level.1">
+##########################################
+#=======================\OOO*OOOO/#OO#####
+#*O       O:#         O/ \OOOOOO/# ::A**##
+## O #### #:#       **/   \OOOO/   #######
+## #  O  *#:#              \OO/   ##     #
+## #* * ###:# OOO           O/    ##     #
+## ######:::#*****         :/  *###* O   #
+##    #*                 @     *&lt;*###*&lt;  #
+##*#! ###                  \   *###*     #
+####              !     ::  \     ##     #
+## #          \ /=O=   ::::   \O     / O/#
+##*           O O  =    ::   / \*   / */ #
+####         #***# =        /   \    O/  #
+#X &lt; !!!     #\*/# =       /    O*O*O*O  #
+#&gt;*   *   *&lt;  # #  =      /     =**O*O=  #
+#    !!!   ! !# #! =! \    /    =:O*O:=  #
+#          ! *#T#*:::::\**/     =::::::* #
+##########################################
+Unplug the Cistern #1
+1000
+</pre>
+
+<pre class="level" id="level.2">
+##########################################
+#C      O  OOO ##       \OOO*OOOO/    O *#
+#       *       *#       \OOOOOO/ &gt;     A#
+##!        /    #         \OOOO/         #
+#  O    /         O      *&lt;\OO/  =*==\   #
+#\O&lt;   /          :        :O/!!!    O\*/#
+#&gt;O   /                     /        :=  #
+##O\ /                              = *  #
+##O          /   @         \         ====#
+##O         /    O    *&lt;    \            #
+#**              :            /          #
+#====/                       /           #
+#       \                   /            #
+#X!   \ *\                 /             #
+#!    /!!!*/!!!!!/*&lt;      /   *          #
+#&gt;*   \!!!/         !!\    /             #
+#*      *             *\ */T            *#
+##########################################
+Unplug the Cistern #2
+350
+</pre>
+
+<pre class="level" id="level.3">
+##########################################
+#   ====&gt;*O        O&lt;           /O:      #
+# *       :*      *&lt;    /        *&lt;     O#
+###&lt;      /                  *&lt;\       O/#
+#*                           O&lt;       O/*#
+######### #\ ###            OO====== O/ O#
+#AOO*OOO/*&lt;&lt;#               */     **/ */#
+#\OO!OO/: *#      /\      O#:   *   /    #
+#*\OOO/::\*      /#O\ /   :#\      /     #
+#  \O/ @  *     /O*&lt;#* OO#   \    /    \ #
+#* :::   *      #O&lt;  ##\O#    \**/     !*#
+# ::/:O#       # O *    : */   &gt;&lt;      !!#
+#  /# *       :##O## ######O \          *#
+#  ###\     ::::#O#: :::::::::#####::#####
+#::OOO#   ::::#:::::/&gt;&gt;::O  /##O*O:*::O*O#
+#::*OOO ::::!:#*## ##/*&lt;!!  #!*O:*::O:*:*#
+#*::::*O::::::#:#*&gt;T*      X# O:*::*::O:*#
+##########################################
+My favourite one of the lot -Steve
+750
+</pre>
+
+<pre class="level" id="level.4">
+##########################################
+#X#O#                          *        O#
+#*#:       O      O       O    *&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;#
+#   #\                    :   ##         #
+###A#          * \           #*          #
+#  !*         &gt;O&lt; \           #   \      #
+#   !!         *   \               \     #
+#   #O#             \  &lt;     O   != \ &lt;  #
+#    *&lt;   &gt;            *          *=     #
+#*   *#                           = &gt;/   #
+#             O      @            #      #
+#             ==     \               \&lt;  #
+# O            *##    \     &gt;            #
+#&gt;/\           #*                     : /#
+#   \*          #   == \    /         O&lt;##
+#    \&lt;    \       = = *\  /          :O##
+#*!   \&lt;   !*!     =    M\*!*!       =::T#
+##########################################
+Hanging by a thread
+</pre>
+
+<pre class="level" id="level.5">
+##########################################
+#X##O#:::/O*#*#*## *#O#*#*#*#*#*#*#*##**##
+#*#::::#  :      :&lt;#&gt;&gt;O                 ##
+#   #######:#: : :#:: :  #########&gt;:::::##
+# #*#**#**::::::::#     #OO :O  *#&gt;:::::##
+#* ##O#*######:###      #*O  /####*#######
+#&lt;&lt;&lt;&lt;&lt;::::::O#           *&lt;    **# OOO O##
+#&gt;:::       *#          ::########!*****##
+###         /    :              #O## /####
+##/                              *&lt;# ##*##
+#/                               *      ##
+#  O\                            \  # #*##
+# O/      /\  ##***    :    \          ###
+#*/      /##:::##&gt;*:      :       \   : ##
+#/**/\   ##*:#:*#**#               \  O&lt;##
+#*&gt;/!! ##*#/:&lt;&lt;#***# /&gt;::           \ :O##
+#A/*****#     #***@#*#*#          ! *\:*T#
+##########################################
+By James Beckett (csutg@uk.ac.warwick.cu)
+750
+</pre>
+
+<pre class="level" id="level.6">
+##########################################
+####O#######################*#############
+##*&gt;:*            ::::= O=*OO      :&lt;&lt;&lt;O=#
+##==:    !      OOO:=   *=*::    ==*&lt;*&lt;*=#
+##       *&lt;&lt;&gt;&gt;&gt;&gt;::::=== = =      X=======#
+## =\  / !      O  :&lt;*=  &gt;OO/=====/  * O&lt;#
+##O==*/*  :&lt;&lt;&lt;&lt;&lt;&lt;======   :*=O* O*    =O=#
+##O===============O=**=======::O==    ::=#
+##:  :       :&lt;&lt;*=O=     : == :*     == =#
+##   :&lt;/   :&lt;&lt;====O      :         ==== =#
+## =         =O*=**       =       ::&lt;== =#
+## =  ======  : ===== =====O    : : :== =#
+##*=  =*=**======O O=     ============= =#
+##==*:=O=   O :: ::**=    =*::::*    ::O&lt;#
+##***= : =*=O====\ \      =======    *=O=#
+## === / ==:&gt;&gt;&gt;:***=&gt;\OO      O&lt;====:@=O=#
+##    *&gt;:  : ==****=A=T*****&lt;&lt;&lt;==*   :&lt;&lt;=#
+##########################################
+Yet another Beckett screen...
+750
+</pre>
+
+<pre class="level" id="level.7">
+##########################################
+#X                                      M#
+#          =  =  ==                      #
+#          = O= =  O:      :             #
+#          ==== = ==                     #
+#             = =*A=                     #
+#          ===   ==                      #
+#                      O       *     OOOO#
+#  #   #          #   ##  #    *     \OO/#
+#  ## ##  #  # ## #*&lt;   # #    *      \O=#
+#  # # * O # ##   #   #*# #          /=O=#
+#  #   # # # #    #  # ## #    O       O=#
+#  #   #  #  #    ##  T # #   /*       **#
+#                            /        ===#
+#                           /            #
+#                    &gt;&lt;    /             #
+# COO!                    /             @#
+##########################################
+Unnamed level.
+</pre>
+
+<pre class="level" id="level.8">
+##########################################
+#!\ !  /\      *            &gt;&gt;OOOO*OOOOOM#
+#! \! !XA!                  &gt;&gt;&gt;OOOOOOOOOO#
+#!  !  \/                   &gt;&gt;&gt;&gt;OOOOOOOO&lt;#
+#        O                  &gt;&gt;&gt;&gt;&gt;OOOOOO&lt;&lt;#
+#!= /== /= /=\ !=\ !=  *    &gt;&gt;&gt;&gt;&gt;OOOOO&lt;&lt;*#
+#!  !   !  ! ! ! ! !   *    &gt;&gt;&gt;&gt;//OOO&lt;&lt;&lt;&lt;#
+#!= \=\ !  !=! !=/ !=  *          OO&lt;&lt;&lt;&lt;&lt;#
+#!    ! !  ! ! !   !              :&lt;&lt;&lt;&lt;&lt;&lt;#
+#!= ==/ \= ! ! !   !=  *          *O&lt;&lt;&lt;&lt;&lt;#
+#                                  :O&lt;&lt;&lt;&lt;#
+# *   # #  #     # #  #   !         :\&lt;&lt;&lt;#
+#     # # # #    # # # #  !    \      \&lt;&lt;#
+#     ### ###    ### ###  !     \      \&lt;#
+#     # # # #    # # # #         \       #
+#     # # # #    # # # #  !              #
+#T                 @                    *#
+##########################################
+Unnamed level.
+</pre>
+
+<pre class="level" id="level.9">
+##########################################
+#**********=  &gt;* \&gt;* \&gt;* \&gt;*    *&lt;      O#
+#OOOOOOOOOO==  O   O            :=     @/#
+#::::O::O::O ===:=:=:=:=:=:=:          / #
+#::::*::*===                 O :OO    /*T#
+#===:::::::= ================: /OO:  /:O/#
+#::::====  =:                 ! ::  /  /*#
+#::=:*=    = =O==O==O==O==O==O==   /&lt;    #
+#::O&lt;:=  O==*O:::::::::::::::::   /: *\ /#
+#: O :=::O:==X                 ::    =!*!#
+#::/::=::O::=============================#
+#:A:===:/O=:=:::&lt;=O=O=O=O=O=O=O=:=########
+#&gt;::**=***=:::O:::::::*:*:*:*:*:*&lt;##    ##
+## ###########:/#################### ## ##
+##                                   #  ##
+############::::###################### :##
+#* * * * * &gt;&gt;&gt;&gt;::    M                &gt;/##
+##########################################
+Unnamed level.
+2001
+</pre>
+
+<pre class="level" id="level.10">
+##########################################
+#                      OOOOO        OC &gt;O#
+#     !        ===     :OO::       /\  &gt;O#
+#    !O!!!!=== =*=      ::        /    *O#
+# /===     = = = =              =*=    *O#
+# !    =   = =+= =        =     \=/    &gt;O#
+# \====    = === ==       S             O#
+#     * ====      =    +               O:#
+#     = S    ======     :              :/#
+#     == =====           :::          /  #
+#      ===       /\         : =====   :  #
+# /==\        ==+X!          :=S S=  \   #
+#   =======  =S *!         :: *   =      #
+#   = S S =   ==    ===O=:    =====      #
+#== !     =         =  :=           \    #
+#C+       =     OOO== =:=          * \   #
+#C+      @*     ***  +=:              \  #
+##########################################
+Meet the Baby Monsters!
+25
+</pre>
+
+<pre class="level" id="level.11">
+##########################################
+#*OOO:::O:::::O*::&lt;:&gt;::&lt;::O:O:*:O:::O::*&lt;#
+#:::*O::::O:::::&gt;*:::OO:*&lt;:&gt;::O::O:::O:O*#
+#:OO:::O:::O:O:*::O:O:::O:O:O:*O:::&lt;:::::#
+#O:*:O:::O:::::O*&gt;:O::O::::::*&lt;::O:O&gt;:O:&lt;#
+#::O::&gt;*O:O:O:&lt;::&lt;:O:::*:O:O::O:::::*::O:#
+#:::::O:&gt;*::::O&lt;:O:::O:O*::::O::O:O::&gt;*:O#
+#:O::O:::::O*::::::O:::&lt;*:&lt;&gt;::::::::*:O::#
+#::::::&lt;*O::::&gt;:O:O:OX::&gt;*:O:&gt;::&gt;::O:&lt;::*#
+#&gt;::O::O::::&gt;:*:::&gt;:@O::::O:*:::::::::*OO#
+#::::::::O:*:::O:::O::&lt;:&gt;*::O:O::O:O::O:*#
+#::O:&lt;:&gt;O:::O:&gt;:*&lt;::O:O:::O:::*:O::::::::#
+#*:::::&gt;::&lt;::*:O:::::&lt;:O::*:O::O:::&lt;&gt;::OO#
+#:O*:O:::::::O:*:O:O::O:&gt;::&lt;::*::O:::::::#
+#*:::O:&gt;:O:O:::*O:::::::::&gt;*O:&gt;:::::O::O:#
+#&gt;*O::::::O:O::*&lt;&gt;::OOO::O:::O::*:O::&lt;:::#
+#*::::O:&gt;:::::O*:::::::::*::::::O::O:*:&gt;*#
+##########################################
+play@nl.cwi is responsible for this mess ...
+</pre>
+
+<pre class="level" id="level.12">
+##########################################
+#==/*&lt;&lt;/O       #OM# &gt;OO     O  /      =*#
+#+      :\      :&lt;## *OO     :         O&lt;#
+#/     *:             ::           /==*OO#
+#      ===          ===\     /  + /*  :OO#
+#       *       +  =S S=    /  /  \===:###
+#       \ /       *S   =      /     *=:###
+#       =*=  *   *@*=== O   *       =::&lt;##
+#        = ::==   *     :   O         \&lt;##
+#  /:&lt;&lt;:       =  ====     =+=    \     ##
+#    :&lt;&lt;:       ===*  :::::   \       O:&lt;#
+# */  :&lt;&lt;:                     \      *:*#
+#               ::              *       !#
+#**=      :::::::::       /  !        \  #
+#S:*       :   ::+:  /##&gt;T   X##       \*#
+#: *   =   :   :::: /##*#######A *      \#
+# :*   S       ::*:/#          *&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;#
+##########################################
+Get a load of this one then ...
+</pre>
+
+<pre class="level" id="level.13">
+##########################################
+#\ *OOOOOOO*                 * OOOOOOOO*O#
+#O\ *OOOOO*          *       = OOOOOOOOO&lt;#
+# *\ *OOO*   ================= OOOOOOOO&lt;&lt;#
+#   \ *O*      O O O O O O   = OOOOOOO&lt;&lt;&lt;#
+#    \ *     :             &lt; = OOOOOO&lt;&lt;&lt;&lt;#
+#  /  \      :      *        = OOOOO&lt;&lt;&lt;&lt;&lt;#
+#*/          :&gt;           /  = OOOO&lt;&lt;&lt;&lt;&lt;&lt;#
+#/           :             &lt; = OOO&lt;&lt;&lt;&lt;&lt;&lt;&lt;#
+#            :  * * @ * *    / OO&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;#
+#            :&gt;           /    O&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;#
+#+=****                   S&lt;             #
+#X=T                *     =: \           #
+#================ ==       :  \          #
+#&gt;O:O&gt;*&lt;O=::::::= O= ===       \         #
+#&gt;*O*O&gt;*:**OOOO*  := =O=========\ O O O O#
+#*:::*::*=::::::= ==    A       *:*:*:*:*#
+##########################################
+Return of the Dutch designer
+</pre>
+
+<pre class="level" id="level.14">
+##########################################
+#==O=O O======OO======O =  /*&lt;&lt;  ******X*#
+#*:::: ::*=   *     + *&lt;= /*&lt;&lt;&lt;&lt;=&gt;      *#
+#===== ====O==== == =   =/*&lt;&lt;&lt;&lt; ====== ==#
+#          *:::= S  =         *  /&lt;*=    #
+# ===:::======:====O======O\  O*/&lt;&lt;&lt;=:==O#
+#  M::&lt;&lt;&lt;**=:::=C==       * \  &lt;&lt;&lt;&lt;&lt;=   *#
+#===========:===O*=      +O  \      ==== #
+#=:::::::::=::::O&lt;=  ==  ::         *&lt;=  #
+#=:=======:=:===O=O O==  :          *&lt;= =#
+#=:=&gt;*O*&lt;=:=:::=O=* *===O==           =C=#
+#=:=&gt;* *&lt;=:===:=O=====                =  #
+#=:      =O ==:=O=====       O  C====== =#
+# =  O  =** *=:::T===&gt;              @   =#
+#O   O     *==:===***=          C======*=#
+# =&gt;========:::::::::S *      ====OO O=*=#
+#*:::::::::::===========*==::    A****===#
+##########################################
+Is there no stopping these Dutchmen? Theyll be flying next
+8
+</pre>
+
+<pre class="level" id="level.15">
+##########################################
+#O            ###  MX#     OO#*OOOOCOOO*##
+#**O             O ###     */==\OOOOOO/==#
+#&gt;&gt;:     === /###O#/ #     /    \OOOO/ !*#
+#            \   O   #O   /    \OOOOOO/  #
+#                   ##:  /  /\*&lt;\OOOO/\ \#
+#   ==========      #&gt;*      *## \OO/&lt;! !#
+#   ! O&lt;**&gt;O !      ######  *##   :: *! !#
+#   &gt;*  !!  *&lt;             *##     ! \/ /#
+#   !   &lt;&gt;   !            *###       / OO#
+#    :======: @          ##/           **#
+#&gt;&gt;C                      O        :\::&lt;*#
+#   /*:*\                 #        *&lt;\ \&lt;#
+#&gt;:/==:==\==== ===== ==== ===========!*O*#
+# /OOO*OOO\*&gt;*   &lt;O#:OOO*:* ! * !:OT#::O:#
+# #*:*:*:*#&gt;*   &lt;O #:OO:!:! ! ! !:O&lt;#::O:#
+#*#:*:*:*:#    &lt;***#::*A!*! * ! *:::#:***#
+##########################################
+Bruce Butterfield. (The-Aussies start to move in..)
+70
+</pre>
+
+<pre class="level" id="level.16">
+##########################################
+#X!   !!                       O OO    O #
+#  *! !   O                  + =*==*=*==*#
+#!!!  !   *O     ! &gt;&gt;*              *    #
+#          :\   &gt;&gt;&gt;/              *      #
+#    \           &gt;/           /          #
+#  :   :  :    * /    !&lt;&lt;    /S          #
+#&gt;&gt;O*   :    :     /O&gt;&lt;&lt;&lt;&lt;           *   #
+###*              /*O*                   #
+#    *      #*####  O*      !###         #
+#*          #    # \*      !##O#         #
+#        \O ###\&lt;&lt;&lt;&lt;\     !##O&lt;##        #
+# *&lt;      \:::  #*##     !#*#O           #
+# ====     ####  ##     !#CC#*        ===#
+# =  =  C   : ###      !#CCC#/       *&lt;=M#
+#  = =  *  @:   :     !#CC        /===== #
+#+ S *      :   :    !*CC    /    *      #
+##########################################
+All but the one....
+50
+</pre>
+
+<pre class="level" id="level.17">
+##########################################
+# O    O  \OOO*OO&gt;   O    O   OOO   !O O=#
+#        * \OOOO/ ***     \*=:::: !X!OO:=#
+#      \ =  \OO/              ====== :::=#
+#      =* +&gt;::/      &lt;               /\:=#
+#   @   \  !        \     &lt;   ======: = =#
+#        \          !*!        S  *+\ =T*#
+#                O  !!!&gt;  /   ======O  ==#
+#=*===           &gt;       /      S   : O  #
+#*= !*=                               :  #
+#A=      =\        &gt;                /    #
+#   &lt;===   \               &lt;=======*== =*#
+# /       &lt;= ==            = OO OO =   *=#
+#=&gt;           *\           = /O O\ =&gt;&gt;&gt;/!#
+#=&gt;       &lt;=====   &lt;&lt;&lt;   = = =***= : !*!*#
+#*  \*=======* &gt;  =*=*!=*=         =     #
+##########################################
+##########################################
+david@ist.co.uk sent in-this one.
+</pre>
+
+<pre class="level" id="level.18">
+##########################################
+#&gt;&gt;&gt;O       :      O      O      O      O#
+#+&gt;&gt;O      /*      :      :      :      :#
+# +&gt;O     /*    &gt;O\# O    #      # #### ##
+#  +*    /* O    :              \  \OO*O/#
+#O +     *  :                     \#OOOO##
+#: +                     ##O##O#    \O:/##
+#* + C                   # : *&lt;#        ##
+#  +           O    ##   # ##C #         #
+#  +           :/=\ * =  #&gt;*####    \  / #
+#     &gt;*           \=/         O    \  /*#
+#   #      #@#                       \/###
+#          # #  S S S S S S S S     # OOT#
+#          # # ################ O     O:##
+#          # # #O# :&lt; #:#   O     ##  O  #
+# # * #    # # #:   #   #  # # #&gt;* # #:# #
+#*#*#*#    #M#*#A# ### X#  #*  # # # ***C#
+##########################################
+And another offering from Oz
+25
+</pre>
+
+<pre class="level" id="level.19">
+##########################################
+#O*O*O                            O     *#
+#*O*O*      ***  ***          =S=:=   O  #
+#O O /      OOO  OOO          = S *    O #
+# O /       ***            O  =====      #
+#O /             S+         O =         :#
+# /           ====== ======*= =     = +: #
+#                   O       =*=    = +   #
+#**=         +      O&lt;    ! === ===      #
+#*==         :      O     &gt; :   *=       #
+#=======:S   =            ! ======       #
+#        =   =         ***  =            #
+#        =   =         ***  = !  !   /\  #
+# S +    =   =              = ! T!  /AX\ #
+# =      :   S       @      = !!!!  !!!! #
+#::::::::=========+==*=:==S = !  !  !  ! #
+#        + * * * * ====    *= : *!**!* : #
+##########################################
+More from the netherlands .
+</pre>
+
+<pre class="level" id="level.20">
+##########################################
+#OO                   =                  #
+#**    &gt;*        / == =    ::::::::::::::#
+#               /=  =        O * O * O   #
+#*/             O&lt;= = *       \   \   \:=#
+#/              &gt;&gt;&gt;*=&gt;      /   /   /   *#
+#                == = *        /   /   :=#
+#:=====          =  =         /   /      #
+#O=   ============ ========== === === ===#
+# **&lt;&lt;&lt;                 *=*   *=* *=*   *#
+# ========= :::==========================#
+#          *&lt;&lt;&lt;===OO=====================#
+#*  ====    ===                        * #
+#====OO=         ====O=O=O=O=O=O=O=O=O== #
+#OO==OO=      O= =* * * * * * * * * * *= #
+#T@ &lt;OO=&gt;==== *&lt; =O=O=O=O=O=O=O=O=O=O=O= #
+#XA  ::**T**  *=                       * #
+##########################################
+... and still more (but-this is the last of his)
+</pre>
+
+<pre class="level" id="level.21">
+##########################################
+#*!&gt;&gt;O           \*OOOOO /&gt;O   \#T#X#O#O*#
+#  O ::!:::::::O  \OOOOO/:#*    #   ::::&lt;#
+##&gt;: ::::::!#&gt;#:   \OOO/::# # # *## ###O##
+#####::#&gt;*  \:      \O/  =# # #===# ## :##
+#*             \    :&lt;#  #  ::      #O :&lt;#
+####O/###########    /#     ##! ==###: A##
+##O#&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;: *#      &gt;&gt;:   #  #:::::#*##
+#&gt;*        *= O##   \    ## ## !#:######*#
+##    ##### ! :&lt;#         # !#  #    / :&lt;#
+#== =O   !&gt;:  :=#    /   *&lt; =# &gt;&lt;  O  @ ##
+#O&lt;#O:        =*          # !# =#= ======#
+#*::   #!!!!!  =#   \       =#  O#     :&lt;#
+############## =#O          !#! ::==== !*#
+# &gt;:             :   / #     ##        ! #
+### #         ####     #  #   =========! #
+#*  #!!!!!!!!!*::::#*# # #*&gt;:            #
+##########################################
+Max Rockatansky (jn@uk.ac.ukc) moves in
+</pre>
+
+<pre class="level" id="level.22">
+##########################################
+#*    O    &lt;*  \OOOOOO*/      #O*   &lt;&lt;&lt;&lt;&lt;#
+#####:####=== O \OOOOO/       #*:    &lt;&lt;&lt;&lt;#
+##            :  \OOO/        # #*    &lt;&lt;&lt;#
+###OO    @  ##/  &lt;*O/         #  #*    &lt;&lt;#
+#*A::  =======     :  ###     *:  *#    &lt;#
+######             \  #*&gt;    /          *#
+#          =O  =:===# ###  \    /        #
+#   /     &lt;&gt;*     X #       \  /OO  !!!  #
+#*         =O  O!===#        =*=&gt;*   *!  #
+#&gt;       \ ::::::            === *  !!!  #
+#&gt;&gt;       \               \      \       #
+#&gt;&gt;&gt;         \                    \  ### #
+#&gt;&gt;&gt;&gt;   OOOO    *                  \ **# #
+#&gt;&gt;&gt;&gt;&gt;           \  # \  /  ====   ==### #
+#::*:*           *# # # #             ===#
+#*  *  *:**:*&gt;   *#*#*#T#&gt;*  *  &lt;*!!!   *#
+##########################################
+... and then moves out again.
+</pre>
+
+<pre class="level" id="level.23">
+##########################################
+#/ *=                         #*   ^O&lt;/T&lt;#
+#  == :O O O O  O O O O       ###+\^^  :^#
+#      ^*::**:  **:**:*   OO          /^##
+#&gt;*            /          */          &gt;**#
+#^/          \   M  OO        \:::::\  / #
+#*\           *  / ##:*&lt;&lt;\    S      \/  #
+#:=&gt;:           O\ ^^:*&lt;&lt;/               #
+#*/             *&lt;X  @&lt; /            / ==#
+#/  O/\OO       ^/ \#^#/    /:+\    /   :#
+#  */ A\OO     O/S  #*#    /    \   = = =#
+# O/*   \*    */*  *\#/:           /=&gt;/:&lt;#
+#*/&gt;&gt;&gt;&lt;&lt;&lt;\OO  /  **    :         :&lt;= ^   #
+#/        \**/      :::            \=^===#
+#=/       \====*==*:                =*=S #
+#*        ^ ^ ^ ^ ^               ====*  #
+#+=\            ^                *&lt;&lt;&lt;&lt;&lt;&lt;*#
+##########################################
+Introducing ... THE BALLOONS!
+</pre>
+
+<pre class="level" id="level.24">
+##########################################
+#:::     !!!        !=#=#=#=#=#=#=#=#!^O #
+#::=    /   \       !#=#=#=#=#=#=#=#=!\:&lt;#
+#=:&lt;    *   *       \================/   #
+#*^                         * ** *       #
+#=       =:=         *&gt;\    ^\&lt;&gt;/     */X#
+#     =\ ^ ^ /=      \&lt;*    ^ \/      /!!#
+#     O= S S =O             ^M/         *#
+#   +&lt;&lt;&lt;     &gt;&gt;&gt;+          \*/     O /!!!#
+#    =    !    =            \    /*!::&lt;&lt;!#
+#        :^:                 #&lt;    \!:!!!#
+#        ^ ^                !*&gt;: \   ^*!*#
+#   *   &gt;&gt;:&lt;&lt;   *  \        ^^*:*    &gt;\! #
+# O                 \         ^^^  T&lt;&lt;O A#
+#====/         \====#\        ^*^  ^^!^! #
+#*&gt;\/     @  *  \/&lt;*!&gt;\       ^^^    !^!*#
+# ^   /=\ *&lt;/=\   ^ !&gt;&gt;*           /*!*!^#
+##########################################
+The Shrine Of Quetzacoatl
+</pre>
+
+<pre class="level" id="level.25">
+##########################################
+#            \O******O/          *:*:*#*O#
+#  *  O       \OO**OO/     *O*O*      O O#
+#  O  *O*      \OOOO/               &gt;  OO#
+#  *  O         \OO/         &gt;  &gt;      :O#
+#  O  *        /:O/   *O&lt;            ## *#
+#OO*          #* /    &gt;O*             ## #
+#\             \       *&lt;       &gt;&gt;*      #
+##\    \                               ###
+##X\O O \                                #
+#*OO       *&lt;    O           O:O*O:O&lt;&lt;   #
+# &gt;              OO          *&lt;&lt;&lt;&lt;&lt;      #
+#::::**O \       OO      # ============= #
+########  \      ::      #O&lt;&gt;*::*&gt;::**:*O#
+#*O*O*O*O* \             #O&gt;&gt;:**&gt;OO@ M*OO#
+#O O O O  ::::*==    A   #O*:#O O::*#O&lt;:*#
+#: * * *O*:::==*     *&lt;&lt; #*&gt;:====::*: **T#
+##########################################
+whb@hoh-2.att.com 's brainchild.
+</pre>
+
+<pre class="level" id="level.26">
+##########################################
+#           !  !  ^  #===#        ::     #
+# === === ==#  !* ^  :OOO! ====#  O: #=# #
+# S   !*!      #  *   OO&lt;!&lt;&lt;* T!  :O !O! #
+# * ==/ \===#\    ^   \OO/ ====#  != !^! #
+#*/*    O&lt;&lt;&lt;!/    ^    ^^         !  #=# #
+#       *:  O     *  :::::*    #==#      #
+#+=# # !^!  *     ^            #    O:*:*#
+#* ! #  ^   :     ^     :::*&lt;&lt;&lt;&lt;::::\    #
+#S:! #      :\    +   \                 /#
+#: ! #=#==@===\       /\      **       /^#
+#==#   !      *\     #==#     ^^      /^^#
+#    * !  *!    \   /&lt;^^&gt;\   /! \/OO\/^^^#
+# #====# / !   *&lt;\ /&lt;&lt;OO&gt;&gt;\ / !  \::/^^*^#
+# ^^^*&lt; /  !&lt;=====X========&gt;O:        ^^^#
+#T!^:::/\  !    &gt;/^\*: OO*&gt;O\^!  /  \  ==#
+#*!A *&lt;**&gt;*! O */^O^\O*:O* ::*  /\*:/\  *#
+##########################################
+At the time of writing,-my last screen. -Steve
+5000
+</pre>
+
+<pre class="level" id="level.27">
+##########################################
+#OOO#*#                                 @#
+#OOO:*#                                  #
+#T::::#   O   O   O   O   O         O:   #
+####\O#      /:            =========O=   #
+#S   :   &gt;:          \      :       :    #
+#           /         \    # ++++++++++  #
+#S     &gt;&gt;&gt;&gt;/            O #  +========+  #
+#                \      #&lt;   +#      O+  #
+#S  :             \          +#A######+  #
+#      S S S S S S S S S:&lt;&lt;&lt; +#      #+  #
+#S   S###################    +###### #+  #
+#      S S S S S S S S S#    +#OOOOO #+  #
+#S                      #    +#X:::: #+  #
+#  !*!*!*!******!*!*!*! #    +========+  #
+#S                           ++++++++++  #
+# S S S S S S S S S S S                  #
+##########################################
+Revived from the dead.
+</pre>
+
+<pre class="level" id="level.28">
+##########################################
+#&gt;\                +     *   M*         O#
+#  \        *             *** *         O#
+#   \O             #S        *          O#
+#   O**&lt;                                O#
+#     \                @          :     O#
+#  *   \ =                :  :          O#
+#        *!                             O#
+#        =    :::                       O#
+#              ::              OOOOO    O#
+#            ::::       &gt;*  \  \OOO/    O#
+#                  \         \  \O/     O#
+#                  &gt;\      X            O#
+#                    \                  O#
+#!!   :      ::       \                 O#
+#*    &lt;       :                         O#
+#*!   :                               ***#
+##########################################
+meulenbr@nl.philips.prl.cst revitalises the Dutch ...
+</pre>
+
+<pre class="level" id="level.29">
+##########################################
+#C      OOO        +\*/:O:::::O::=      X#
+#      @= =    =  :O/O\::=::O=T=:===::===#
+#C +&gt;    ^  \     :/*O*\::=**=*=:=******=#
+#           :  =  /O***O\:=**=:=:=**::**=#
+#C  &gt;             \*OOO*/:====:=:======*=#
+#              =S  \OOO/:::O&lt;=:=:=::::::=#
+#C                  \O/*:==O*=:=:=:======#
+#   &gt;    ^        O /T\*:::O =:=:=:=O====#
+#       \ /      == \O//:=====:=:=:*    *#
+#/:\     =          /^A:&lt;::::=:=:===== ==#
+#  ^ S             /O  :====:=:=:= *     #
+#\   =::O*:*O*:O   &lt;&lt;  ::::=:=:=:= ===:=:#
+#        OO    :   == ====:=:=:=:=M  *:=:#
+#     * OOO=======*=* ***=:=:=:=:=======:#
+#*  *  OOO**:**&gt;**^:\  &lt;&lt;=:=:=:=*::::::::#
+#^ =^= ****=*:***:=:    &lt;=*=:::=^========#
+##########################################
+Kenton's swan song.
+7
+</pre>
+
+<pre class="level" id="level.30">
+##########################################
+#                              &lt;         #
+#&gt; O         \  \                       &lt;#
+#&gt;                                       #
+#&gt; O           \  \                   O O#
+#&gt;                                    O O#
+#&gt; O             \  \                    #
+#&gt;                                   \   #
+#&gt; O               \  \S                 #
+#&gt;                     #####         \ ^ #
+#&gt; O                 # #  +#           * #
+#&gt;                                   /   #
+#&gt; O               /  /                  #
+#&gt;                                   /   #
+#&gt; O             /  /                    #
+#&gt;                                       #
+#&gt; O          X/  /    M                @#
+##########################################
+WHO'S IS IT? I can't remember (sorry)!
+</pre>
+
+<pre class="level" id="level.31">
+##########################################
+#\&gt;O\OOOOOOOOOO/         /   *     =====##
+#*\*::*::::::*/          \&gt;OOOO&lt;O/   ===##
+#  \  \      /            \O XOO/     ==##
+#   \  \    /     O        \OOO/&gt;     O==#
+#    \  \  /             &lt; /OO/ *     :*=#
+#     \  \/               /OO/     #######
+#     /          &gt;:    /   :*         ####
+#  *&gt;:   /\ O    !@!       \            ##
+#   /   /==\                \            #
+#  /   /==* \      ==================== !#
+# /   /==*   \     &gt;O O O O O O O O O O&lt;!#
+#/   /==* !   \     &gt;O O O O O O O O O &lt;*#
+# :&lt;/==*    &gt;                A *        ##
+#&gt;*/==* !                               ##
+# /==*     *   *&lt;\*&lt;   #=#=#=&gt;  \#=#=\ &lt;##
+#*==* !    !      ::\        *T         ##
+##########################################
+Alan Bland (mab@druwy.uucp) did this and the Amiga port.
+500
+</pre>
+
+<pre class="level" id="level.32">
+##########################################
+#&gt;SO                           O:::: :: *#
+#:::       O                  #  = === ==#
+#         OOO                  \        ##
+#S       O:::O                           #
+#       OO:*:OO               &gt; /\      ##
+#        O:::O       :                   #
+#S        OOO        O        /\ &lt;     :##
+#*         O        OXO                :*#
+##                  /C\       &gt; /\    ::##
+#**S     /   \    &lt;/ M \&gt;             ::*#
+###     /     \   /*=O=*\     /\     :####
+#***&gt;  /       \&lt;/       \&gt;          ::**#
+####            /=O=!T!O==\   &gt; /\  ::####
+#@***O        &lt;/     C     \&gt;       ::***#
+######        /=O==*==O==*==\       ######
+#+**A*      &lt;O      +++      O&gt;     :***C#
+##########################################
+A design from ems%nanotech@princeton.edu
+200
+</pre>
+
+<pre class="level" id="level.33">
+##########################################
+#    # #OOOOO    O   \*O\* \     T=   ===#
+# S #^*::::::    :    \OO\          =@  M#
+#    #^#\              \&gt;O\       \  *&lt;&lt;&lt;#
+#   A#^#*               \&gt;*&lt;       ======#
+#   #**O#          /         /     =XO&lt;:*#
+## #**^*T#:    \            =      ::*:*:#
+##*#######                   \     ======#
+#^^^^**:::                   =           #
+########:#                   /         *&lt;#
+#&gt;&gt;*\    \                   +     *   *&lt;#
+#         \                  \           #
+#&gt;&gt;*/      \*               :            #
+####                              \      #
+#&gt;O^        \*          /*\              #
+#^^^         ^   /+/    \*/       /      #
+#***\S            ^   \     \        \*&lt;&lt;#
+##########################################
+Unnamed level.
+</pre>
+
+<pre class="level" id="level.34">
+##########################################
+#*OO/  *= OC*O         !***!       OO****#
+#OO/   ^^ ^^^^          \O/        ^^    #
+#O/   /==\      /   /\O&lt; ^        /   O###
+#O#  /&gt;OO  O/    &gt;OO#=O=         /   &lt;&lt;*X#
+#&gt;O /  ^^         *&lt;#=O=        /     =*=#
+#\O/     # /\      ##=O= /     /      =O=#
+#=O=     &gt;    /\      ^   #   /       =O=#
+#=O= &gt;     \&gt;    /\          /        =O=#
+# ^           \    \        O   ^    ^^^ #
+#=\ ==\               @    /   &gt;O    // &lt;#
+#          /O          \       \O/      =#
+#      \  / &gt;O  O   \           ^       :#
+#            &gt;O      \                 \:#
+# O  /\       &gt;O      \              &lt;&lt;=*#
+#&gt;*:/     &gt;:   ^              \# ## /#####
+#**/* ##*###*##########*##            *:*#
+##########################################
+Cause and Effect
+200
+</pre>
+
+<pre class="level" id="level.35">
+##########################################
+#:::::============:*=:::                *#
+#::=::&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;::=:::======== ========#
+#*:=::===== ======::=:::&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;  *#
+#::=::&lt;&lt;&lt;&lt;&lt;&lt;&lt;   *=O:=:::======== ========#
+#OO=::=== = ======::=:::&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;   *#
+#:*=::&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;*=::=:::===== ===O=======#
+#*:=::=== ========::=:::&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;=***#
+#::=::&lt;&lt;&lt;&lt;&lt;&lt;&lt;   *=:*=:::===== ========= =#
+#:O=::=== ========::=:::&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt; =AX#
+#:*=::&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;  *=::=:::========== ======#
+#:*=::=====O======::=:::&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;*#
+#::=::&lt;&lt;&lt;&lt;&lt;&lt;&lt;   *=*:=:::============== ==#
+#O:=::=====O======::=:::&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;*#
+#*:=::&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt; *=::=:::=========== =====#
+#::=::===== ======::::::&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;*#
+#:@=:::     *  *=*:*::::====*===========T#
+##########################################
+The Combination Lock
+1000
+</pre>
+
+<pre class="level" id="level.36">
+##########################################
+#****!**/                    O   O&lt; *  M##
+#O***!*/              O&lt;O*O*O       *   ##
+#*O**!                *     *&lt;      O&lt;&lt;*##
+#O*O*        *!*!* * /              &gt;  *##
+# O /       &gt;&gt; &gt; &gt;  /                  *##
+#O /               O        @   ::::====##
+# /  &lt;*&lt;                            *  S##
+#/       \             &lt;         /  *   ##
+#*  &gt;     \         \     /     /   *   ##
+#* &gt;                  ===           ====##
+# &gt;                        *         ***##
+#&gt;    &lt;=========   &gt;   \   +   /==== :==##
+#=    &lt;=*O*&gt;&gt;&gt;&gt;     +     /          :::##
+#     &lt;=****===    \     /     /:   *&lt;&lt;&lt;##
+# ======*=**=:::    \         /:::  *   ##
+#::X*::::  &lt;=::::            /::::: *S  ##
+##########################################
+Unnamed level.
+</pre>
+
+<pre class="level" id="level.37">
+##########################################
+#                                       ##
+# ##################################### ##
+# O*O*O*O*#               #*#*#*#*#*#*# ##
+# #O#O#O#O# ############# #OOOOOOOOOOOOO##
+# OO**OO**O #           # #OOOOOOOOOOO:O##
+# O#O#O#O##O# ######### # #:::::::::::::##
+# **O O O O O #       # # #:::::::::::::##
+# #*#*#*#*#*### # # # # #   ##############
+#             # # # #   ^ # #O#O#O#O#O#O##
+############# # # # #########OO*OO*OO*OO##
+# OOOOOOOOOO  # # #        @#OOO*OOO*OOO##
+#&gt;*::*::::::#X# # ###########:::::::::::##
+#&gt;****::::::#   #            :::::::::::##
+#&gt;*::****&lt;# ############### # : : : : : ##
+#&gt;*^^^^^^#                  # # # # # #M##
+##########################################
+##########################################
+Labyrinth #1
+700
+</pre>
+
+<pre class="level" id="level.38">
+##########################################
+#**     #O   *  #*O&lt;O&lt;*&lt;*O#    :::*:::  ##
+#*##### #O*&lt;### #&gt;O*O*&gt;*&gt;*# ##^######## ##
+# #*O # #::#&gt;*                #     C   ##
+# #O**# # ### #*###########:#:# #####*# ##
+# #&gt;* *   #     # OOO *#&gt;*       :* #^# ##
+# ### # ###*# ###&gt;:::&lt;&lt;&lt;#:#:#:#*#^# ###*##
+#*&lt;&lt;# #      *&lt;#X&gt;:::&lt;&lt;&lt;#          *  #^##
+# ### ##### ######::##### #*## # ## #*####
+# #     #   #***#   #  *    #&gt;* *#&gt;*   @##
+# # #***# ###O# # ### ### #O######### ####
+# # #^**# #  *     *   *#:OOO:#*#     #*##
+# # ##### # # * # ### # #:#OO:# # ##### ##
+# #   #:O:O:#&gt;*    *  ^*#::::*#         ##
+#*# #*#:O:O:### # ### ################^ ##
+#**   #*:::::*# **&lt;##  *:::::**:::::*   ##
+##########################################
+##########################################
+Temptation
+150
+</pre>
+
+<pre class="level" id="level.39">
+##########################################
+#T*****O#**#    #                       =#
+######OO# &lt;#    #    O*O*O #            =#
+#X   #OO#OO#   O#         O#            =#
+###OO#OO#OO# OOO#         O#*           =#
+#*#OO#OO#OO# \O/#O    O O  #*     *     =#
+#O#OO#\O#OO# #O&gt;&gt;          #   *        =#
+#  \* #***/  OOO#      # # #^^^^^^^^^^^ =#
+#   *:      #OO/#      #   #^^^^^^^^^^^ =#
+#   *: ::\ ^#\**#    #    /#^^^^^^^^^^^ =#
+#       # :\         #  /OO#^^^^^^^^^^^ =#
+# #^#  ##   # ###    \ /OO/#^*^^^^^^^^^ =#
+# #*#  ###* # #O#     &lt;&lt;&lt;&lt;&lt;#^^^^^*^^^^^ =#
+# ##    # ^ #   #     &lt;&lt;&lt;&lt;&lt;#^^^^^^^^^^^ =#
+# ##  \   / #  /####*# # ###^^^^^^^^^^^  #
+# ## *\** \ #&gt;     &lt;#**&lt;*  ##^^^^^^^^^^^ #
+#*## ^ ^^\A #^^#      ###*##@            #
+##########################################
+The Water System
+</pre>
+
+<pre class="level" id="level.40">
+##########################################
+#O  &gt;O*      O   O   **  &gt;         OOOO*O#
+#O   &gt;&gt;OO&lt;   \&lt;!!O!!!:*\        &lt;  &gt;O*O&lt;:#
+#**    ::      OOO   #  \    /      :::::#
+###\           OO*&lt;  # /  &gt;**&lt;   \  *OOO&lt;#
+#*    \&gt;&gt;&gt;     OO  &gt;OO/   &gt;**\    \  ::::#
+#O     \**&lt;        ::**            \ *&lt;*:#
+#   &gt;   \!!!!!O   O###&lt;#####O####&lt; #######
+#       ::\O*:\   :!*::#&gt;::*&lt;#### ::&lt;::::#
+#&gt;&gt;:           \    \:#&gt;*:&gt;:::::\ ::::#\&lt;#
+# ###:*#    O   \O:O*:######::!::\###::#:#
+#&gt;#O*####   : O  \*:*&lt;OO##*&gt;*  ::::::::*&lt;#
+#:::O::##\    :   \**@:*  ##T####!::!##:##
+# O :#*&lt;&lt;#\&gt;&gt;*O O  \####:   !O#O*####O ###
+#*: :#:*&lt;&lt;*\*#O#*!   :##:OOOO:::::O:OO O&lt;#
+# !!###O#####OO###### :#:::OO:!##O::::::A#
+#*  :::::::*::*::: ::::#*::*::O*:::!!!::X#
+##########################################
+Unnamed level.
+1000
+</pre>
+
+<pre class="level" id="level.41">
+##########################################
+#S &gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;**SSSSSSS*&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt; S#
+#&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;*&gt;&gt;*** ***SSS* *&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;#
+#&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;******    **SSS* ***&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;#
+#&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;**            ****   *&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;#
+#&gt;&gt;&gt;&gt;&gt;****                      ***&lt;&lt;&lt;&lt;&lt;&lt;#
+#&gt;&gt;***                            **&lt;&lt;&lt;&lt;&lt;#
+#&gt;*                                 *&lt;&lt;&lt;&lt;#
+#&gt;*                                  *&lt;&lt;&lt;#
+#&gt;&gt;*                                  O&lt;&lt;#
+#&gt;&gt;&gt;*           ****                 **&lt;&lt;#
+#&gt;&gt;&gt;O   ********   *** **           S*&lt;&lt;&lt;#
+#&gt;&gt;&gt;****              * A*         **&lt;&lt;&lt;&lt;#
+#          ++++ ++++      *** M ****&lt;&lt;&lt;&lt;&lt;#
+#          !  !   /       &gt;&gt;&gt;* *&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;#
+#          !@T!  /        &gt;&gt;&gt;&gt;****&lt;&lt;&lt;&lt;&lt;&lt;&lt;#
+#          ++++ ++++      &gt;&gt;&gt;&gt;&gt;*O&lt;&lt;&lt;&lt;&lt;&lt;&lt;X#
+##########################################
+Unnamed level.
+</pre>
+
+<pre class="level" id="level.42">
+##########################################
+#!!                O T O    OO OOO  &gt;O   #
+#   !!!!!!!!!!!!\  &lt;   &gt;              &lt;=*#
+# !!!           !!  !S!      O       \   #
+#     !!!!!!!!!    #   # OO           &lt;=*#
+#!!!!!!       !!!! #   #+   ++  *\  &gt;\   #
+#       !!!!!      #   #*X= ***###\   &lt;#*#
+# =======   ========   ============== ===#
+#         !          @ &gt;&gt;:*:*:*:*:* O OA*#
+#&gt;=O=====O=O=======O   =============: ===#
+#  &gt;     * *      &lt;&gt;   #* &lt;# O O O O O O #
+# #  ===========  :#:  #&gt; *            O=#
+# #   !*:&gt;:&lt;:*!  :*#:: #* &lt;#* * * * * * *#
+# #   !* &lt;:&gt; *! :::#:::#&gt; *#             #
+# #   !*:&gt;:&lt;:*!:::::::::* &lt;#  ! ! ! ! !  #
+# #  =====:====::::#:!:#&gt; *==*=*=*=*=*=*=#
+#&gt;                 S S                  &lt;#
+##########################################
+Unnamed level.
+</pre>
+
+<pre class="level" id="level.43">
+##########################################
+##########################################
+##X   #   /OO\  /  O&lt;OOOOO   \OOOOOOO#OT##
+## ##O#/          OOOOOO/     OOOOOO #O&lt;##
+##O# **    /    #* A          \OOOO *#* ##
+## # #  /  O\  OO#\    \   \   \OO/**# ###
+## #:O     &lt;&gt;  */*#\        \*OOO&lt;* &lt;#  ##
+##   O    /\  / #*O*\ /\     @ \  * &lt; /&lt;##
+##  OOO## ##\*# #*O*# # \ &lt;  &gt;      \#  ##
+####\ *       #*#*O #  &gt;&gt;             O ##
+##    O#      # # # # #\             /* ##
+## ##     #   # #*##  ##\     :*&lt;&lt;&lt;&lt;&lt;   ##
+## OO  /# #   # #*#   ###      /    \   ##
+## \O\OO# #   # #*#  ####/           \  ##
+## #O#*:#&gt;:\  # #    *##/  ##\       #\ ##
+##  O#* # :*\   ####*/       * \   / : *##
+##*****:# *:* /        #      O ***#*#  ##
+##########################################
+Unnamed level.
+</pre>
+
+<pre class="level" id="level.44">
+##########################################
+#      *  *  O     &gt;*      @          =*O#
+#      ** O OO     &gt;*        S        =**#
+#:::::#########::::#::##############::=X*#
+#     !!!!         ##     *+!        ===A#
+# S  +: +  +    #O  #!!!!!!!!          TM#
+#:=::::::  :    &gt;*&gt; #   *  *  *         =#
+#::::=:::  =    # O #   *  *            *#
+#:=::::::  : +   ####   ****  *   !!!!! =#
+#::::*:::  =        #   *  *  *  : O O : #
+#:+::::::: : : +    #   *  *  * *!  !  !*#
+#::::=:::  = : :    #:::::::::::  \***/  #
+#::::::::  : :    +                ===   #
+#::::=:::  = : #: = *##########::::::::*:#
+#&gt;*::::::  : : :  : *                    #
+#::::=: =  = ^ =  = * ##  +::::::::::*** #
+#::::S: S  S S S  S * *#       !     ::S #
+##########################################
+Unnamed level.
+</pre>
+
+<pre class="level" id="level.45">
+##########################################
+#########OOOOOOOOOOOOO####################
+###### O ****OOOOOOOOOO**********=======##
+##               O                #*****##
+## #### O \OOOOOOOOOO/   *********#:######
+## #OOOO/   OOOOOOOO/  # \&lt;\&lt;\&lt;\&lt;\****M###
+## #OOO/   #\OOOOOO/  /#  #########/   &lt;*#
+## #OO/# ###  OOOO/  /##    #OO O     #O##
+## :O/*****#   OO*  /#O#  #  ** *    A#O##
+## :/*******#OOO/     *   ####### #:# #O##
+## /*******OOOOO# ############  # #:# #O##
+## ########OOOOO# ##O#O#O#O#O# ## #C# #O##
+##  #**####OOOOO# ##O#O#O#O#O#    #:#  **#
+##\  # #   *****: ##O#O#O#O#O# ####:##*/##
+#&gt;&gt;&gt;T  #  :     : O:*:*:*:*:* @#&gt; \*****##
+### ## #\:::::::: ###############&gt;OO/***##
+### X#  ::#:::::::::                 #**##
+##########################################
+Unnamed level.
+300
+</pre>
+
+<pre class="level" id="level.46">
+##########################################
+#S  #   * +#+#        #+#S # X           #
+# S*#+ ##      ###      #**#S#+######### #
+###+#*#   O    #S# OMO#  ++#&gt;&gt;*#  # +* # #
+#&gt;&gt;&gt;&gt;:# ######## # \:/       # #S*O  # # #
+# #*# # # * *@+#S*+    #########*##\ #S# #
+# # S #   O S### #####  #* S *#O++#/ ### #
+#+O####  /#### #S#S *+  ###O##/*  #      #
+#*&lt;S S#  #   #S####### ##       + # ### ##
+# S    #   # &lt;&lt;#S S  #  # ######### #S#  #
+#S++++  \ #++++# S S #  #  +      # # ## #
+# +  +  # #*   #####*## # /*####\  +#*#O #
+#S+ S+ S# # ####S  #+#  # # #S *+ #*#+   #
+# ++++  # #S#+  *#*  #  # #S#####O# #### #
+#S SSS S# #&gt;&gt;   *  O #  # #   S # #S#S * #
+##*###OO# ######+##### #/ \#####/ \##### #
+#S *                                     #
+##########################################
+Unnamed level.
+</pre>
+
+<pre class="level" id="level.47">
+##########################################
+#T         #              C#&gt;        \  *#
+#*#*****#&gt;&lt;#&gt;&lt;############C###^  #^^  ^^^#
+#########  #  #          &lt;C@     ######*##
+#&gt;&gt;A    \# #&gt;&lt;# # ###&lt;### ######/  &lt;&lt;   ##
+#     \    &lt;  # # &lt; #*#   #    &gt;&gt;   /^^^^#
+#####*######  # # #  &lt;# ##### #### #^^^^##
+#    &lt;    *#  # #*#&gt;    *#*    *    &lt;    #
+#  ###&gt;  #&lt;#    ##### ####&gt;&gt;&gt;&gt;&gt; / ^   #  #
+#&gt;     / &lt; #&gt;*\&lt;#* #   &lt;&lt;#*&gt;&gt;&gt;&gt;/  ^^^^#* #
+#   # *    #&gt;*/&lt;##  &lt;&gt; ###########^&gt;&gt;^/^ #
+##########*#    #  &gt;*&lt;  &lt;#* *#*&gt;&gt; ^ #^^^ #
+#&gt;    #    #######&lt;   &gt;&gt; *#&gt;\ ####  /&lt;&lt;  #
+###&gt;\ *#  &lt;# &gt; #   &gt;*&lt;  &lt;#&gt;&gt;&gt; * ##**    \#
+# *  \&gt;&gt;&gt;/ # &lt; # # &lt; &gt;   #*# *#  # &lt;&lt;#/*^#
+#&gt;*&gt;  \     &gt;  #   #&gt;\&lt;/&lt;#X/*\*#*       ^#
+# *&gt;    &gt;  #&gt;    ###  *  # ^^^&lt;##  *  ^^^#
+##########################################
+Unnamed level.
+1
+</pre>
+
+<pre class="level" id="level.48">
+##########################################
+#O                O *#OO#####*        &lt;  #
+#: ####:####O## ##: #     O&lt;####O#&gt;     :#
+#  #*     :::&lt;#  :# #                  O #
+#  ##    #:::*#  &gt;&lt;&lt;##  ## ####### #   O&lt;#
+#\       =====#        #&gt;&gt; #  O  # #     #
+#*           @:  ::  ####  # &gt;: /#*&gt;     #
+##OO/    &gt;    #  ::  #::#     : *#### :  #
+#X::  OOO   *&lt;#         #&gt;   \== #: O #*##
+#========&lt;============  #  #    :\##O#####
+##TOSS!##:##* O/  *&lt;&lt;#  ## #####         #
+#  &lt;==:     #    : # #     #OOO*#### #####
+##  *   :&lt;&lt; #   !&lt;:#*#######OOO/OO   #  C#
+## #  +!!   #   ::&lt;:##*     \O/ ::   # O #
+## &gt;: #O# # #&gt;      O*#\   &gt;&lt;&lt;           #
+## ##+#O# # ##  OOO :##          \## ##:&lt;#
+##     :  #                 /\    *#A*##*#
+##########################################
+Unnamed level.
+600
+</pre>
+
+<pre class="level" id="level.49">
+##########################################
+#*&lt;&gt;*\OO*OOOOOS    C+# O*#        O  @SS*#
+#OO   \OOO/&gt;*:      *#&gt;* # ######:::#*#*##
+#O/+&lt;  \O/ &gt;&gt;*&lt;&lt;&lt;&lt;&lt;OO&lt;&lt;# #:O    #* +#:*:##
+#* :&lt;   +           O&lt; # #&gt;*O/#   #     ##
+#:#:#   O     /  !  *#!# #&gt;*/##O#   ### ##
+#&gt;&gt;+  !/:\ X+        # # ##::: C####    ##
+#OO#O / O  ####\    /# O  *&lt;:*#      #####
+#OO *   :\   ###\    *&lt;&lt;:#M&gt;:/#######  O##
+#O   *\O   \  :O: *&lt;&lt;&lt;&lt;&gt;*:#            C&lt;#
+#*  /  \O /   #*###  #  #:############::##
+#       \+&lt;  #:S:::#   &gt;T*              ##
+# ############S#C#S##O#O#O#O#O#O#O#O#O#O##
+#*&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;*#:S:S:#&gt;*::::::::::::::::::+#
+###O#O#O#O#O############O#O#O#O#O#O#O###A#
+#C:::::::::::::::::::::::::::::::::::::::#
+#&gt;*&gt;*&gt;*&gt;*&gt;*&gt;*::!::!:!:/::::!:!:!:!:&gt;C:::/#
+##########################################
+Unnamed level.
+50
+</pre>
+
+<pre class="level" id="level.50">
+##########################################
+#     &gt;O=     O\S:::*=O*:O**OS::O ##   #O#
+# =&gt;   :=   !S  \==&gt;:       *==== #  ! ! #
+# =  *  = +      &gt;:! ==O=* !:   ^  * ! ! #
+#&gt;OO:   =  T*  #    !O*O*# ##\     :C#   #
+#: ::* :      \## &gt;     /# #O #&lt; :T: #####
+#:OOO\*&gt;OOOO/ :# S &gt;     \    /    : :   #
+#:: ::&lt;&gt;\OO/=\^#O! ^ &gt;/&gt;&lt; ===/   :O\+&lt;   #
+#::OO:::: ::X \#O :: !&gt;&gt;&gt;*::   / *+/  :/##
+#*\* O*^^^^:\SC**M \:+\/OO\  ++   /+  !&lt;+#
+#*S&gt;\&gt;C:::: /=======  OO+++\   S/+#  /!O:#
+#S *S\OOO*          O ::    \**/     :::*#
+#SSSS \O===== &gt;   /*O\*&lt;@           /^^ O#
+#*****/:    !  O  /^^=*/O:*&lt;&lt;&lt;O&lt;+ ! !OOOC#
+#    /    \       *!S : \O:&lt;&lt;\  OO   : : #
+#&gt;&gt;&gt;&gt;C+    \  / /      *&lt;^^&lt;^&lt;\&gt;OOOO!!\: #
+#^^^&gt;::*:O:*\*#*##   O   C**&lt;/*:::::  &gt;*A#
+##########################################
+Unnamed level.
+95
+</pre>
+
+<pre class="level" id="level.51">
+##########################################
+#                               */*C*\X  #
+# &gt;            &gt;       O      &gt;&gt;/     \  #
+#    +  ======      =====               \#
+#    &lt;  &gt;    &lt;      &gt;   &lt;                #
+#    &lt;  &gt; !  &lt;      &gt; * &lt;  S&gt;            #
+#    &lt;  &gt;  * &lt;   OO &gt;   &lt;   &gt;            #
+# @  &lt;  &gt; *  &lt;   :: &gt;   &lt;   &gt;    :*:     #
+#    &lt;  &gt;  C &lt;      &gt;   &lt;   &gt;    ^^^^    #
+#    &lt;  &gt; *  &lt;      &gt;   &lt;   &gt;   ^^^^^^   #
+#    &lt;  &gt;  +            &lt;   &gt;  ^^^^^^^^  #
+#    &lt;  &gt; :  &lt;::::::&gt;   &lt;   &gt;  ^^^^^^^^^ #
+#* \ &lt;  &gt;  * &lt;      &gt;   &lt;   &gt;  ^^^^^^^^^ #
+#    &lt;  &gt; *  &lt;      &gt;   &lt;   &gt;            #
+#    &lt;  &gt;  C &lt;      &gt;   &lt;   &gt;            #
+#    ====    ========   ====&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;   #
+#                                     S  #
+##########################################
+Unnamed level.
+90
+</pre>
+
+<pre class="level" id="level.52">
+##########################################
+#MOM &gt;&gt;&gt;\!*!   \   S   / */&lt;&lt;#O#O#O ****##
+#              O   !   O     #: : : \OOO##
+## #     # O####*#######                 #
+#&gt;&gt;&gt;&gt;/   O &gt;     :        /###:::\###### #
+## #*#&lt;&lt;&lt;### ##### /#######   OOO#   O   #
+# *\     *#* # &gt;   #        + *      ### #
+# #O\######  # /##*#S###O##   /OO##\ *#  #
+#      *O  O # #T*# * #&gt;O+*#####/ *# #* /#
+###### ### #*# #*!#M  ## \OOO/*\  #O ## *#
+#  *+**   *### # O###O/ A            #+# #
+#  \###\M#   # #TO#O :  #/OOO\ /######   #
+#       \# #O# # :  @##*#####/ \#S *+  O #
+# +     #/   : \#### ###/     &lt; # # #:#:##
+# + # O #    #     \#/    /#### #S#+  #S##
+# +   #&lt;#  O \###\   S /##      ##### # ##
+#S S S  *    *****##X##***&gt;&gt;&gt;&gt;      * *  #
+##########################################
+Unnamed level.
+</pre>
+
+<pre class="level" id="level.53">
+##########################################
+#*!*:AOOOOO :*!  =:*:*===T=* OO   =======#
+#O!===\OOO/===!  =O====            :::*:*#
+#:     \O/       =&gt;&gt;&gt;&gt;&gt;:######### =======#
+# #     :     #       # #:*OO::*#  :&lt;&lt;*:*#
+# #           #       # #&gt;OO::O:#O=:&lt;&lt;:*:#
+# ##############=\ /= # #:OO::&lt;&lt;#O=   ####
+# #      *O*=:*#*:*:=   #O:::*::#O=      #
+# #  @    :&lt;=:=##########&gt;:*::###O= =====#
+# #     =::   ***==*=*=   \ /=###O= =X:O&lt;#
+# #  !=== */=======OOO==\    =###O* =O*:*#
+# #&gt;:              ^^^       =###O  =*:&lt;*#
+# ##*###### ######      # # :&lt;# ::  =:&gt;O:#
+# ###      *      #*#*# #######  :  =OO*&lt;#
+#        \        ####/ /:O&lt;:*# = = =*:::#
+#####  !S =\    !S /     ::O*:# = =====*=#
+#    +    ^^ O+       ^^\*:::&lt;# =*      &lt;#
+##########################################
+From David Goodenough (dg@pallio.uucp)
+</pre>
+
+<pre class="level" id="level.54">
+##########################################
+#T*# C #  OOX######*####O ################
+#*!#M  #&lt; ::#####\OOO/#         #  :  O  #
+# O###O# A    ####\O/## ## ###\T&lt;:::::O ##
+#TO#O :  #  #          C  #OOO# #  :  O ##
+# :  @##*#&lt;&lt;###:#########  ***  #  :  O *#
+##### ##/   #O*#O*O    S#########  :  O ##
+# O+#/OO  /*#&gt;T : : # +         &gt;: :  : ##
+#  :  O/   *# #OO####   ##################
+#  #  &gt;O  ###  ::   C####                #
+#  #   O   *#\ ## O&lt;&lt;T* * O              #
+#\ # # ######**##&lt;## #S#################*#
+#  #  #O   *#     S# # #                 #
+# ##\  :   *## ##### ###  O O O O OO  OOO#
+#    O: #&gt;&gt;&gt;#S*      # #  OOO O O O O O O#
+# #S \  O   # ########S#  O O OOO OOO OOO#
+#   ## #### ###C++++C *                  #
+##########################################
+Unnamed level.
+60
+</pre>
+
+<pre class="level" id="level.55">
+##########################################
+#OOOOOOOOOOOOOOOOOOO# X                  #
+#:*:::::::::::::::::#O O                 #
+# ^^^^^^^^^^^^^^^^::#         /*\        #
+# ################  #        /^^^\       #
+#     *O*+*         #       /^^*^^\      #
+# ################  #   :::::#####:::::::#
+#&gt;        S           #                  #
+#**                ###               #::&lt;#
+#####:::#::::::::::&lt;#                #::&lt;#
+#O*O*::#O############&gt;*              #::&lt;#
+#&gt;&gt;*O:## ##                          #::&lt;#
+#O&gt;***#* *#                       :  #::&lt;#
+#***###* *#::::::::::::::::::::::::::::::#
+####O  # #@#       :   :    : :&lt;&lt;&lt;&lt;&lt;&lt;##**#
+#&gt;                                     ::#
+#** *  ###::::::::::::^::::::::::::::::^^#
+##########################################
+Unnamed level.
+3000
+</pre>
+
+<pre class="level" id="level.56">
+##########################################
+#           \OOO*O*OOO/                  #
+#            \OOOOOOO/                   #
+#             \OOOOO/                   /#
+#\             \OOO/                   /&lt;#
+#&gt;\             \O/                   /&lt;&lt;#
+#&gt;&gt;\           =   =                 /&lt;&lt;&lt;#
+#&gt;&gt;&gt;\==========X   ===============  /&lt;&lt;&lt;&lt;#
+#*&gt;&gt;&gt;\                             /&lt;&lt;&lt;&lt;*#
+#&gt;&gt;&gt;&gt;&gt;&gt;         @                  &lt;&lt;&lt;&lt;&lt;&lt;#
+#*&gt;&gt;&gt;/                             \&lt;&lt;&lt;&lt;*#
+#&gt;&gt;&gt;/============       ============\&lt;&lt;&lt;&lt;#
+#&gt;&gt;/            =  /^\  =            \&lt;&lt;&lt;#
+#&gt;/             = /^^^\ =             \&lt;&lt;#
+#/               /^^^^^\               \&lt;#
+#               /^^^^^^^\               \#
+#              /^^^*^*^^^\               #
+##########################################
+Unnamed level.
+</pre>
+
+<pre class="level" id="level.57">
+##########################################
+#   ^^         ^O:O^/&lt;&lt;&lt;#        #S   # X#
+#   ^:          ^*^O&lt;&lt;&lt;&lt;###### # # ####  #
+#    #&gt;\    O/\*&lt;&lt;&lt;&lt;/\O  #   # # # #     #
+#   S#::\   &gt;O*#####*O&lt; #  # # # # ##### #
+#  S##*::O   ^^ *O* ^^ #   #  S#       # #
+#  S#*:O::       #    #  ### ######### # #
+#  S#&gt;^^::           #S    ###     S # S #
+#O S######### #   *@######      #### #####
+#O:  ++++C+T#*#   O#**###O### # #  #     #
+#:OO  ######*#*# O#:        #S# #  # ###O#
+#*::             #:O  ##### #####    ****#
+##################*:  #***#     ########O#
+#####O##########*#O:^^#OOO#:###         :#
+#   *** ## ::O::^OO^^^^^^^   *###O*OOO## #
+#&lt;&lt;&lt; A &lt;&lt;&lt; &gt;O^^O*OO*::     :##::OO:&lt;::::##
+#  !!*!!   *::^O*::::##***###C:::::::::S:#
+##########################################
+Unnamed level.
+200
+</pre>
+
+<pre class="level" id="level.58">
+##########################################
+#**:***:*:**  OO    X       / # ##########
+#:***!* O  *     /    +       :   O     *#
+#*!T*:*    #         @     /: #       /  #
+#:**!**  #^#       +======/ : #      O   #
+#***:*! // #  # #    *   /    # ^    \   #
+#!**!** #  ^  \*#\   ^    :/    :^/    O #
+#      : ^/     &lt;#       &gt;/  &gt;         \ #
+#   *^/  /O#*^#*O     :       &lt;  &lt;      :#
+# S  #&gt; /* ######   /           &lt;*    #  #
+# #  O^ =/            /   /======/    # ##
+#             \    &lt;&gt;/   / O O      / #^##
+####    ##:#S    O A     #* O#     /   #*#
+#OO#&gt; \  S         / \   #* OO#   /+     #
+#  #              /       #^ :      \  * #
+#  #   &gt;            \     *  /      ^\  *#
+#    \  *       T^#          O   /* T    #
+##########################################
+Unnamed level.
+</pre>
+
+<pre class="level" id="level.59">
+##########################################
+#*  &lt;#   #       *          *            #
+#   &lt;#   *   :    O  ###     OOO!      / #
+# ###    !  S    !      O::        # OO  #
+# *#  +  O  ##     /   :&lt;           * !&lt; #
+# #   :::**                  ###   &gt;OO#  #
+#   #                          :      !&lt; #
+## # :!!!            &lt;    :  :    //\ O&lt; #
+#  #       &gt;     *    *           O #OO# #
+#&gt;&gt;#    / **    /   /      ::: :  * # O#:#
+#      /#OOO#!!#   /O               # O# #
+#O:   /&gt;&gt;   AX/   /     /     :*    #  # #
+#     #&gt;O   \/   /O   */######*#  :##* # #
+#    &lt;#&gt;  @     /    ##**T           \   #
+#   &lt;  #*\      O      &gt;&gt;&gt;&gt;/###  #       #
+# #     #*                #!!     \  OO  #
+#**#  \    /*    ! * ! *\     /     &gt;****#
+##########################################
+Unnamed level.
+</pre>
+
+<pre class="level" id="level.60">
+##########################################
+#O*OO+!*\O*        :      *&lt;/&gt;CCOO:O ::^O#
+#* *&lt;/   &gt;:\&gt;   :  ^S O   &lt;/OOOOO^::&lt;/::&lt;#
+#\        ^O  +     : :   /OOOOO&lt; ::/::::#
+#!&lt;::: :+:::      :     &lt;/&gt;OOOO&lt;  :/:: ::#
+#&gt;:\O: S ::\&gt;   :    OOO!:::^+^ :&lt;/ ^!::\#
+#   \* &gt;: O \&gt;       OOO/       :/   \^^^#
+# :  \    :  !========^^     &lt;  /     :^^#
+# :   \       O   OO  O \      /*    \&lt;^^#
+#A:M! X/      :       :     :  \^  :  \*^#
+#     /   :&gt;O====\  /===\  S^   \    * \T#
+# /&gt;:/     &gt;/&gt;&gt;        &lt;&lt;\!   *  \S  ^  \#
+#O**/   :*&lt;    :::&gt;&gt;\!:    !  ^  O\    * #
+#O*/    ==/O+    ***     +O \O\  :O\   ^ #
+# = O  /O/ ^    *&lt;S&gt;*     ^ O*!\  @ \/T!!#
+# /***/ ::=     *&lt;:&gt;*      *&lt;OO&gt;\::::\^O #
+# ^^^!&gt;*C:: \   *&lt;S&gt;*  : /   ::      *\*&lt;#
+##########################################
+Unnamed level.
+500
+</pre>
+
+<pre class="level" id="testing">
+L
+>
+v
+v
+>
+>
+&lt;
+&lt;
+&lt;
+^
+&lt;
+v
+^
+^
+v
+v
+>
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+>
+>
+>
+>
+&lt;
+&lt;
+&lt;
+^
+&lt;
+^
+&lt;
+v
+&lt;
+>
+^
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+^
+^
+v
+v
+^
+&lt;
+&lt;
+&lt;
+&lt;
+^
+v
+^
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+v
+v
+v
+&lt;
+&lt;
+v
+&lt;
+&lt;
+^
+&lt;
+>
+&lt;
+v
+&lt;
+>
+>
+>
+>
+^
+>
+>
+>
+^
+^
+^
+>
+>
+>
+>
+^
+^
+^
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+^
+&lt;
+&lt;
+.
+.
+.
+.
+.
+.
+^
+&lt;
+^
+&lt;
+.
+.
+>
+^
+^
+^
+&lt;
+&lt;
+&lt;
+&lt;
+^
+^
+v
+v
+>
+>
+>
+>
+>
+^
+^
+v
+v
+&lt;
+v
+v
+v
+v
+>
+v
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+v
+v
+v
+>
+>
+>
+>
+>
+v
+v
+v
+>
+>
+>
+>
+>
+^
+^
+^
+>
+>
+&lt;
+&lt;
+v
+v
+v
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+^
+^
+^
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+^
+^
+>
+>
+>
+&lt;
+>
+>
+>
+>
+^
+^
+v
+.
+.
+^
+&lt;
+&lt;
+^
+^
+^
+&lt;
+&lt;
+&lt;
+v
+&lt;
+&lt;
+&lt;
+^
+^
+^
+^
+.
+.
+>
+>
+.
+.
+.
+&lt;
+v
+>
+>
+>
+^
+>
+>
+v
+>
+v
+v
+&lt;
+v
+v
+v
+>
+>
+>
+^
+.
+>
+.
+^
+&lt;
+&lt;
+>
+>
+^
+&lt;
+>
+v
+v
+>
+>
+>
+&lt;
+^
+&lt;
+>
+>
+>
+^
+^
+^
+^
+v
+v
+v
+v
+>
+&lt;
+v
+>
+&lt;
+&lt;
+>
+^
+^
+>
+>
+>
+^
+^
+^
+v
+v
+^
+>
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+^
+v
+>
+>
+>
+>
+^
+>
+>
+v
+&lt;
+v
+^
+^
+>
+>
+>
+v
+v
+v
+v
+^
+&lt;
+>
+>
+>
+^
+v
+&lt;
+v
+^
+^
+&lt;
+>
+&lt;
+v
+>
+&lt;
+v
+v
+v
+>
+v
+v
+>
+v
+^
+^
+^
+>
+^
+.
+^
+^
+^
+&lt;
+>
+^
+v
+v
+>
+>
+>
+>
+v
+v
+v
+v
+>
+v
+>
+v
+v
+v
+&lt;
+v
+v
+&lt;
+v
+&lt;
+v
+&lt;
+&lt;
+>
+^
+>
+^
+^
+>
+^
+>
+>
+>
+v
+^
+^
+^
+>
+^
+^
+>
+&lt;
+^
+^
+^
+>
+>
+>
+^
+&lt;
+^
+^
+&lt;
+&lt;
+>
+>
+>
+>
+>
+>
+>
+v
+>
+>
+>
+^
+&lt;
+&lt;
+&lt;
+v
+v
+v
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+^
+&lt;
+>
+>
+>
+v
+>
+>
+^
+>
+>
+>
+^
+^
+>
+>
+>
+>
+>
+v
+>
+v
+v
+&lt;
+v
+v
+v
+>
+>
+>
+^
+>
+>
+>
+>
+>
+^
+^
+^
+^
+^
+>
+>
+>
+>
+v
+v
+&lt;
+^
+^
+.
+.
+>
+>
+>
+>
+v
+v
+v
+v
+v
+v
+&lt;
+&lt;
+v
+&lt;
+&lt;
+&lt;
+&lt;
+>
+>
+>
+>
+v
+v
+>
+&lt;
+v
+v
+>
+>
+>
+&lt;
+v
+v
+^
+^
+^
+^
+>
+.
+.
+^
+>
+^
+>
+>
+>
+v
+v
+v
+^
+>
+>
+>
+v
+v
+&lt;
+&lt;
+&lt;
+^
+^
+>
+>
+>
+v
+v
+&lt;
+&lt;
+&lt;
+^
+^
+^
+>
+^
+&lt;
+&lt;
+&lt;
+>
+.
+v
+&lt;
+&lt;
+&lt;
+^
+^
+>
+&lt;
+v
+v
+^
+>
+>
+>
+>
+>
+>
+v
+v
+>
+>
+v
+v
+v
+>
+>
+>
+>
+>
+>
+>
+>
+v
+v
+v
+&lt;
+v
+&lt;
+v
+v
+^
+^
+>
+^
+>
+^
+^
+^
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+^
+^
+^
+&lt;
+&lt;
+&lt;
+^
+^
+&lt;
+&lt;
+&lt;
+&lt;
+v
+v
+&lt;
+v
+v
+>
+&lt;
+^
+>
+^
+^
+^
+>
+>
+>
+>
+v
+v
+v
+v
+>
+v
+>
+>
+v
+v
+v
+>
+v
+>
+>
+>
+>
+>
+>
+v
+v
+v
+^
+^
+^
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+^
+&lt;
+&lt;
+^
+^
+^
+&lt;
+^
+&lt;
+^
+^
+^
+&lt;
+^
+&lt;
+&lt;
+&lt;
+v
+v
+v
+>
+&lt;
+&lt;
+v
+v
+v
+v
+v
+v
+>
+>
+&lt;
+v
+^
+&lt;
+^
+^
+^
+^
+>
+&lt;
+v
+>
+&lt;
+>
+^
+^
+^
+^
+^
+^
+>
+^
+^
+>
+>
+&lt;
+v
+v
+>
+>
+v
+>
+v
+>
+>
+>
+^
+^
+>
+>
+>
+>
+&lt;
+&lt;
+&lt;
+&lt;
+v
+v
+v
+v
+v
+>
+>
+>
+>
+>
+>
+>
+>
+>
+v
+v
+v
+&lt;
+&lt;
+v
+&lt;
+v
+v
+v
+v
+^
+&lt;
+&lt;
+^
+^
+^
+&lt;
+&lt;
+&lt;
+&lt;
+^
+&lt;
+&lt;
+v
+^
+^
+^
+^
+>
+>
+>
+v
+&lt;
+&lt;
+&lt;
+v
+v
+v
+>
+>
+>
+>
+>
+>
+>
+>
+>
+^
+>
+>
+v
+&lt;
+&lt;
+v
+^
+>
+v
+>
+>
+>
+>
+>
+>
+>
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+v
+v
+v
+^
+^
+&lt;
+^
+^
+^
+^
+^
+^
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+^
+^
+^
+^
+>
+>
+>
+>
+>
+>
+>
+v
+>
+>
+>
+>
+>
+>
+v
+v
+>
+>
+^
+>
+>
+>
+>
+v
+v
+>
+v
+v
+&lt;
+.
+.
+&lt;
+>
+^
+^
+^
+^
+^
+^
+>
+>
+>
+^
+^
+>
+>
+>
+^
+>
+>
+>
+v
+v
+v
+v
+v
+v
+&lt;
+&lt;
+>
+&lt;
+v
+v
+v
+v
+v
+>
+>
+v
+v
+v
+>
+v
+^
+&lt;
+^
+^
+^
+^
+^
+&lt;
+&lt;
+&lt;
+^
+^
+^
+>
+>
+>
+^
+^
+^
+^
+&lt;
+>
+^
+^
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+v
+&lt;
+v
+&lt;
+v
+&lt;
+v
+&lt;
+v
+&lt;
+v
+&lt;
+&lt;
+&lt;
+&lt;
+^
+^
+^
+>
+^
+>
+^
+^
+>
+v
+^
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+&lt;
+v
+^
+v
+v
+>
+>
+>
+>
+&lt;
+&lt;
+v
+^
+&lt;
+&lt;
+v
+v
+^
+&lt;
+&lt;
+&lt;
+&lt;
+^
+&lt;
+&lt;
+&lt;
+&lt;
+v
+v
+>
+v
+v
+v
+v
+v
+v
+v
+>
+>
+>
+v
+^
+&lt;
+&lt;
+^
+^
+^
+^
+^
+^
+^
+&lt;
+&lt;
+&lt;
+^
+&lt;
+^
+&lt;
+&lt;
+&lt;
+&lt;
+v
+v
+v
+v
+v
+v
+v
+>
+>
+>
+^
+>
+</pre>
+
+</body>
+</html>

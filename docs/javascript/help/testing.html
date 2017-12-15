@@ -1,0 +1,26 @@
+<h1>Testing</h1>
+
+<p>As the program was developed, some relatively minor testing was done to
+begin with.  But it was only when the program started to come together that
+more extensive robust testing was designed.  This involved adding recording and
+playback features.  Changes to the grid are recorded in a text file as a level
+is played by hand.  Manual testing consists of replaying a level and comparing
+it to playing the original version.  Automated (regression) testing consists of
+replaying all the recordings, with graphics and interaction switched off, and
+checking that the same effects are obtained.</p>
+
+<p>When it came to implementing the testing, good design up to that point paid
+off and made it easy. All changes to the grid were made by a call to a single
+specific method. That made it easy to adapt that method to record the change.
+When it came to automatic playback, the fact that the graphical display of the
+grid had been separated from the logic and storage of the grid contents made it
+easy to switch off graphics and interaction.</p>
+
+<p>Of course, it is impossible to test everything. There is only one known
+difference in logical behaviour from the original version, made deliberately to
+prevent baby monsters from moving outside the playing area, but there could be
+more. However, the testing guarantees that every level is solvable. A couple of
+the tests are included with each version of the program.</p>
+
+<hr />
+<p style="margin-left:40px;"><a href="design.html">Back</a></p>

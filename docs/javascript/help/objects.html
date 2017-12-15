@@ -1,0 +1,28 @@
+<h1>Objects</h1>
+
+<p>In an object oriented design, it is natural for each entity in the
+grid to be an object which is responsible for its own behaviour, with
+code written from its own point of view.  The reconstruction takes
+this approach, with each type of entity defining its own specific
+behaviour.</p>
+
+<p>How should blank squares be represented?  A lot of programmers would almost
+automatically make them nulls.  However, this is not very object oriented.
+Instead of having code which asks each object questions or tells it to act
+without knowing which kind of object it is, you have to write code which tests
+the object for being null first, before deciding what to do.  It is much better
+to make spaces into objects as well - they are just objects with a particularly
+simple behaviour.  (They just give way to any other entity which wants to move
+into their cell.)</p>
+
+<p>It might be worth noting that while using nulls instead of objects
+is a bad idea in an object oriented language such as Java, it is far
+less of a problem in a lower level language like C.  That is because
+in C you can call a function <tt>act(object)</tt> and the function can
+test for null, whereas in an OO language, you can't write the
+equivalent <tt>object.act()</tt> without testing for null first in the
+calling code.  Even so, objects are used rather than nulls in the C
+reconstruction, for uniformity.</p>
+
+<hr />
+<p style="margin-left:40px;"><a href="design.html">Back</a></p>

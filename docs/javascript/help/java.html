@@ -1,0 +1,71 @@
+<h1>The Java Version</h1>
+
+<p>The first version was written in Java, and is where the bulk of the
+reconstruction work was done. The other versions were relatively easy to develop
+after that.</p>
+
+<h3>Visibility</h3>
+
+<p>Originally, all the classes were together in one package.  That means that
+everything in a class which was not made private was visible to all the other
+classes.</p>
+
+<p>One design principle that was followed in the code was that entities should
+have only a few standard methods which are called from non-entity classes and
+which define their behaviour.  The entity classes all inherit from a base
+Entity class which provides utility methods to simplify the code in the
+subclasses.  These utility methods should, strictly speaking, be visible to the
+subclasses, but not to any of the non-entity classes.  Java famously doesn't
+provide a keyword which makes things visible to subclasses but not the other
+classes in the same package.</p>
+
+<p>For a project of this size, with a single programmer, this issue is hardly
+worth worrying about. You can rely on self-control to avoid calling utility
+methods from the wrong classes. After all, the design principle is only for your
+own benefit anyway. However, if anyone else is ever going to use the code, it is
+much better to enforce the restriction so that they can't accidently violate the
+principle. What is more, if anyone else is ever going to read the code, you
+don't want to set a bad example.</p>
+
+<p>So, all the entity classes were moved into a
+subpackage, <kbd>wanderer.entity</kbd>, and only the base Entity class itself
+was made public.  Within the Entity class, only the main behaviour methods were
+made public.  This refactoring step involved dealing with a lot of details to
+do with visibility modifiers, import statements, and package paths.  However,
+it meant that the entity class files were neatly separated from the others in a
+separate directory, and it showed up a number of poor pieces of code.</p>
+
+<h3>Graphics</h3>
+
+<p>One of the design aims was to separate out the graphics interface code from
+the other code, so that testing could be done without starting up a graphics
+interface.  At one point, it was found that even though it appeared that the
+graphics had been separated out, testing couldn't be done over an ssh
+connection because Java was attempting to initialize its graphics subsystem
+when no graphics system was available.</p>
+
+<p>The desire to run testing over a non-graphics remote connection was not an
+important one.  However, it is a great way to check whether graphics code has
+in fact been successfully separated out.  It is quite a strict check because
+Java attempts to initialize its graphics system whenever any graphics class is
+used, not just when a GUI is created.</p>
+
+<p>One issue that arises is how to store an entity's icon.  The Entity class,
+which is clearly needed during non-graphics testing, cannot have a field of
+type ImageIcon, which is a graphics class.  So, if an entity doesn't contain
+its own icon, where is it stored?  It should be stored in the Display class,
+which is essentially the only one that deals with graphics.  It is wasteful to
+have a separate icon per entity, so the Display class should contain some kind
+of map from the type of an entity to its appropriate icon.</p>
+
+<p>However, we don't want the Display class to know what entity types there are.
+That should be local to the entity classes, to avoid duplication and maintenance
+effort, and to make the Display class independent so that it can in principle be
+reused in other similar projects. So, instead of a map from entity types to
+icons, the Display class contains a map from icon names such as
+<code>"wall"</code> to icons, with each entity storing the name of its own icon
+in the map. The Display class itself does not know what icon names exist and
+does not contain any explicit mention of particular icon names.</p>
+
+<hr />
+<p style="margin-left:40px;"><a href="design.html">Back</a></p>

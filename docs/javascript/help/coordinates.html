@@ -1,0 +1,29 @@
+<h1>Coordinates</h1>
+
+<p>There are three coordinate systems in common use in mathematics and computer
+science, so it is quite important to be clear about which one you are
+using.  They are:</p>
+
+<ul>
+
+<li>Geometry coordinates, with x across and y up.</li>
+
+<li>Matrix coordinates, with y down and x across (better named as row,column or
+r,c than y,x).</li>
+
+<li>Graphics coordinates, with x across and y down.</li>
+
+</ul>
+
+<p>In computer science, the third of these is very common, probably
+because it is a compromise between thinking of the screen as a
+geometrical space and as a matrix of pixels at the same time.  The
+reconstruction uses graphics coordinates throughout the code, though
+some resources such as level files use matrix coordinates.</p>
+
+<p>The original game used graphics x, y coordinates, except when
+communicating with the curses library which uses matrix coordinates,
+so you see <tt>screen[y][x]</tt> a lot in the original code.</p>
+
+<hr />
+<p style="margin-left:40px;"><a href="design.html">Back</a></p>

@@ -65,8 +65,8 @@ class Queue<E> {
     public static void main(String[] args) {
         Queue<String> queue = new Queue<String>();
         String a = "a", b = "b", c = "c";
-        queue.join(a, false);
-        queue.join(b, false);
+        queue.agent(a, false);
+        queue.agent(b, false);
         queue.command('^');
         claim(queue.command() == '^');
         claim(queue.pull() == a);
