@@ -1,7 +1,7 @@
 package model;
 
 /* These are the methods that define the lifecycle of entities. It is expected
-that clone and wake will be suppied by the Cell class, and the remainder by
+that clone and wake will be supplied by the Cell class, and the remainder by
 custom game-specific entity classes. */
 
 interface Lifecycle<E> extends Cloneable {
