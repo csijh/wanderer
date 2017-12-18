@@ -17,19 +17,19 @@ and over again: "what is the simplest thing that works properly?"</p>
 <p>Unit testing is one of the most critical aspects of agile development, even
 for a lone developer.  If you get it right, confidence and satisfaction levels
 soar, as does the maximum size of project you can tackle.  The biggest problem
-by far with unit testing is the psychological one of getting round to it.  So,
-unit testing will be the first thing to be sorted out.</p>
+by far with unit testing is the psychological one of getting round to it.</p>
 
-<p>Graphics libraries are often designed to take over control of your program.
-There is a danger that the graphics library may overly influence the project
-design, with the logic not being properly separated from the graphics, and not
-being properly unit tested.  So, the non-graphics logic and its unit testing
-will be sorted out first, before starting on graphics.</p>
+<p>Refactoring builds on unit testing. It consists of redesigning and
+reimplementing to add functionality in small stages.  Unit testing allows
+components of the project to be upgraded quickly and confidently, confirming
+that old functionality has been accurately reconstructed.</p>
 
 <p>An important aspect of development which is surprisingly rarely mentioned in
 tutorials or textbooks or courses, is avoiding unnecessary cyclic dependencies.
-If classes are cyclically dependent, they can't easily be developed or tested
-independently of each other. Tools such as <a
+This allows components to be refactored in a specific order, with each being
+upgraded and unit tested in turn.  A group of cyclically dependent components
+must either all be handled as one big unit, or over-complex mocking techniques
+must be used to separate their development. Tools such as <a
 href="https://github.com/csijh/java-depend">depend</a> or <a
 href="http://www.dependency-analyzer.org/">CDA</a> can be useful to keep track
 of dependencies.  So, in this project, cyclic dependencies will be avoided.</p>
@@ -41,12 +41,10 @@ framework and custom classes, with framework classes not depending on custom
 classes.</p>
 
 <p>Some effort has been made to move complexities into framework classes, where
-that allows custom classes to be kept simple. But, to avoid over-engineering,
-the framework classes are not fully developed, polished, or documented, and have
-no guarantee of stability, as they should if they were formed into a separate
-engine or library.   Other developers can use this framework, but they will have
-to read the comments and code and be prepared to adapt or upgrade the framework
-classes.</p>
+that allows custom classes to be kept simple. But the framework is not fully
+general, polished, documented, or versioned, as it should be to become a fully
+general purpose facility.  Developers can use this framework, but they must be
+prepared to understand, adapt or upgrade the framework classes.</p>
 
 </body>
 </html>
