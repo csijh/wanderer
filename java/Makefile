@@ -17,7 +17,7 @@ Space Test Thing Wanderer:
 	java -cp ../bin wanderer.$@
 
 clean:
-	rm -f bin/*/*.class
+	rm -f ../bin/*/*.class
 
 # If the Depend program from https://github.com/csijh/java-depend is
 # available, use it to display dependencies in each package
@@ -31,5 +31,5 @@ depend:
 	@java Depend wanderer
 
 jar:
-	rm -f wanderer.jar
-	jar -cfe wanderer.jar wanderer.Wanderer -C bin .
+	rm -f ../wanderer.jar
+	jar -cfe ../wanderer.jar wanderer.Wanderer -C ../bin .
