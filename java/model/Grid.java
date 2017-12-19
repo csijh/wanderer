@@ -1,7 +1,7 @@
 package model;
 import java.util.*;
 
-/* By Ian Holyer, 2017. Free and open source: see licence.txt.
+/* Grid class. Free and open source: see licence.txt.
 
 Provide a grid for entities to inhabit.  At each (x,y) coordinate, there may be
 several entities in front of each other.  If the coordinates of an entity are
@@ -9,9 +9,9 @@ kept consistent with its grid location, the grid guarantees that an entity
 appears at most once in its cell. The grid has a flag to keep track of whether
 anything has changed recently.
 
-If an entity is not in the grid, it is said to be asleep.  It retains its grid
-position, but the only action available to it is to wake, i.e. go back on the
-grid at its old position.
+An entity can hide, off the grid.  It retains its grid position, but the only
+action available is to show itself, i.e. go back on the grid at its old
+position.
 
 This class is generic to avoid cyclic dependencies, and to allow for a
 game-specific Entity class. */
@@ -53,15 +53,15 @@ class Grid<E> {
     }
 
     // Push an off-grid entity onto the front of its cell.
-    void wake(int x, int y, E e) {
+    void show(int x, int y, E e) {
         changed = true;
         if (cells[x][y].contains(e)) throw new Error("Already in grid");
         cells[x][y].addFirst(e);
     }
 
-    // Check if an entity is on the grid.
-    boolean awake(int x, int y, E e) {
-        return cells[x][y].contains(e);
+    // Check if an entity is off the grid.
+    boolean hidden(int x, int y, E e) {
+        return ! cells[x][y].contains(e);
     }
 
     // Add an entity at the back of a given cell.
@@ -78,7 +78,7 @@ class Grid<E> {
     }
 
     // Remove an entity from its cell, so it is not in the grid.
-    void sleep(int x, int y, E e) {
+    void hide(int x, int y, E e) {
         changed = true;
         boolean ok = cells[x][y].remove(e);
         if (! ok) throw new Error("Not in the grid");
@@ -96,20 +96,20 @@ class Grid<E> {
     public static void main(String[] args) {
         Grid<String> grid = new Grid<String>(2,2);
         String a = "a", b = "b";
-        grid.wake(1,1,b);
-        grid.wake(1,1,a);
+        grid.show(1,1,b);
+        grid.show(1,1,a);
         claim(grid.front(1,1) == a);
         claim(grid.back(1,1) == b);
         claim(grid.pop(1,1) == a);
         claim(grid.pop(1,1) == b);
-        grid.wake(1,1,b);
-        grid.wake(1,1,a);
-        grid.sleep(1,1,b);
+        grid.show(1,1,b);
+        grid.show(1,1,a);
+        grid.hide(1,1,b);
         claim(grid.pop(1,1) == a);
         claim(grid.pop(1,1) == null);
         grid.changed(false);
         claim(! grid.changed());
-        grid.wake(1,1,a);
+        grid.show(1,1,a);
         claim(grid.changed());
         System.out.println("Grid class OK");
     }

@@ -2,14 +2,14 @@ package model;
 import java.util.*;
 import java.lang.reflect.*;
 
-/* By Ian Holyer, 2017. Free and open source: see licence.txt.
+/* State class. Free and open source: see licence.txt.
 
 This is the current global state of a game.  The state holds collections of
-entities, strings and counters, accessed using variables.  The defaults are null
-entities, empty strings, and zero counters.
+entities, strings and counters, accessed using string ids.  The defaults are
+null entities, empty strings, and zero counters.
 
 This class is generic to avoid cyclic dependencies, and to allow for a
-game-specific Entity class. */
+game-specific Entity base class. */
 
 class State<E> {
     private Map<String,E> entities = new HashMap<>();
@@ -58,8 +58,8 @@ class State<E> {
         State<Item> state = new State<>();
         state.set("PLAYER", p);
         claim(state.entity("PLAYER") == p);
-        state.set("TITLE", "title");
-        claim(state.string("TITLE").equals("title"));
+        state.set("MESSAGE", "message");
+        claim(state.string("MESSAGE").equals("message"));
         claim(state.count("SCORE") == 0);
         state.set("SCORE", 2);
         claim(state.count("SCORE") == 2);

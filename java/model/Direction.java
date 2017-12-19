@@ -1,10 +1,11 @@
 package model;
 
-/* By Ian Holyer, 2017. Free and open source: see licence.txt.
+/* Direction constants. Free and open source: see licence.txt.
 
 This defines the nine directions you can go in from any position (including
 staying put).  Each direction has x and y offsets, and methods for turning left
-or right or back. */
+or right or back. There is a static method go to convert a user keypress into a
+direction. */
 
 public enum Direction {
     Here(0,0), Up(0,-1), Down(0,1), Right(1,0), Left(-1,0),

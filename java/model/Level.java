@@ -2,7 +2,7 @@ package model;
 import java.io.*;
 import java.util.*;
 
-/* By Ian Holyer, 2017. Free and open source: see licence.txt.
+/* Level class. Free and open source: see licence.txt.
 
 A level object reads in a level file, and drives the mechanics of the game. A
 level object can be reused by calling the load method repeatedly. The command
@@ -13,84 +13,56 @@ at the start of the level, and the stop method at the end.  The tests method can
 be called on a game-specific level object, to carry out comprehensive
 replay-based testing from recordings. */
 
-public class Level<E extends Lifecycle<E>> {
-    final Grid<E> grid;
-    final State<E> state;
-    final Queue<E> queue;
+public class Level<E extends Cell<E>> {
+    private Hatchery<E> hatchery;
+    private Grid<E> grid;
+    private State<E> state;
+    private Queue<E> queue;
     private int width, height, limit;
     private String name, title;
     private char cells[][];
     private StringBuilder changes;
     private PrintWriter out;
-    private E[] samples;
-    private Map<Character,E> types;
 
-    // Provide convenience synonyms for the standard variable names.
-    static final String
-        NAME = "NAME", TITLE = "TITLE", MOVES = "MOVES", PLAYER = "PLAYER",
-        SCORE = "SCORE", SUCCESS = "SUCCESS";
-
-    // Create a level object, passing in a sample of each type of entity.
-    public Level(E[] es) {
-        samples = es;
-        types = new HashMap<>();
-        for (E e : es) types.put(e.code(), e);
+    // Create a level object, passing in a hatchery for creating entities.
+    public Level(Hatchery<E> h) {
+        hatchery = h;
         grid = new Grid<E>(2, 2);
-        state = new State<>();
+        state = new State<E>();
         queue = new Queue<E>();
     }
 
-    // Return the entity samples, and the size after loading.
-    public E[] samples() { return samples; }
+    // Return the size, name, title and move limit after loading.
     public int width() { return width; }
     public int height() { return height; }
+    public String name() { return name; }
+    public String title() { return title; }
+    public int limit() { return limit; }
 
-    // Delegate methods to the grid and state objects, for view purposes.
+    // Delegate methods to the grid and state objects, for viewing.
     public E front(int x, int y) { return grid.front(x, y); }
-    public E player() { return state.entity(PLAYER); }
-    public String name() { return state.string(NAME); }
-    public int score() { return state.count(SCORE); }
-    public boolean success() { return state.count(SUCCESS) > 0; }
-    public String status() { return player().status(); }
+    public E entity(String id) { return state.entity(id); }
+    public String string(String id) { return state.string(id); }
+    public int count(String id) { return state.count(id); }
 
-    // Load up a level file. It starts with a line giving the width, height and
-    // time limit, then the next line contain the title, then there is a grid of
-    // entity character codes in matrix (y,x) order. The new level is not
-    // assumed to be the same size as the old one.
+    // Load up a level file. The new level grid is not assumed to be the same
+    // size as the old one.  The limit on the number of moves is recorded in the
+    // state, so that it can be picked up by entities.
     public void load(String path) {
-        name = path;
-        int n = name.lastIndexOf('/');
-        if (n >= 0) name = name.substring(n+1);
-        n = name.indexOf('.');
-        if (n >= 0) name = name.substring(0, n);
+        name = extractFrom(path);
         InputStream is = getClass().getResourceAsStream(path);
         if (is == null) throw new Error("Can't open " + path);
         Reader r = new InputStreamReader(is);
         Scanner sc = new Scanner(r);
-        String line = sc.nextLine();
-        String[] parts = line.split(" ");
-        width = Integer.parseInt(parts[0]);
-        height = Integer.parseInt(parts[1]);
-        limit = Integer.parseInt(parts[2]);
-        if (limit == 0) limit = 1000;
-        title = sc.nextLine();
-        cells = new char[width][height];
-        for (int y = 0; y < height; y++) {
-            line  = sc.nextLine();
-            for (int x = 0; x < width; x++) {
-                cells[x][y] = line.charAt(x);
-            }
-        }
+        levelData(sc);
         sc.close();
         changes = new StringBuilder();
         grid.reset(width, height);
         state.reset();
         queue.reset();
-        state.set(NAME, name);
-        state.set(TITLE, title);
-        state.set(MOVES, limit);
-        fill();
+        state.add("MOVES", limit);
         hatch();
+        wake();
         copy();
     }
 
@@ -107,10 +79,10 @@ public class Level<E extends Lifecycle<E>> {
     // command have finished.
     public boolean step() {
         grid.changed(false);
-        E e = queue.pull();
+        E e = queue.next();
         while (! grid.changed() && e != null) {
             e.act();
-            if (! grid.changed()) e = queue.pull();
+            if (! grid.changed()) e = queue.next();
         }
         if (grid.changed()) recordChanges();
         if (e == null && out != null) out.println(changes.toString());
@@ -122,31 +94,69 @@ public class Level<E extends Lifecycle<E>> {
         out = p;
     }
 
-    // Spawn an entity.
-    E spawn(char c) {
-        E type = types.get(c);
-        if (type == null) throw new Error("Unknown code '" + c + "'");
-        E e = type.clone();
-        return e;
+    // Replay-based testing from recording files.  The first argument is an
+    // array of test file paths, and the second is an array of corresponding
+    // level file paths. A test file contains a recording of some moves in its
+    // level. The moves are replayed, without graphics, and the result compared
+    // to the recording. Test a game by creating a game-specific level object,
+    // and calling this method on it.
+    public int tests(String[] ts, String[] ls) {
+        for (int i=0; i<ts.length; i++) {
+            load(ls[i]);
+            test(ts[i]);
+        }
+        return ts.length;
     }
 
-    // Create all the initial entities and put them in the grid.
-    private void fill() {
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                char c = cells[x][y];
-                E e = spawn(c);
-                e.wake(x, y);
+    // Extract the level name from the path to the level file.
+    private String extractFrom(String path) {
+        int start = path.lastIndexOf('/');
+        if (start < 0) start = 0;
+        else start = start + 1;
+        int end = path.lastIndexOf('.');
+        if (end < start) end = path.length();
+        return path.substring(start, end);
+    }
+
+    // Read the level data from a scanner.  The data starts with a line giving
+    // the width, height and time limit, then there is a title line, then there
+    // is a grid of entity character codes in matrix (y,x) order.
+    private void levelData(Scanner sc) {
+        String line = sc.nextLine();
+        String[] parts = line.split(" ");
+        width = Integer.parseInt(parts[0]);
+        height = Integer.parseInt(parts[1]);
+        limit = Integer.parseInt(parts[2]);
+        if (limit == 0) limit = 1000;
+        title = sc.nextLine();
+        cells = new char[width][height];
+        for (int y = 0; y < height; y++) {
+            line = sc.nextLine();
+            for (int x = 0; x < width; x++) {
+                cells[x][y] = line.charAt(x);
             }
         }
     }
 
-    // Hatch all the entities.  (Do this after filling the grid with entities,
-    // in case entities need to know about each other when hatching.)
+    // Create all the initial entities and put them in the grid.
     private void hatch() {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                char t = cells[x][y];
+                E e = hatchery.hatch(t);
+                if (e == null) throw new Error("Unknown type '" + t + "'");
+                e.init(t, hatchery, state, queue, grid, x, y);
+                e.show();
+            }
+        }
+    }
+
+    // Wake all the entities.  (Do this after hatching all the entities, in case
+    // entities need to know about each other when waking.)
+    private void wake() {
         for (int x=0; x<width; x++) {
             for (int y=0; y<height; y++) {
-                grid.front(x,y).hatch();
+                grid.front(x,y).wake();
             }
         }
     }
@@ -158,7 +168,7 @@ public class Level<E extends Lifecycle<E>> {
         for (int x=0; x<width; x++) {
             for (int y=0; y<height; y++) {
                 E e = grid.front(x,y);
-                cells[x][y] = e.code();
+                cells[x][y] = e.type();
             }
         }
     }
@@ -170,10 +180,10 @@ public class Level<E extends Lifecycle<E>> {
     private void recordChanges() {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                char c = grid.front(x,y).code();
-                if (c == cells[x][y]) continue;
-                changes.append(" " + x + "," + y + "," + c);
-                cells[x][y] = c;
+                char t = grid.front(x,y).type();
+                if (t == cells[x][y]) continue;
+                changes.append(" " + x + "," + y + "," + t);
+                cells[x][y] = t;
             }
         }
     }
@@ -201,20 +211,6 @@ public class Level<E extends Lifecycle<E>> {
             }
             lineNumber++;
         }
-    }
-
-    // Replay-based testing from recording files.  The first argument is an
-    // array of test file paths, and the second is an array of corresponding
-    // level file paths. A test file contains a recording of some moves in its
-    // level. The moves are replayed, without graphics, and the result compared
-    // to the recording. Test a game by creating a game-specific level object,
-    // and calling this method on it.
-    public int tests(String[] ts, String[] ls) {
-        for (int i=0; i<ts.length; i++) {
-            load(ls[i]);
-            test(ts[i]);
-        }
-        return ts.length;
     }
 
     // No testing.  Call the tests method from a game-specific class.
