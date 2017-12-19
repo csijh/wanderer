@@ -1,5 +1,5 @@
 # Differences from the original
-[Back](index)
+[Back](Wanderer)
 -
 All 60 levels can be successfully solved, in the same way as in the original
 game. However, not all the features of the original game have been implemented,

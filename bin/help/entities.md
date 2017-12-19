@@ -1,5 +1,5 @@
 # Entities
-[Back](index)
+[Back](Wanderer)
 -
 ! images/Player.png
 This is you.

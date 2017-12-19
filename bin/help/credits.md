@@ -1,5 +1,5 @@
 # Wanderer Credits
-[Back](index)
+[Back](Wanderer)
 -
 This file should always be available to all players of the game.
 Feel free to add anything necessary, eg, if you create some new screens,
