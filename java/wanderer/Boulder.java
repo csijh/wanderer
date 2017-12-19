@@ -1,17 +1,15 @@
 package wanderer;
 import model.*;
 
-/* By Ian Holyer, 2017. Free and open source: see licence.txt.
+/* Boulder class. Free and open source: see licence.txt.
 
 A Boulder drops, sliding left or right if there is a deflector or another
 boulder underneath.  It can kill the player or a monster by falling on it. */
 
 class Boulder extends Entity {
-    public char code() { return 'O'; }
-
     private boolean moving;
 
-    public void hatch() {
+    public void wake() {
         background(Space);
         moving = false;
     }
@@ -26,7 +24,7 @@ class Boulder extends Entity {
 
     void meetMonster(Entity m) {
         add(SCORE, 100);
-        m.sleep();
+        m.hide();
         m.stop();
         go(Down);
     }

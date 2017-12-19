@@ -1,19 +1,17 @@
 package wanderer;
 import model.*;
 
-/* By Ian Holyer, 2017. Free and open source: see licence.txt.
+/* LeftArrow class. Free and open source: see licence.txt.
 
 An Arrow moves Left or Right and slides over or under a deflector or boulder.
 It pops a balloon if deflected, or kills the monster, or kills the player if it
 is already moving.  This class provides the code for both arrow types. */
 
 class LeftArrow extends Entity {
-    public char code() { return '<'; }
-
     private boolean moving;
     private Direction normal, deflect;
 
-    public void hatch() {
+    public void wake() {
         background(Space);
         moving = false;
         normal = is(LeftArrow) ? Left : Right;
@@ -28,9 +26,9 @@ class LeftArrow extends Entity {
 
     void meetSpace(Entity e) { move(); }
 
-    void meetMonster(Entity m) { add(SCORE, 100); m.sleep(); m.stop(); move(); }
+    void meetMonster(Entity m) { add(SCORE, 100); m.hide(); m.stop(); move(); }
 
-    void meetBalloon(Entity b) { b.sleep(); move(); }
+    void meetBalloon(Entity b) { b.hide(); move(); }
 
     void meetPlayer(Entity p) {
         if (moving) {
@@ -52,7 +50,7 @@ class LeftArrow extends Entity {
         if (deflect == Here) moving = false;
         else {
             Entity target = find(deflect);
-            if (target.is(Balloon)) target.sleep();
+            if (target.is(Balloon)) target.hide();
             move();
         }
     }
@@ -62,7 +60,7 @@ class LeftArrow extends Entity {
         if (deflect == Here) moving = false;
         else {
             Entity target = find(deflect);
-            if (target.is(Balloon)) target.sleep();
+            if (target.is(Balloon)) target.hide();
             move();
         }
     }

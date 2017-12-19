@@ -1,7 +1,7 @@
 package wanderer;
 import model.*;
 
-/* By Ian Holyer, 2017. Free and open source: see licence.txt.
+/* Baby class. Free and open source: see licence.txt.
 
 A baby monster. The babies appear from level 10 onwards. They move by left wall
 following, ignoring the player except for collisions.  A baby travels over earth
@@ -31,12 +31,10 @@ allowed to move on top of a wall, so they can't escape from the playing area (as
 in the original level 41). */
 
 class Baby extends Entity {
-    public char code() { return 'S'; }
-
     private Direction go;
 
     // Find a wall or barrier, if any, and set off left along it.
-    public void hatch() {
+    public void wake() {
         background(Space);
         if (! canGo(Up)) go = Right;
         else if (! canGo(Right)) go = Down;
@@ -46,10 +44,10 @@ class Baby extends Entity {
         agent(false);
     }
 
-    // Get to the front, then move, then sleep while the knock-on effects take
-    // place, then wake.
+    // Get to the front, then move, then hide while the knock-on effects take
+    // place, then show.
     public void act() {
-        if (! awake()) { wake(); return; }
+        if (hidden()) { show(); return; }
         front();
         if (! follow()) return;
         Entity target = find(go);
@@ -57,7 +55,7 @@ class Baby extends Entity {
     }
 
     void meetPlayer(Entity e) {
-        sleep();
+        hide();
         stop();
         set(MESSAGE, "Killed by the little monsters");
         e.mutate(Dead);
@@ -65,7 +63,7 @@ class Baby extends Entity {
     }
 
     void meetCage(Entity e) {
-        sleep();
+        hide();
         stop();
         add(SCORE, 20);
         e.mutate(Star);
@@ -75,7 +73,7 @@ class Baby extends Entity {
         queue(true);
         advance(go);
         move(e);
-        sleep();
+        hide();
     }
 
     // Attempt to change direction, in a left-wall-following fashion.
@@ -88,10 +86,10 @@ class Baby extends Entity {
         return true;
     }
 
-    // Move to the front of the grid cell if covered (by sleeping, then waking)
+    // Move to the front of the grid cell if covered (by hideing, then waking)
     private void front() {
-        sleep();
-        wake();
+        hide();
+        show();
     }
 
     // Can the baby go in the given direction?

@@ -2,12 +2,12 @@ package wanderer;
 import model.*;
 import java.lang.reflect.*;
 
-/* By Ian Holyer, 2017. Free and open source: see licence.txt.
+/* Entity class. Free and open source: see licence.txt.
 
 This acts as a base class for the game-specific Wanderer entities. */
 
 abstract class Entity extends Cell<Entity> {
-    // Define convenient synonyms for codes to use as types. Fortunately, Java
+    // Define convenient synonyms for types. Fortunately, Java
     // can distinguish the constants from the class names by context.
     static final char
         Space = '.', Wall = '#', Rock = '=', Earth = ':', Star = '*',
@@ -20,7 +20,7 @@ abstract class Entity extends Cell<Entity> {
     // the visitor pattern, but with no cyclic dependencies, and without having
     // to have a separate class for each entity type.
     void meet(Entity e) {
-        switch (e.code()) {
+        switch (e.type()) {
             case Space: meetSpace(e); break;
             case Wall: meetWall(e); break;
             case Rock: meetRock(e); break;
@@ -71,16 +71,8 @@ abstract class Entity extends Cell<Entity> {
     void meetPlayer(Entity e) { meetEntity(e); }
     void meetEntity(Entity e) {}
 
-    // Define here using reflection, to avoid having to override in each class.
-    // (Overridden in the Thing class.)
-    public String image() {
-        String name = getClass().toString();
-        name = name.substring(name.indexOf('.') + 1);
-        return "/images/" + name + ".png";
-    }
-
     // Initialise the game state at the start of a level.  Default: do nothing.
-    public void hatch() { }
+    public void wake() { }
 
     // Take one step. Default: do nothing.
     public void act() { }
@@ -97,6 +89,7 @@ abstract class Entity extends Cell<Entity> {
     // Define extra state variables: the number of stars left to find, the
     // arrival point for the teleport, and a message to display on screen.
     static final String
+        PLAYER = "PLAYER", SCORE = "SCORE", MOVES = "MOVES", SUCCESS = "SUCCESS",
         STARS = "STARS", ARRIVAL = "ARRIVAL", MESSAGE = "MESSAGE";
 
     // For each of the four major directions, there is a list of six places to
@@ -143,9 +136,10 @@ abstract class Entity extends Cell<Entity> {
         if (s.is(Space)) s.queue(true);
     }
 
+/*
     // Produce a status string.
     public String status() {
-        String lev = "Level " + string(NAME);
+        String lev = "Level " + level.name();
         lev += ": " + string(TITLE);
         String message = string(MESSAGE);
         if (message.length() == 0) message = "Stars: " + count(STARS);
@@ -155,4 +149,5 @@ abstract class Entity extends Cell<Entity> {
         String status = lev + gap + message + gap + score + gap + moves;
         return status;
     }
+    */
 }

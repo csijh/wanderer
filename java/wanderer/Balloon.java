@@ -1,16 +1,14 @@
 package wanderer;
 import model.*;
 
-/* By Ian Holyer, 2017. Free and open source: see licence.txt.
+/* Balloon class. Free and open source: see licence.txt.
 
 A Balloon rises, sliding left or right if there is a deflector or another
 balloon above.  It is relatively harmless and doesn't kill, but can be popped by
 an arrow. */
 
 class Balloon extends Entity {
-    public char code() { return '^'; }
-
-    public void hatch() { background(Space); }
+    public void wake() { background(Space); }
 
     public void act() { meet(find(Up)); }
 

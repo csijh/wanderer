@@ -1,7 +1,7 @@
 package wanderer;
 import model.*;
 
-/* By Ian Holyer, 2017. Free and open source: see licence.txt.
+/* Monster class. Free and open source: see licence.txt.
 
 The Monster chases and tries to eat the player.  It moves in step with the
 player, and moves either vertically or horizontally toward the player, according
@@ -9,10 +9,8 @@ both to which distance is less, and to which direction is available to it.
 The monster can be killed by a boulder or an arrow. */
 
 class Monster extends Entity {
-    public char code() { return 'M'; }
-
     // Make an agent, after the player, but before the baby monsters.
-    public void hatch() {
+    public void wake() {
         background(Space);
         Entity player = entity(PLAYER);
         if (player != null) player.stop();

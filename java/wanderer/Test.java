@@ -4,25 +4,31 @@ import model.*;
 import java.io.*;
 import java.util.*;
 
-/* By Ian Holyer, 2017. Free and open source: see licence.txt.
+/* Test class. Free and open source: see licence.txt.
 
 The Test class drives non-graphics level testing. */
 
 class Test {
 
-    static Entity[] samples = {
-        new Space(), new Thing(Wall), new Thing(Rock),
-        new Thing(Earth), new Thing(Star), new Thing(Cage),
-        new Thing(Time), new Thing(Landmine),
-        new Thing(Arrival), new Thing(Teleport),
-        new Thing(Exit), new Thing(LeftDeflector),
-        new Thing(RightDeflector), new Thing(Dead),
-        new Boulder(), new Balloon(),
-        new LeftArrow(), new RightArrow(),
-        new Monster(), new Baby(), new Player()
-    };
+    Entity hatch(char type) {
+        switch (type) {
+            case Space: return new Space();
+            case Wall: case Rock: case Earth: case Star: case Cage: case Time:
+            case Landmine: case Arrival: case Teleport: case Exit:
+            case LeftDeflector: case RightDeflector: case Dead:
+                return new Thing();
+            case Boulder: return new Boulder();
+            case Balloon: return new Balloon();
+            case LeftArrow: return new LeftArrow();
+            case RightArrow: return new RightArrow();
+            case Monster: return new Monster();
+            case Baby: return new Baby();
+            case Player: return new Player();
+            default: return null;
+        }
+    }
 
-    static String[] testNames = {
+    String[] testNames = {
         "t1a", "t2a", "t2b", "1a", "1b", "1c", "1d", "2a", "3a", "4a", "5a",
         "6a", "6b", "7a", "8a", "9a", "10a", "10b", "11a", "12a", "13a", "14a",
         "15a", "15b", "16a", "17a", "18a", "19a", "20a", "21a", "22a", "23a",
@@ -32,7 +38,7 @@ class Test {
         "54a", "55a", "56a", "57a", "58a", "59a", "60a", "60b"
     };
 
-    static String[] tests() {
+    String[] tests() {
         String[] tests = new String[testNames.length];
         for (int i=0; i<tests.length; i++) {
             tests[i] = "/tests/" + testNames[i] + ".txt";
@@ -40,7 +46,7 @@ class Test {
         return tests;
     }
 
-    static String[] levels() {
+    String[] levels() {
         String[] levels = new String[testNames.length];
         for (int i=0; i<levels.length; i++) {
             int n = testNames[i].length();
@@ -52,9 +58,9 @@ class Test {
 
     // Do comprehensive replay testing.
     public static void main(String[] args) {
-        Level<Entity> level = new Level<>(samples);
-        for (Entity e : samples) e.init(level);
-        int count = level.tests(tests(), levels());
+        Test t = new Test();
+        Level<Entity> level = new Level<>(t::hatch);
+        int count = level.tests(t.tests(), t.levels());
         System.out.println("Test class OK: " + count + " tests succeeded");
     }
 }

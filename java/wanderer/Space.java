@@ -1,7 +1,7 @@
 package wanderer;
 import model.*;
 
-/* By Ian Holyer, 2017. Free and open source: see licence.txt.
+/* Space class. Free and open source: see licence.txt.
 
 A space is an entity representing the background behind other entities. Any
 entity which can move or disappear or trigger other entities into movement
@@ -12,8 +12,6 @@ positions, being put into the event queue as a triggering mechanism. A space
 move to the position. */
 
 class Space extends Entity {
-    public char code() { return '.'; }
-
     private Direction go;
 
     public void act() {

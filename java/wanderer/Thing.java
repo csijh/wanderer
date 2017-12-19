@@ -1,6 +1,6 @@
 package wanderer;
 
-/* By Ian Holyer, 2017. Free and open source: see licence.txt.
+/* Thing class. Free and open source: see licence.txt.
 
 A Thing is an inert entity.  It can be a Wall, Rock, Earth, Star, Cage, Time,
 Landmine, Arrival, Teleport, Exit, LeftDeflector, RightDeflector, or Dead.
@@ -17,40 +17,16 @@ Teleport takes the player to the arrival point. The Exit in each level allows
 the player to end the level, when all the stars have been collected. */
 
 class Thing extends Entity {
-    private char code;
-    Thing(char c) { code = c; }
-    public char code() { return code; }
-
     // Override to deal with multiple types of Thing.
-    public Entity spawn() { return new Thing(code); }
+    public Entity spawn() { return new Thing(); }
 
-    // Override to deal with multiple types of Thing.
-    public String image() {
-        switch (code) {
-            case '#': return "/images/Wall.png";
-            case '=': return "/images/Rock.png";
-            case ':': return "/images/Earth.png";
-            case '*': return "/images/Star.png";
-            case '+': return "/images/Cage.png";
-            case 'C': return "/images/Time.png";
-            case '!': return "/images/Landmine.png";
-            case 'A': return "/images/Arrival.png";
-            case 'T': return "/images/Teleport.png";
-            case 'X': return "/images/Exit.png";
-            case '/': return "/images/LeftDeflector.png";
-            case '\\': return "/images/RightDeflector.png";
-            case '?': return "/images/Dead.png";
-            default: throw new Error("Unknown type of Thing");
-        }
-    }
-
-    // Define hatch to deal with multiple types of Thing.
-    public void hatch() {
+    // Define wake to deal with multiple types of Thing.
+    public void wake() {
         if (! is(Space) && ! is(Wall)) background(Space);
         if (is(Star) || is(Cage)) add(STARS, 1);
         else if (is(Arrival)) {
             set(ARRIVAL, this);
-            sleep();
+            hide();
         }
     }
 }

@@ -1,16 +1,14 @@
 package wanderer;
 import model.*;
 
-/* By Ian Holyer, 2017. Free and open source: see licence.txt.
+/* Player class. Free and open source: see licence.txt.
 
 The Player entity responds to user key presses. */
 
 class Player extends Entity {
-    public char code() { return '@'; }
-
     private Direction go;
 
-    public void hatch() {
+    public void wake() {
         background(Space);
         set(PLAYER, this);
         agent(true);
@@ -38,21 +36,21 @@ class Player extends Entity {
 
     void meetRightArrow(Entity a) { if (go == Up || go == Down) push(a); }
 
-    void meetEarth(Entity e) { add(SCORE,1); e.sleep(); move(); }
+    void meetEarth(Entity e) { add(SCORE,1); e.hide(); move(); }
 
     void meetStar(Entity e) {
-        add(SCORE,10); subtract(STARS,1); e.sleep(); move();
+        add(SCORE,10); subtract(STARS,1); e.hide(); move();
     }
 
     void meetTime(Entity e) {
-        add(SCORE, 5); add(MOVES, 250); e.sleep(); move();
+        add(SCORE, 5); add(MOVES, 250); e.hide(); move();
     }
 
     void meetLandmine(Entity e) { end("Killed by an exploding landmine"); }
 
     void meetTeleport(Entity t) {
         add(SCORE, 20);
-        t.sleep();
+        t.hide();
         Entity arrival = entity(ARRIVAL);
         excite(arrival.find(UpLeft));
         excite(arrival.find(DownLeft));
@@ -63,7 +61,7 @@ class Player extends Entity {
         // Get rid of anything that has landed at the arrival position.
         Entity e = arrival.find(Here);
         while (! e.is(Space)) {
-            e.sleep();
+            e.hide();
             e = arrival.find(Here);
         }
         move(arrival);
@@ -72,7 +70,7 @@ class Player extends Entity {
     void meetExit(Entity it) {
         int s = count(STARS);
         if (s > 0) return;
-        sleep();
+        hide();
         add(SCORE, 250);
         set(MESSAGE, "Success!");
         add(SUCCESS, 1);
@@ -100,7 +98,7 @@ class Player extends Entity {
            (!it.is(Boulder) || !next.is(Monster))) return;
         if (next.is(Monster)) {
             add(SCORE, 100);
-            next.sleep();
+            next.hide();
             next.stop();
         }
         it.move(next);
