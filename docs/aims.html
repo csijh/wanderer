@@ -9,7 +9,7 @@
 
 <h1>Aims</h1>
 
-<p>There is an unfortunate temptation for Java developers to over-engineer
+<p>There is an unfortunate temptation for developers to over-engineer
 projects.  This is despite the KISS rule of agile development ("keep it sweet
 and simple").  So, throughout this project, the same question will be asked over
 and over again: "what is the simplest thing that works properly?"</p>
@@ -21,15 +21,15 @@ by far with unit testing is the psychological one of getting round to it.</p>
 
 <p>Refactoring builds on unit testing. It consists of redesigning and
 reimplementing to add functionality in small stages.  Unit testing allows
-components of the project to be upgraded quickly and confidently, confirming
+components of the project to be refactored quickly and confidently, confirming
 that old functionality has been accurately reconstructed.</p>
 
-<p>An important aspect of development which is surprisingly rarely mentioned in
-tutorials or textbooks or courses, is avoiding unnecessary cyclic dependencies.
-This allows components to be refactored in a specific order, with each being
-upgraded and unit tested in turn.  A group of cyclically dependent components
-must either all be handled as one big unit, or over-complex mocking techniques
-must be used to separate their development. Tools such as <a
+<p>An important aspect of agile development which is surprisingly rarely
+mentioned in tutorials or textbooks or courses, is avoiding unnecessary cyclic
+dependencies. This allows components to be refactored in a specific order, with
+each being upgraded and unit tested in turn.  A group of cyclically dependent
+components must either all be handled as one big unit, or over-complex mocking
+techniques must be used to separate their development. Tools such as <a
 href="https://github.com/csijh/java-depend">depend</a> or <a
 href="http://www.dependency-analyzer.org/">CDA</a> can be useful to keep track
 of dependencies.  So, in this project, cyclic dependencies will be avoided.</p>
@@ -42,9 +42,9 @@ classes.</p>
 
 <p>Some effort has been made to move complexities into framework classes, where
 that allows custom classes to be kept simple. But the framework is not fully
-general, polished, documented, or versioned, as it should be to become a fully
-general purpose facility.  Developers can use this framework, but they must be
-prepared to understand, adapt or upgrade the framework classes.</p>
+general, polished, documented, or versioned, as it should be for a fully general
+purpose facility.  Developers can use this framework, but they must be prepared
+to understand and adapt the framework classes.</p>
 
 </body>
 </html>

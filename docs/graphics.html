@@ -21,7 +21,7 @@ There is a danger that the graphics library may overly influence the project
 design, and many developers fall into this trap.  So it is important to sort out
 straight away the relationship of the graphics to the rest of the project.</p>
 
-<p>How should a program with graphics be designed? What is the simplest thing
+<p>How should a project with graphics be designed? What is the simplest thing
 that works properly? There are various design patterns which apply, but they
 boil down to three basic possibilities:</p>
 
@@ -52,10 +52,10 @@ graphics libraries are typically designed to be used.  It is the clear winner
 for this project. (An interesting variation on approach (c), not explored here,
 is to arrange for some objects in the model to draw themselves.)</p>
 
-<p>So, the wanderer framework is divided into two packages <code>model</code>
-and <code>view</code>, with the model not depending on the view.  Development
-can begin with the model and its unit testing, while leaving the view until
-later.</p>
+<p>So, the wanderer framework is divided into <code>model</code> components and
+<code>view</code> components, with the model not depending on the view.
+Development can begin with the model and its unit testing, while leaving the
+view until later.</p>
 
 </body>
 </html>

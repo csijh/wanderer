@@ -24,13 +24,18 @@
 file, and acts as a driver for all the non-graphics aspects of the game.</p>
 
 <p>Which way round should the dependencies go?  Should <code>Entity</code>
-depend on <code>Level</code>, or vice versa? Either choice is possible, with
-some effort.  The choice made here is to have the <code>Entity</code> class
-depend on the <code>Level</code> class, and make the <code>Level</code> class a
-general framework class:</p>
+depend on <code>Level</code>, or vice versa? It seems natural to make the
+<code>Level</code> class into a controller, telling the entities when to act. On
+the other hand, entity classes are presumably custom classes defined for a
+specific game, whereas the <code>Level</code> class could usefully be part of
+the framework.</p>
 
-<img src="levels.png" alt="The Entity class depends on Level which
-depends on Grid" />
+<p>The approach taken here is to define a <code>Cell</code> class as a base
+class for custom entity classes, to have it be a framework class, and to allow
+the <code>Level</code> class to control cells:</p>
+
+<img src="levels.png" alt="The Entity and Level classes
+depend on Cell which depends on Grid" />
 
 <p>Besides looking after the grid, one of the things a level object needs to do
 is to keep track of global variables such as a score.  But to keep the
@@ -44,35 +49,8 @@ control what order they act in.  And again, to keep <code>Level</code> general,
 it should be entities which queue themselves up.  A generic <code>Queue</code>
 class can be separated out.  That leads us to a picture like this:</p>
 
-<img src="levels2.png" alt="The Entity class depends on Level,
-which depends on Grid, State and Queue" />
-
-<p>Despite getting entities to do as much as possible, the level object still
-needs to be able to control entities.  To enable this, we can effectively split
-the <code>Entity</code> class in two.  Some lifecycle methods can be defined on
-entities, to capture what the level object knows about them.  For example,
-<code>hatch</code> can be called on each entity after a level has been loaded,
-to give it the chance to affect the initial state of the level.  And a method
-<code>act</code> can be called on an entity when it is time for it to take one
-step of some kind.  These methods can be defined in an interface:</p>
-
-<pre>interface Lifecycle {
-    void hatch();
-    void act();
-    ...
-}
-</pre>
-
-<p>Then the generic type parameter of the <code>Level</code> class can be
-declared to meet this interface:</p>
-
-<pre>class Level&lt;E extends Lifecycle> { ... }
-</pre>
-
-<p>And finally the <code>Entity</code> class can implement the interface:</p>
-
-<pre>class Entity implements Lifecycle { ... }
-</pre>
+<img src="levels2.png" alt="he Entity and Level classes,
+depend on Cell, which depends on Grid, State and Queue" />
 
 <p>Two aspects of the wanderer game are a little unusual.  First, instead of an
 entity such as an arrow moving autonomously, it moves by triggering the space in
@@ -91,6 +69,31 @@ physics.</p>
 <p>The reconstruction uses a double ended queue, and allows entities to be added
 at either end.  By adding entities at the start instead of the end, the original
 game is reproduced as accurately as possible.</p>
+
+<p>There is one more thing a level needs to be able to do.  That is to create
+entities of different types, according to the data from a level file.  Entities
+may also need to spawn other entities.  The creation of new entities is
+something that can only be carried out when full knowledge of all the custom
+entity classes is known.  So a custom factory object of some kind will need to
+be passed to the level, and an interface or base class will need to be provided
+for it, accessible both by the level object and entities.  Let's give the name
+<code>Hatchery</code> for such a factory interface and add it to the
+diagram:</p>
+
+<img src="levels3.png" alt="The Entity and Level classes,
+depend on Cell, which depends on Grid, State, Queue and Hatchery" />
+
+<p>This is reasonable design for the model.  The way custom classes are intended
+to be designed is something like this:</p>
+
+<img src="levels4.png" alt="A Program class, which depends on various entity
+classes, which depends on the Entity base class" />
+
+<p>There may be many specific entity classes, all inheriting from the
+<code>Entity</code> class.  Each entity interacts with other entities, but only
+knows that they have class <code>Entity</code>, nothing more specific, to avoid
+dependencies between the classes. A <code>Program</code> class knows about all
+the various entity classes, and can provide a factory for them.</p>
 
 </body>
 </html>

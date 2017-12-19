@@ -17,16 +17,17 @@ classes one by one, even when classes that haven't been tackled yet are still
 broken. Some developers would want to use an IDE or sophisticated build tool for
 compilation.  But what is the simplest thing that works properly?</p>
 
-<p>A reasonably simple makefile will do. The Java source files can be put in a
-folder <code>src</code> and the compiled class files can be put in a folder
-<code>bin</code>. Then a makefile can be written like this:</p>
+<p>A reasonably simple Makefile will do. In the Java case, Java source files can
+be put in a folder <code>java</code> and the compiled class files can be put in
+a folder <code>bin</code>. Then a Makefile in the <code>java</code> folder can
+be written like this:</p>
 
 <pre>Entity Grid Display Help:
-        javac -sourcepath src -d bin src/$@.java
-        java -cp bin $@
+        javac -d ../bin $@.java
+        java -cp ../bin $@
 
 clean:
-        rm -f bin/*.class
+        rm -f ../bin/*.class
 </pre>
 
 <p>The first rule allows you to type in any single class name, e.g. <code>make
@@ -38,11 +39,9 @@ compiled and run by using <code>make</code> on its topmost driver class.</p>
 
 <p>The compiler gets confused occasionally, when obsolete class files are left
 lying around, so the <code>make clean</code> option is provided, to be used when
-a class is deleted or renamed. Occasionally, it can be useful to add an
-artificial extra dependency in the Java code by mentioning one class in another
-unnecessarily, to help the compiler do a complete job.</p>
+a class is deleted or renamed.</p>
 
-<p>The simple makefile shown above assumes that all the classes are in the
+<p>The simple Makefile shown above assumes that all the classes are in the
 default package.  As the number of classes in a project grows, it gets
 increasingly clumsy for them all to be lumped together rather than classified
 into separate package folders.  But the makefile approach can be extended fairly
@@ -50,16 +49,16 @@ simply.  Suppose there are two packages, <code>model</code> and
 <code>view</code>.  Then the makefile could look like this:</p>
 
 <pre>Entity Grid:
-        javac -sourcepath src -d bin src/model/$@.java
-        java -cp bin model.$@
+        javac -d ../bin model/$@.java
+        java -cp ../bin model.$@
 
 Display Help:
-        javac -sourcepath src -d bin src/view/$@.java
-        java -cp bin view.$@
+        javac -d ../bin view/$@.java
+        java -cp ../bin view.$@
 
 clean:
-        rm -f bin/model/*.class
-        rm -f bin/view/*.class
+        rm -f ../bin/model/*.class
+        rm -f ../bin/view/*.class
 </pre>
 
 <p>A class can still be compiled using its short class name, e.g. <code>make
