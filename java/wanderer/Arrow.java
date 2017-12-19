@@ -1,13 +1,13 @@
 package wanderer;
 import model.*;
 
-/* LeftArrow class. Free and open source: see licence.txt.
+/* Arrow class. Free and open source: see licence.txt.
 
-An Arrow moves Left or Right and slides over or under a deflector or boulder.
-It pops a balloon if deflected, or kills the monster, or kills the player if it
-is already moving.  This class provides the code for both arrow types. */
+Supports LeftArrow and RightArrow entities. An Arrow moves Left or Right and
+slides over or under a deflector or boulder. It pops a balloon if deflected, or
+kills the monster, or kills the player if it is already moving. */
 
-class LeftArrow extends Entity {
+class Arrow extends Entity {
     private boolean moving;
     private Direction normal, deflect;
 

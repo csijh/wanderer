@@ -11,8 +11,7 @@ Item Maze:
 	javac -d ../bin maze/$@.java
 	java -cp ../bin maze.$@
 
-Baby Balloon Boulder Dead Entity LeftArrow Monster Player RightArrow \
-Space Test Thing Wanderer:
+Baby Balloon Boulder Dead Entity Arrow Monster Player Space Test Thing Wanderer:
 	javac -d ../bin wanderer/$@.java
 	java -cp ../bin wanderer.$@
 

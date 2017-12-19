@@ -19,8 +19,7 @@ class Test {
                 return new Thing();
             case Boulder: return new Boulder();
             case Balloon: return new Balloon();
-            case LeftArrow: return new LeftArrow();
-            case RightArrow: return new RightArrow();
+            case LeftArrow: case RightArrow: return new Arrow();
             case Monster: return new Monster();
             case Baby: return new Baby();
             case Player: return new Player();
