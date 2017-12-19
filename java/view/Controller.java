@@ -11,7 +11,7 @@ import javafx.scene.layout.*;
 import javafx.scene.input.*;
 import javafx.event.*;
 
-/* By Ian Holyer, 2017. Free and open source: see licence.txt.
+/* Controller class. Free and open source: see licence.txt.
 
 Interpret the program's command line arguments, handle recording and playback of
 levels, deal with animation ticks, and provide a button bar for the user
@@ -21,7 +21,7 @@ interface. The command line arguments accepted are:
 
 The level argument lets you start the game on a given level.
 The -r argument allows the play to be recorded in a given output file.
-The -p argument allows the game to be replayed from a given input file.
+The -p argument allows the game to be played back from a given input file.
 A recording or playback name is a level name with a one-letter suffix.
 If two or more of these three options are given, the level name must agree.
 The -s argument specifies how many steps to replay from the file.
@@ -29,13 +29,13 @@ After replaying a given number of steps, you can continue playing manually.
 You can replay and record at the same time. */
 
 public class Controller<E extends Cell<E>> extends Scene {
-    private Level<E> level;
     private Stage stage;
+    private Game<E> game;
+    private Level<E> level;
     private Display display;
     private Table table;
     private Help help;
-    private Ticker ticker;
-    private String[] levels;
+    private Ticker<E> ticker;
     private String[] names;
     private int index;
 
@@ -47,26 +47,32 @@ public class Controller<E extends Cell<E>> extends Scene {
 
     // Create a controller from the name of the game, the main stage, a level
     // object, and the list of level files.
-    public Controller(String game, Stage s, Level<E> l, String[] ls) {
+    public Controller(Stage s, Game<E> g, List<String> args) {
         super(new BorderPane());
-        s.setTitle(game);
         stage = s;
-        level = l;
-        levels = ls;
-        names = new String[levels.length];
-        for (int i=0; i<levels.length; i++) names[i] = name(levels[i], false);
-        display = new Display<E>(level, 42*24, 18*24);
-        if (s != null) table = new Table(game, names);
-        if (s != null) help = new Help(s, 700, 500);
-        ticker = new Ticker(level, display, table);
+        game = g;
+        stage.setTitle(game.name());
+        level = new Level<E>(game::hatch);
+        names = new String[game.levelCount()];
+        for (int i=0; i<names.length; i++) {
+            names[i] = name(game.levelPath(i), false);
+        }
+        display = new Display<E>(level, game, 42*24, 18*24);
+        table = new Table(game.name(), names);
+        help = new Help(stage, 700, 500, game.name());
+        ticker = new Ticker<E>(display, table, level, game);
         BorderPane pane = (BorderPane) getRoot();
         pane.setTop(createButtons());
         pane.setCenter(display);
+        stage.setScene(this);
+        setup(args);
+        stage.show();
+        replay();
     }
 
     // Set up the controller from the program's command line arguments. Call
     // after setting the scene, but before showing the stage.
-    public void setup(List<String> args) {
+    private void setup(List<String> args) {
         stage.getScene().setOnKeyPressed(this::key);
         stage.getScene().addEventFilter(KeyEvent.KEY_PRESSED, this::filter);
         String message = trySetup(args);
@@ -77,7 +83,7 @@ public class Controller<E extends Cell<E>> extends Scene {
     }
 
     // Replay by routing commands to the ticker.  Call after showing stage.
-    public void replay() {
+    private void replay() {
         if (replaying()) ticker.pause();
         while (replaying()) {
             char cmd = command();
@@ -187,7 +193,7 @@ public class Controller<E extends Cell<E>> extends Scene {
 
     // Start or restart a level.
     private void restart(ActionEvent e) {
-        level.load(levels[index]);
+        level.load(game.levelPath(index));
         table.current(names[index]);
         display.setup();
     }
@@ -250,7 +256,7 @@ public class Controller<E extends Cell<E>> extends Scene {
 
     // Get an index number from a level name.
     private int index(String name) throws Exception {
-        for (int i=0; i<levels.length; i++) {
+        for (int i=0; i<names.length; i++) {
             if (name.equals(names[i])) return i;
         }
         fail("unknown level");

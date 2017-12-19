@@ -1,7 +1,7 @@
 package view;
 import javafx.beans.property.*;
 
-/* By Ian Holyer, 2017. Free and open source: see licence.txt.
+/* Score class. Free and open source: see licence.txt.
 
 A high score for a level, to be used as a table row. */
 

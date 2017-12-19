@@ -5,7 +5,7 @@ import javafx.event.*;
 import javafx.util.*;
 import java.util.*;
 
-/* By Ian Holyer, 2017. Free and open source: see licence.txt.
+/* Ticker class. Free and open source: see licence.txt.
 
 This is an animation timer, controlling the level and calling a provided method
 whenever redrawing is needed.  User commands are given to the timer, queued up
@@ -24,10 +24,11 @@ to see if anything actually happened.  If the result is false, there is no
 pause.  If the result is true, a pause triggered, followed by a call to the
 provided method to make the change visible. */
 
-class Ticker {
-    private Level level;
+class Ticker<E extends Cell<E>> {
     private Display display;
     private Table table;
+    private Level<E> level;
+    private Game<E> game;
     private int speed = 5;
     private PauseTransition pause;
     private Deque<Character> commands;
@@ -38,11 +39,13 @@ class Ticker {
     // steps per frame, but are useful to skip quickly through replays.
     private static double[] speeds = {1024,512,256,128,64,32,16,8,4,2,1};
 
-    // Create a new timer, with a given level, display, and table.
-    public Ticker(Level l, Display d, Table t) {
-        level = l;
+    // Create a new timer, with a given display, table, level, and the ids of
+    // state counters giving the score and success of the level.
+    public Ticker(Display d, Table t, Level<E> l, Game<E> g) {
         display = d;
         table = t;
+        level = l;
+        game = g;
         Duration time = Duration.seconds(speeds[speed] / 1000.0);
         pause = new PauseTransition(time);
         pause.setOnFinished(this::tick);
@@ -102,8 +105,8 @@ class Ticker {
         display.redraw();
         String name = level.name();
         table.current(name);
-        table.score(name, level.score());
-        table.success(name, level.success());
+        table.score(name, game.score(level));
+        table.success(name, game.success(level));
         boolean b = level.step();
         if (b) pause.play();
         else {

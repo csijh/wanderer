@@ -12,7 +12,7 @@ import javafx.geometry.*;
 import java.util.*;
 import java.io.*;
 
-/* By Ian Holyer, 2017. Free and open source: see licence.txt.
+/* Help class. Free and open source: see licence.txt.
 
 This is a utility class which can be used in a javafx user interface to display
 help pages. It reads files from a help directory. The files are written in a
@@ -32,14 +32,14 @@ public class Help extends Stage {
     private Stack<String> pageNames;
     private Map<String,Scene> scenes;
 
-    public Help(Stage parent, int w, int h) {
+    public Help(Stage parent, int w, int h, String index) {
         super(StageStyle.UTILITY);
         initOwner(parent);
         width = w;
         height = h;
         setTitle("Help");
-        createPages();
-        setScene(scenes.get("index"));
+        createPages(index);
+        setScene(scenes.get(index));
     }
 
     // Allow Stage.show to be triggered by an event.
@@ -47,10 +47,10 @@ public class Help extends Stage {
 
     // Create a scene per page. As each page is loaded, any other pages which it
     // links to are queued up to be loaded.
-    void createPages() {
+    void createPages(String index) {
         pageNames = new Stack<String>();
         scenes = new HashMap<String,Scene>();
-        pageNames.push("index");
+        pageNames.push(index);
         while (! pageNames.isEmpty()) {
             String name = pageNames.pop();
             if (scenes.get(name) != null) continue;
@@ -82,7 +82,9 @@ public class Help extends Stage {
         page.setPadding(new Insets(10));
         List<Node> nodes = page.getChildren();
         InputStream is = getClass().getResourceAsStream("/help/" + n + ".md");
-        Reader rdr = new InputStreamReader(is);
+        Reader rdr;
+        try { rdr = new InputStreamReader(is); }
+        catch(Exception err) { throw new Error("Can't read /help/" +n+ ".md"); }
         Scanner scanner = new Scanner(rdr);
         while (scanner.hasNextLine()) addLine(nodes, scanner.nextLine());
         page.setMaxWidth(width-10);
@@ -158,7 +160,9 @@ public class Help extends Stage {
 
     // Launch the help window on its own for manual testing.
     public static class TestHelp extends Application {
-        public void start(Stage stage) { new Help(null, 700, 500).show(); }
+        public void start(Stage stage) {
+            new Help(null, 700, 500, "Wanderer").show();
+        }
     }
     public static void main(String[] args) {
         Application.launch(TestHelp.class, args);

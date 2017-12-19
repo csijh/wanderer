@@ -13,7 +13,7 @@ import javafx.beans.property.*;
 import java.util.*;
 import java.io.*;
 
-/* By Ian Holyer, 2017. Free and open source: see licence.txt.
+/* Table class. Free and open source: see licence.txt.
 
 Provide a high score table component for the user interface. */
 
