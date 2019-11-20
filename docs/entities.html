@@ -42,22 +42,16 @@ variations on this theme are possible, but two problems inevitably arise.  The
 first is that the resulting system can't be described as simple or natural. The
 second is that, although <em>most</em> things that an entity wants to do can be
 done with directions, e.g. "move right" or "find the entity to the right" and so
-on, occasionally actual coordinate come into play, e.g a long-distance teleport,
-or a monster which chases the player.</p>
+on, occasionally actual coordinates come into play, e.g a long-distance
+teleport, or a monster which chases the player.</p>
 
-<p>A good approach is to split the Entity class into two:</p>
-
-<img src="cell.png" alt="Entity extends a general Cell class" />
-
-<p>The <code>Cell</code> class becomes a base class for entity classes.  It
-provides general purpose methods which entity classes can use to get things
-done. The Cell class can be a framework class, with the Entity class and any
-classes that extend it providing the game-specific behaviour by defining
-lifecycle methods such as <code>hatch</code> and <code>act</code>.  The
-<code>Cell</code> class might look like this:</p>
+<p>Entities have already been split across two classes, <code>Cell</code> as a
+generic base class and <code>Entity</code> for custom details. So a good
+approach is for a <code>Cell</code> to know here it is, but not an
+<code>Entity</code>. The <code>Cell</code> class might look like this:</p>
 
 <pre>class Cell {
-    private Level&lt;Cell> level;
+    private Grid&lt;Cell> grid;
     private int x, y;
     int x() { return x; }
     int y() { return y; }
@@ -67,12 +61,12 @@ lifecycle methods such as <code>hatch</code> and <code>act</code>.  The
 
 <p>An object of the <code>Cell</code> class knows its own coordinates, but the
 class consists of a relatively small amount of stable code, so that consistency
-can be kept under control. The coordinates are private, and extending classes
-only have read access to them. That encapsulates the coordinate consistency
-problem inside the <code>Cell</code> class.</p>
+can be kept under control. The coordinates are private, and so the
+<code>Entity</code> class only has read access to them. That encapsulates the
+coordinate consistency problem inside the <code>Cell</code> class.</p>
 
-<p>The <code>Cell</code> class shown above has a weakness.  The level field has
-class <code>Level&lt;Cell></code>.  So, when an entity finds a neighbouring
+<p>The <code>Cell</code> class shown above has a weakness.  The grid field has
+class <code>Grid&lt;Cell></code>.  So, when an entity finds a neighbouring
 entity in the grid, it only knows that the neighbour has type <code>Cell</code>,
 not <code>Entity</code> (unless it cheats by using casting, for example).  While
 this isn't a disaster, it is worth making the framework class <code>Cell</code>
@@ -80,7 +74,7 @@ a bit more sophisticated, to ease the implementation of game-specific custom
 classes, like this:</p>
 
 <pre>public class Cell&lt;E extends Cell&lt;E>>
-    private Level&lt;E> level;
+    private Grid&lt;E> grid;
     private int x, y;
     int x() { return x; }
     int y() { return y; }
@@ -89,11 +83,10 @@ classes, like this:</p>
 </pre>
 
 <p>The <code>Cell</code> class is given a parameter <code>E</code>, which will
-later be filled in by the <code>Entity</code> class.  That allows the
-level field to have class <code>Level&lt;E></code> rather than just
-<code>Level&lt;Cell></code>, and entities will be able to access other entities
-using variables of class <code>Entity</code>. The <code>E</code> parameter must
-be a class which extends <code>Cell</code>. In fact, it must extend
+later be filled in by the <code>Entity</code> class.  Then entities will be able
+to access other entities using variables of class <code>Entity</code>. The
+<code>E</code> parameter (which will end up referring to the <code>Entity</code>
+class) must be a class which extends <code>Cell</code>. In fact, it must extend
 <code>Cell&lt;E></code>, which leads to the strangely cyclic but correct class
 declaration <code>class Cell&lt;E extends Cell&lt;E>></code>.</p>
 

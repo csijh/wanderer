@@ -4,6 +4,13 @@
 <meta charset="UTF-8"/>
 <title>Wanderer</title>
 <link rel="stylesheet" href="style.css" />
+<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/highlight.js/9.9.0/styles/xcode.min.css"/>
+<script
+  src="https://cdn.jsdelivr.net/highlight.js/9.9.0/highlight.min.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/highlight.js/9.9.0/languages/java.min.js"></script>
+<script src="highlight.js"></script>
 </head>
 <body>
 
@@ -34,10 +41,10 @@ project.</p>
 
 <h3>Further information</h3>
 
-<p>The same  approach can be developed further.  For example, rather than
-call <code>claim(s.equals("x"))</code>, it might be preferable to use
-<code>claimEq(s, "x")</code>.  The <code>claimEq</code> method can be
-written:</p>
+<p>This simple approach to testing can be developed further in various ways.
+For example, rather than call <code>claim(s.equals("x"))</code>, it might be
+preferable to use <code>claimEq(s, "x")</code>.  The <code>claimEq</code> method
+can be written:</p>
 
 <pre>static void claimEq(Object x, Object y) {
     if (x == y) return;
@@ -51,8 +58,23 @@ types, e.g. integers and characters, as well as objects which have a suitable
 <code>equals</code> method. (However, as it stands, it doesn't work for
 arrays).</p>
 
+<p>If you do want to use Java's assertions, you can test whether they have been
+switched on like this:</p>
+
+<pre>...
+public static void main(String[] args) {
+    boolean testing = false;
+    assert(testing = true);
+    if (! testing) System.err.println("You forgot the -ea flag");
+    ...
+}
+</pre>
+
+<p>Note the argument to the assert call is an assignment <code>testing =
+true</code> not a comparison <code>testing == true</code>.</p>
+
 <p>The <code>main</code> method approach to unit testing can also be scaled up
-to large projects, e.g. by defining classes something like this:</p>
+to large projects, by defining classes something like this:</p>
 
 <pre>class X implements Testable {
     public String test(String in) { ... }
@@ -66,7 +88,7 @@ to large projects, e.g. by defining classes something like this:</p>
 which takes a test expressed as a string and returns a string result which can
 be checked against what is expected. The <code>test</code> method may be
 effectively static, creating any objects it needs, but is not <em>declared</em>
-<code>static</code>, so that it can be described by an interface.</p>
+<code>static</code>, so that it can be described by the interface.</p>
 
 <p>Shared test code is put into a general <code>Test</code> class, which doesn't
 depend directly on any of the project classes, only on the <code>Testable</code>

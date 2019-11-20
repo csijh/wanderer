@@ -3,9 +3,10 @@ Hatchery State Queue Direction Grid Cell Level:
 	java -cp ../bin model.$@
 
 Game Display Score Table Help Ticker Controller GUI:
-	javac -Xlint:unchecked -d ../bin view/$@.java
+	javac -d ../bin view/$@.java
 	java -cp ../bin view.$@
 
+# Make Maze/Wanderer phony. On Windows, they clash with maze/wanderer folders.
 .PHONY: Maze Wanderer
 Item Maze:
 	javac -d ../bin maze/$@.java

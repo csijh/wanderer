@@ -25,10 +25,16 @@ file, and acts as a driver for all the non-graphics aspects of the game.</p>
 
 <p>Which way round should the dependencies go?  Should <code>Entity</code>
 depend on <code>Level</code>, or vice versa? It seems natural to make the
-<code>Level</code> class into a controller, telling the entities when to act. On
-the other hand, entity classes are presumably custom classes defined for a
+<code>Level</code> class into a controller, telling the entities when to
+act:</p>
+
+<img src="controller.png" alt="The Level class as a framework class depending
+on the Entity and Grid classes" />
+
+<p>On the other hand, entity classes are presumably custom classes defined for a
 specific game, whereas the <code>Level</code> class could usefully be part of
-the framework.</p>
+the framework. A framework class should not depend on a custom class, so maybe
+we should rethink.</p>
 
 <p>The approach taken here is to define a <code>Cell</code> class as a base
 class for custom entity classes, to have it be a framework class, and to allow
@@ -83,8 +89,8 @@ diagram:</p>
 <img src="levels3.png" alt="The Entity and Level classes,
 depend on Cell, which depends on Grid, State, Queue and Hatchery" />
 
-<p>This is reasonable design for the model.  The way custom classes are intended
-to be designed is something like this:</p>
+<p>This is a reasonable design for the model.  The way custom classes are
+intended to be designed is something like this:</p>
 
 <img src="levels4.png" alt="A Program class, which depends on various entity
 classes, which depends on the Entity base class" />

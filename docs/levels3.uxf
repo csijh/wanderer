@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<diagram program="umlet" version="14.2">
+<diagram program="umlet" version="14.3.0">
   <help_text>// Uncomment the following line to change the fontsize and font:
 fontsize=20
 // fontfamily=SansSerif //possible: SansSerif,Serif,Monospaced
@@ -28,8 +28,8 @@ fontsize=20
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>700</x>
-      <y>150</y>
+      <x>380</x>
+      <y>160</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
@@ -40,20 +40,20 @@ bg=#aaffaa</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>540</x>
-      <y>120</y>
+      <x>220</x>
+      <y>130</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
-    <panel_attributes>/Cell/
+    <panel_attributes>Cell
 bg=#aaffaa</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>630</x>
-      <y>140</y>
+      <x>310</x>
+      <y>150</y>
       <w>90</w>
       <h>50</h>
     </coordinates>
@@ -63,8 +63,8 @@ bg=#aaffaa</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>540</x>
-      <y>40</y>
+      <x>220</x>
+      <y>50</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
@@ -75,8 +75,8 @@ bg=#aaffaa</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>700</x>
-      <y>90</y>
+      <x>380</x>
+      <y>100</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
@@ -87,8 +87,8 @@ bg=#aaffaa</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>700</x>
-      <y>210</y>
+      <x>380</x>
+      <y>220</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
@@ -99,8 +99,8 @@ bg=#aaffaa</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>630</x>
-      <y>100</y>
+      <x>310</x>
+      <y>110</y>
       <w>90</w>
       <h>50</h>
     </coordinates>
@@ -110,8 +110,8 @@ bg=#aaffaa</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>630</x>
-      <y>150</y>
+      <x>310</x>
+      <y>160</y>
       <w>90</w>
       <h>100</h>
     </coordinates>
@@ -121,8 +121,8 @@ bg=#aaffaa</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>380</x>
-      <y>120</y>
+      <x>60</x>
+      <y>130</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
@@ -133,8 +133,8 @@ bg=#aaffaa</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>580</x>
-      <y>70</y>
+      <x>260</x>
+      <y>80</y>
       <w>30</w>
       <h>70</h>
     </coordinates>
@@ -144,8 +144,8 @@ bg=#aaffaa</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>470</x>
-      <y>130</y>
+      <x>150</x>
+      <y>140</y>
       <w>90</w>
       <h>30</h>
     </coordinates>
@@ -155,8 +155,8 @@ bg=#aaffaa</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>700</x>
-      <y>30</y>
+      <x>380</x>
+      <y>40</y>
       <w>100</w>
       <h>40</h>
     </coordinates>
@@ -167,8 +167,8 @@ bg=#aaffaa</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>630</x>
-      <y>40</y>
+      <x>310</x>
+      <y>50</y>
       <w>90</w>
       <h>100</h>
     </coordinates>
